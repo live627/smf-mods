@@ -189,7 +189,7 @@ class Browser
 			$this->name = self::IE;
 			$this->version = '1.0';
 			$aresult = stristr($userAgent, '/');
-			if (preg_match('/308|425|426|474|0b1/i', $aresult))
+			if (preg_match('/308|4(?:2[56]|74)|0b1/i', $aresult))
 				$this->version = '1.5';
 		} // Test for versions > 1.5 and < 11 and some cases of 11
 		else
