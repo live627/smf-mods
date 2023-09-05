@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info">
+	<id>live627:WordpressBridge</id>
+	<name>Wordpress Bridge</name>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+		<code type="inline"><![CDATA[<?php
+			define('REQUIRED_PHP_VERSION', '7.4');
+			if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
+				fatal_error(
+					sprintf(
+						'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
+						REQUIRED_PHP_VERSION,
+						PHP_VERSION
+					),
+					false
+				);
+			global $boarddir;
+			require_once($boarddir . '/SSI.php');
+			add_integration_function('integrate_pre_include', '$sourcedir/WordpressBridge.php');
+			add_integration_function('integrate_load_theme', 'WordpressBridge::load_theme');
+			add_integration_function('integrate_admin_areas', 'WordpressBridge::admin_areas');
+			add_integration_function('integrate_login', 'WordpressBridge::login');
+			add_integration_function('integrate_logout', 'WordpressBridge::logout');
+			add_integration_function('integrate_register', 'WordpressBridge::register');
+			add_integration_function('integrate_reset_pass', 'WordpressBridge::reset_pass');
+			add_integration_function('integrate_change_member_data', 'WordpressBridge::change_member_data');
+		?>]]></code>
+		<readme parsebbc="true">install.txt</readme>
+		<require-file name="WordpressBridge.php" destination="$sourcedir" />
+		<require-file name="ManageWordpressBridge.php" destination="$sourcedir" />
+		<require-file name="WordpressBridge.english.php" destination="$languagedir" />
+		<require-file name="WordpressBridge.template.php" destination="$themedir" />
+		<redirect url="?action=admin;area=wordpress;sa=bridge"/>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<readme parsebbc="true">uninstall.txt</readme>
+		<code type="inline"><![CDATA[<?php
+			global $boarddir;
+			require_once($boarddir . '/SSI.php');
+			remove_integration_function('integrate_pre_include', '$sourcedir/WordpressBridge.php');
+			remove_integration_function('integrate_load_theme', 'WordpressBridge::load_theme');
+			remove_integration_function('integrate_admin_areas', 'WordpressBridge::admin_areas');
+			remove_integration_function('integrate_login', 'WordpressBridge::login');
+			remove_integration_function('integrate_logout', 'WordpressBridge::logout');
+			remove_integration_function('integrate_register', 'WordpressBridge::register');
+			remove_integration_function('integrate_reset_pass', 'WordpressBridge::reset_pass');
+			remove_integration_function('integrate_change_member_data', 'WordpressBridge::change_member_data');
+		?>]]></code>
+		<remove-file name="$languagedir/WordpressBridge.english.php" />
+		<remove-file name="$themedir/WordpressBridge.template.php" />
+		<remove-file name="$sourcedir/WordpressBridge.php" />
+		<remove-file name="$sourcedir/ManageWordpressBridge.php" />
+		<hook reverse="true" hook="integrate_pre_load" file="SOURCEDIR/WordpressBridge.php" function="WordpressBridge::getInstance"/>
+	</uninstall>
+</package-info>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:topic-participants</id>
+	<version>1.0</version>
+
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Guests can't mark topics read or for notifications, just can't sorry.]]></search>
+			<add><![CDATA[
+	if (allowedTo('view_topic_participants_any') || ($topicinfo['id_member_started'] == $user_info['id'] && allowedTo('view_topic_participants_own')))
+	{
+		$request = $smcFunc['db_query']('', '
+			SELECT id_member
+			FROM {db_prefix}topics
+				JOIN {db_prefix}messages USING (id_topic)
+			WHERE id_topic = {int:current_topic}',
+			array(
+				'current_topic' => $topic,
+			)
+		);
+		$context['topic_participants'] = array();
+		while (list ($id_member) = $smcFunc['db_fetch_row']($request))
+			if ($id_member != 0)
+			{
+				if (!isset($context['topic_participants'][$id_member]))
+					$context['topic_participants'][$id_member] = 0;
+
+				$context['topic_participants'][$id_member]++;
+				$posters[] = $id_member;
+			}
+
+		arsort($context['topic_participants']);
+
+		loadLanguage('TopicParticipants');
+		$context['template_layers'][] = 'display_topic_participants';
+	}
+]]></add>
+		</operation>
+	</file>
+
+</modification>

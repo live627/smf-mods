@@ -1,0 +1,261 @@
+.sceditor-grip {
+	height: 5px;
+	font-size: 0;
+	background: #eee url(../images/bbc/resize-handle.gif) no-repeat 50% 1px;
+	border: 1px solid #ddd;
+	border-top-width: 0;
+	cursor: s-resize;
+	width: 100%;
+	padding: 0 2px;
+}
+.sceditor-insertemoticon img {
+	margin: 4px;
+}
+.sceditor-container {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	position: relative;
+	background: #fff;
+	border: 1px solid #d9d9d9;
+	color: #333;
+	border-radius: 4px;
+	background-clip: padding-box;
+}
+.sceditor-container iframe,
+.sceditor-container textarea {
+	display: block;
+	-ms-flex: 1 1 0%;
+	flex: 1 1 0%;
+	border: 0;
+	outline: none;
+	padding: 0;
+	margin: 0;
+	resize: none;
+	background: #fff;
+}
+div.sceditor-dnd-cover {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: rgba(255, 255, 255, 0.2);
+	border: 5px dashed #aaa;
+	z-index: 200;
+	font-size: 2em;
+	text-align: center;
+	color: #aaa;
+}
+div.sceditor-dnd-cover p {
+	position: relative;
+	top: 45%;
+	pointer-events: none;
+}
+div.sceditor-resize-cover {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #000;
+	width: 100%;
+	height: 100%;
+	z-index: 10;
+	opacity: 0.3;
+}
+.sceditor-maximize {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100% !important;
+	width: 100% !important;
+	border-radius: 0;
+	z-index: 2000;
+}
+html.sceditor-maximize,
+body.sceditor-maximize {
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+.sceditor-maximize div.sceditor-grip {
+	display: none;
+}
+.sceditor-maximize div.sceditor-toolbar {
+	border-radius: 0;
+	background-clip: padding-box;
+}
+/**
+ * Dropdown styleing
+ */
+.sceditor-dropdown {
+	position: absolute;
+	border: 1px solid #ccc;
+	background: #fff;
+	z-index: 4000;
+	border-radius: 2px;
+	box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.sceditor-dropdown:not(.sceditor-font-picker, .sceditor-fontsize-picker, .sceditor-format, .sceditor-color-picker) > div {
+	display: grid; 
+	grid-template-columns: 20em 20em;
+	gap: 0.5em;
+	padding: 0.5em;
+}
+.sceditor-dropdown:not(.sceditor-font-picker, .sceditor-fontsize-picker, .sceditor-format, .sceditor-color-picker, .sceditor-insertimage) div, .sceditor-insertimage > div > :first-child, .sceditor-insertimage > div > :last-child {
+	grid-column: span 2;
+}
+.sceditor-dropdown:not(.sceditor-font-picker, .sceditor-fontsize-picker, .sceditor-format, .sceditor-color-picker, .sceditor-insertimage) input[type=text], .sceditor-insertimage > div > :first-child input {
+	width: 90%;
+}
+.sceditor-dropdown label {
+	display: block;
+	color: #3c3c3c;
+	padding: 4px 0;
+}
+.sceditor-dropdown a:hover {
+	background: #eee;
+	text-decoration: none;
+}
+.sceditor-dropdown a {
+	color: #222;
+	display: block;
+	line-height: 1;
+	padding: 7px 10px;
+}
+.sceditor-color-picker span {
+	float: left;
+	width: 1em;
+	height: 1em;
+	margin: 0 0.3em;
+}
+#bbcBox_message,
+#bbcBox_message div,
+#bbcBox_message div img,
+#bbcBox_message select,
+#smileyBox_message {
+	margin: 0;
+}
+.sceditor-insertemoticon {
+	margin: 0.4em 0.2em !important;
+}
+.sceditor-group {
+	display: inline-block;
+	margin: 0.2em !important;
+}
+.sceditor-toolbar > :first-child > :last-child {
+	display: inline-flex;
+	gap: 12px;
+	font: 12px Arial, sans-serif;
+}
+.sceditor-button {
+	background: url(../images/bbc/bbc_bg.gif);
+	display: inline-block;
+	margin: 1px 3px;
+	width: 23px;
+	height: 22px;
+}
+.sceditor-button:not(.disabled):hover,
+.sceditor-button:active,
+.sceditor-button.active {
+	background: url(../images/bbc/bbc_hoverbg.gif);
+}
+.sceditor-button.disabled:hover {
+	cursor: default;
+}
+.sceditor-button div {
+	display: inline-block;
+	line-height: 0;
+	color: transparent;
+	width: 23px;
+	height: 22px;
+}
+.sceditor-button.disabled div {
+	opacity: 0.3;
+}
+.sceditor-button-font,
+.sceditor-button-size,
+.sceditor-button-color {
+	width: auto; 
+}
+.sceditor-button-font::before,
+.sceditor-button-size::before,
+.sceditor-button-color::before {
+	content: "";
+	background: url(../images/bbc/bbc_bg.gif);
+	height: 22px;
+	width: 11px;
+	position: absolute; 
+}
+.sceditor-button-font::after,
+.sceditor-button-size::after,
+.sceditor-button-color::after {
+	content: "";
+	background: url(../images/bbc/bbc_bg.gif);
+	height: 22px;
+	width: 11px;
+	position: absolute;
+	background-position: right; 
+}
+.sceditor-button-font:hover::before,
+.sceditor-button-size:hover::before,
+.sceditor-button-color:hover::before {
+	content: "";
+	background: url(../images/bbc/bbc_hoverbg.gif);
+	height: 22px;
+	width: 11px;
+	position: absolute; 
+}
+.sceditor-button-font:hover::after,
+.sceditor-button-size:hover::after,
+.sceditor-button-color:hover::after {
+	content: "";
+	background: url(../images/bbc/bbc_hoverbg.gif);
+	height: 22px;
+	width: 11px;
+	position: absolute;
+	background-position: right; 
+}
+.sceditor-button-font div,
+.sceditor-button-size div,
+.sceditor-button-color div {
+	padding: 0 10px;
+	width: auto;
+	line-height: 21px;
+	color: inherit; 
+}
+.sceditor-button-font div::after,
+.sceditor-button-size div::after,
+.sceditor-button-color div::after {
+	border-top: 8px solid currentColor;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	content: "";
+	margin: 8px 4px;
+	opacity: 0.5;
+	position: absolute;
+	z-index: 1; 
+}
+.sceditor-font-picker,
+.sceditor-fontsize-picker,
+.sceditor-format,
+.sceditor-color-picker {
+	display: flex; 
+	gap: 2em;
+}
+.sceditor-insert-table {
+	display: flex; 
+	gap: 2em;
+}
+.sceditor-insert-table-grid {
+	display: grid;
+	grid-template: repeat(12, 2em) / repeat(12, 2em); 
+	gap: 0.5em;
+}
+.sceditor-insert-table .largetext {
+	opacity: 0.5;
+	margin-top: 5em;
+}
+#popup{background:#568d;height:100%;left:0;opacity:0;overflow:auto;position:fixed;top:0;transition:500ms all;visibility:hidden;width:100%;z-index:1000}#popup.show{opacity:1;transition:1s all;visibility:visible}#popup.show #popup-container{transform:scale(1) translateY(-50%);transition:500ms all}#popup-container{background:#fff;border-radius:0.4em;margin:0 auto;padding:1rem;position:relative;top:50%;transform:translateY(-200%);transition:500ms all;width:40%}#popup-container #close{background:none;border:none;height:32px;opacity:0.3;position:absolute;right:1em;top:1em;width:32px}#popup-container #close:hover{opacity:1}#popup-container #close::before,#popup-container #close::after{background:currentColor;content:'';height:26px;position:absolute;top:0;width:2px}#popup-container #close::before{transform:rotate(45deg)}#popup-container #close::after{transform:rotate(-45deg)}

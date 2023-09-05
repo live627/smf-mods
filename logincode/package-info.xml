@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:logincode</id>
+	<name>Login Code</name>
+	<version>1.0.0</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+		<code type="inline"><![CDATA[<?php
+			define('REQUIRED_PHP_VERSION', '7.1.0');
+			if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
+				fatal_error(
+					sprintf(
+						'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
+						REQUIRED_PHP_VERSION,
+						PHP_VERSION
+					),
+					false
+				);
+			add_integration_function('integrate_pre_include', '$sourcedir/LoginCode.php');
+			add_integration_function('integrate_actions', 'logincode_actions');
+			add_integration_function('integrate_login', 'logincode_login');
+			add_integration_function('integrate_general_mod_settings', 'logincode_general_mod_settings');
+		?>]]></code>
+		<database>install.php</database>
+		<require-file name="LoginCode.php" destination="$sourcedir" />
+		<require-file name="Class-LoginCode.php" destination="$sourcedir" />
+		<require-file name="LoginCode.template.php" destination="$themedir" />
+		<require-file name="LoginCode.english.php" destination="$languagedir" />
+		<redirect url="?action=admin;area=modsettings" />
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<code type="inline"><![CDATA[<?php
+			remove_integration_function('integrate_pre_include', '$sourcedir/LoginCode.php');
+			remove_integration_function('integrate_actions', 'logincode_actions');
+			remove_integration_function('integrate_login', 'logincode_login');
+			remove_integration_function('integrate_general_mod_settings', 'logincode_general_mod_settings');
+		?>]]></code>
+		<remove-file name="$sourcedir/LoginCode.php" />
+		<remove-file name="$sourcedir/Class-LoginCode.php" />
+		<remove-file name="$themedir/LoginCode.template.php" />
+		<remove-file name="$languagedir/LoginCode.english.php" />
+	</uninstall>
+
+</package-info>

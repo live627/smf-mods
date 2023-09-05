@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Topic Participants</name>
+	<id>live627:topic-participants</id>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+		<code type="inline"><![CDATA[<?php
+add_integration_function('integrate_pre_include', '$sourcedir/TopicParticipants.php');
+add_integration_function('integrate_actions', 'topic_participants_actions');
+add_integration_function('integrate_load_permissions', 'topic_participants_load_permissions');
+add_integration_function('integrate_general_mod_settings', 'topic_participants_general_mod_settings');
+?>]]></code>
+		<modification>install.xml</modification>
+		<require-file name="TopicParticipants.php" destination="$sourcedir" />
+		<require-file name="TopicParticipants.template.php" destination="$themedir" />
+		<require-file name="TopicParticipants.english.php" destination="$languagedir" />
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<code type="inline"><![CDATA[<?php
+remove_integration_function('integrate_pre_include', '$sourcedir/TopicParticipants.php');
+remove_integration_function('integrate_actions', 'topic_participants_actions');
+remove_integration_function('integrate_load_permissions', 'topic_participants_load_permissions');
+remove_integration_function('integrate_general_mod_settings', 'topic_participants_general_mod_settings');
+?>]]></code>
+		<modification reverse="true">install.xml</modification>
+		<remove-file name="$sourcedir/TopicParticipants.php" />
+		<remove-file name="$themedir/TopicParticipants.template.php" />
+		<remove-file name="$languagedir/TopicParticipants.english.php" />
+	</uninstall>
+
+	<install for="2.1 - 2.1.99">
+		<code type="inline"><![CDATA[<?php
+add_integration_function('integrate_pre_include', '$sourcedir/TopicParticipants.php');
+add_integration_function('integrate_display_message_list', 'topic_participants_display_message_list');
+add_integration_function('integrate_actions', 'topic_participants_actions');
+add_integration_function('integrate_load_permissions', 'topic_participants_load_permissions');
+add_integration_function('integrate_general_mod_settings', 'topic_participants_general_mod_settings');
+?>]]></code>
+		<require-file name="TopicParticipants.php" destination="$sourcedir" />
+		<require-file name="TopicParticipants.template.php" destination="$themedir" />
+		<require-file name="TopicParticipants.english.php" destination="$languagedir" />
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+		<code type="inline"><![CDATA[<?php
+remove_integration_function('integrate_pre_include', '$sourcedir/TopicParticipants.php');
+remove_integration_function('integrate_display_message_list', 'topic_participants_display_message_list');
+remove_integration_function('integrate_actions', 'topic_participants_actions');
+remove_integration_function('integrate_load_permissions', 'topic_participants_load_permissions');
+remove_integration_function('integrate_general_mod_settings', 'topic_participants_general_mod_settings');
+?>]]></code>
+		<remove-file name="$sourcedir/TopicParticipants.php" />
+		<remove-file name="$themedir/TopicParticipants.template.php" />
+		<remove-file name="$languagedir/TopicParticipants.english.php" />
+	</uninstall>
+
+</package-info>

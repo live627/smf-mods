@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:cbi</id>
+	<version>1.1.0</version>
+
+	<file name="$themedir/ManageBoards.template.php"><!-- Add the per-board settings to the manage board template -->
+		<operation>
+			<search position="before"><![CDATA[action=admin;area=manageboards;sa=board2" method="post" accept-charset="', $context['character_set'], '"]]></search>
+			<add><![CDATA[ enctype="multipart/form-data"]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageBoards.php"><!-- Add the handler for the per-board settings -->
+		<operation>
+			<search position="before"><![CDATA[$context['board'] = array(]]></search>
+			<add><![CDATA[
+			'cbi' => '',]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[		// Checkboxes....]]></search>
+			<add><![CDATA[		// cbi
+		$boardOptions['cbi'] = $_POST['cbi'] ?? '';
+		loadLanguage('CBI');
+
+			if (isset($_FILES['upfile']['error']) && $_FILES['upfile']['error'] != UPLOAD_ERR_NO_FILE)
+			{
+				try {
+					// Check $_FILES['upfile']['error'] value.
+					switch ($_FILES['upfile']['error']) {
+						case UPLOAD_ERR_OK:
+							break;
+						case UPLOAD_ERR_NO_FILE:
+							throw new RuntimeException($txt['cbi_error_nofile']);
+						case UPLOAD_ERR_INI_SIZE:
+						case UPLOAD_ERR_FORM_SIZE:
+							throw new RuntimeException($txt['cbi_error_toobig']);
+						default:
+							throw new RuntimeException($txt['cbi_error_x']);
+					}
+
+					// You should also check filesize here.
+					if ($_FILES['upfile']['size'] > 1000000) {
+						throw new RuntimeException($txt['cbi_error_toobig']);
+					}
+
+					// DO NOT TRUST $_FILES['upfile']['mime'] VALUE !!
+					// Check MIME Type by yourself.
+					$finfo = new finfo(FILEINFO_MIME_TYPE);
+					if (false === $ext = array_search(
+						$finfo->file($_FILES['upfile']['tmp_name']),
+						array(
+							'jpg' => 'image/jpeg',
+							'png' => 'image/png',
+							'gif' => 'image/gif',
+						),
+						true
+					)) {
+						throw new RuntimeException($txt['cbi_error_ext']);
+					}
+
+					// You should name it uniquely.
+					// DO NOT USE $_FILES['upfile']['name'] WITHOUT ANY VALIDATION !!
+					// On this example, obtain safe unique name from its binary data.
+					if (!move_uploaded_file(
+						$_FILES['upfile']['tmp_name'],
+						$newName = sprintf('%s/boardimages/%s.%s',
+							$GLOBALS['boarddir'],
+							sha1_file($_FILES['upfile']['tmp_name']),
+							$ext
+						)
+					)) {
+						throw new RuntimeException('Failed to move uploaded file.');
+					}
+
+				// Try to CHMOD the uploaded file
+				@chmod($newName, 0755);
+
+				$boardOptions['cbi'] = strtr(
+					$newName,
+					[$GLOBALS['boarddir'] => $GLOBALS['boardurl']]
+				);
+				} catch (RuntimeException $e) {
+					fatal_error($e->getMessage(), false);
+			}
+		}
+
+]]></add>
+		</operation>
+	</file>
+</modification>

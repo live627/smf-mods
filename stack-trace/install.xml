@@ -1,0 +1,137 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:stack_trace</id>
+	<version>1.0</version>
+
+	<file name="$themedir/Errors.template.php">
+		<operation>
+			<search position="replace"><![CDATA[							', $txt['line'], ': ', $error['file']['line'], '
+						</div>';
+
+		echo '
+					</td>
+				</tr>';]]></search>
+			<add><![CDATA[							', $txt['line'], ': ', $error['file']['line'], '
+						</div>';
+
+		if ($error['has_stack_trace'])
+			echo '
+						<div class="clear_left floatleft padding">', $error['stack_trace'], '</div>';
+
+		echo '
+					</td>
+				</tr>';]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageErrors.php">
+		<operation>
+			<search position="replace"><![CDATA[		SELECT id_error, id_member, ip, url, log_time, message, session, error_type, file, line
+		FROM {db_prefix}log_errors]]></search>
+			<add><![CDATA[		SELECT id_error, id_member, ip, url, log_time, message, session, error_type, file, line, stack_trace
+		FROM {db_prefix}log_errors]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[$context['errors'][$row['id_error']] = array(]]></search>
+			<add><![CDATA[$stack_trace = '';
+		if (!empty($row['stack_trace']))
+		{
+			$db_stack_trace = @unserialize($row['stack_trace']);
+			if (!empty($db_stack_trace))
+				foreach ($db_stack_trace as $key => $frame)
+					$stack_trace .= '<div class="marginleft">#' . $key . ' ' . $frame . '</div>';
+		}
+
+		$context['errors'][$row['id_error']] = array(
+			'has_stack_trace' => $stack_trace != '',
+			'stack_trace' => $stack_trace,]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Errors.php">
+		<operation>
+			<search position="replace"><![CDATA[		// Insert the error into the database.
+		$smcFunc['db_insert']('',
+			'{db_prefix}log_errors',
+			array('id_member' => 'int', 'log_time' => 'int', 'ip' => 'string-16', 'url' => 'string-65534', 'message' => 'string-65534', 'session' => 'string', 'error_type' => 'string', 'file' => 'string-255', 'line' => 'int'),
+			$error_info,
+			array('id_error')
+		);]]></search>
+			<add><![CDATA[		// Insert the error into the database.
+		$smcFunc['db_insert']('',
+			'{db_prefix}log_errors',
+			array('id_member' => 'int', 'log_time' => 'int', 'ip' => 'string-16', 'url' => 'string-65534', 'message' => 'string-65534', 'session' => 'string', 'error_type' => 'string', 'file' => 'string-255', 'line' => 'int', 'stack_trace' => 'string'),
+			array_merge($error_info, array(serialize(parse_trace(debug_backtrace())))),
+			array('id_error')
+		);]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[// An irrecoverable error.]]></search>
+			<add><![CDATA[/**
+ * Builds the stack trace for display.
+ *
+ * @param array $stack
+ *
+ * @return array The fully parsed stack trace
+ */
+function parse_trace(array $stack)
+{
+	global $boarddir;
+
+	$result = [];
+	foreach ($stack as $point)
+	{
+		// We don't need to log the error handler itself.
+		if ($point['function'] == 'log_error' || $point['function'] == 'error_handler')
+			continue;
+
+		$result[] = strtr(
+			sprintf(
+				'%s(%s): %s(%s)',
+				isset($point['file']) ? str_replace($boarddir, '', $point['file']) : '',
+				isset($point['line']) ? $point['line'] : '',
+				(isset($point['class']) ? $point['class'] . $point['type'] : '') . isset($point['function']) ? $point['function'] : '[internal function]',
+				implode(', ', get_trace_args($point))
+			),
+			['(): ' => '']
+		);
+	}
+
+	// trace always ends with {main}
+	$result[] = '{main}';
+
+	return $result;
+}
+
+/**
+ * Advanced gettype().
+ *
+ * - Shows the full class name if argument is an object.
+ * - Shows the resource type if argument is a resource.
+ * - Uses gettype() for all other types.
+ *
+ * @param array $point
+ *
+ * @return array
+ */
+function get_trace_args(array $point)
+{
+	$args = [];
+	if (isset($point['args']))
+		foreach ($point['args'] as $arg)
+			if (is_object($arg))
+				$args[] = get_class($arg);
+			elseif (is_resource($arg))
+				$args[] = get_resource_type($arg);
+			else
+				$args[] = gettype($arg);
+
+	return $args;
+}
+
+// An irrecoverable error.]]></add>
+		</operation>
+	</file>
+
+</modification>

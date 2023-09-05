@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:wqw</id>
+	<name>Who Quoted Whom</name>
+	<type>modification</type>
+	<version>1.0</version>
+
+	<install for="2.0 - 2.0.99">
+		<modification>install.xml</modification>
+		<database>install.php</database>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<modification reverse="true">install.xml</modification>
+	</uninstall>
+
+</package-info>

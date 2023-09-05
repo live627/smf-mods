@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:cbi</id>
+	<version>2.0.0</version>
+	<name>Custom Board Icons</name>
+	<type>modification</type>
+
+	<install for="2.1 - 2.1.99">
+		<code type="inline"><![CDATA[<?php
+define('REQUIRED_PHP_VERSION', '7.1');
+if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
+	fatal_error(
+		sprintf(
+			'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
+			REQUIRED_PHP_VERSION,
+			PHP_VERSION
+		),
+		false
+	);
+?>]]></code>
+		<hook hook="integrate_load_board" function="cbi_loadBoard" file="$sourcedir/Subs-CBI.php" />
+		<hook hook="integrate_board_info" function="cbi_boardInfo" file="$sourcedir/Subs-CBI.php" />
+		<hook hook="integrate_modify_board" function="cbi_modifyBoard" file="$sourcedir/Subs-CBI.php" />
+		<hook hook="integrate_pre_boardtree" function="cbi_preBoardTree" file="$sourcedir/Subs-CBI.php" />
+		<hook hook="integrate_boardtree_board" function="cbi_boardTree" file="$sourcedir/Subs-CBI.php" />
+		<hook hook="integrate_edit_board" function="cbi_editBoard" file="$sourcedir/Subs-CBI.php" />
+		<hook hook="integrate_getboardtree" function="cbi_getboardtree" file="$sourcedir/Subs-CBI.php" />
+		<hook hook="integrate_general_mod_settings" function="cbi_settings" file="$sourcedir/Subs-CBI.php" />
+		<modification>install21.xml</modification>
+		<require-file name="Subs-CBI.php" destination="$sourcedir" />
+		<require-file name="CBI.english.php" destination="$languagedir" />
+		<database>install.php</database>
+		<create-dir name="boardimages" destination="$boarddir" />
+		<redirect url="?action=admin;area=manageboards" />
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+		<hook hook="integrate_load_board" function="cbi_loadBoard" file="$sourcedir/Subs-CBI.php" reverse="true" />
+		<hook hook="integrate_board_info" function="cbi_boardInfo" file="$sourcedir/Subs-CBI.php" reverse="true" />
+		<hook hook="integrate_modify_board" function="cbi_modifyBoard" file="$sourcedir/Subs-CBI.php" reverse="true" />
+		<hook hook="integrate_pre_boardtree" function="cbi_preBoardTree" file="$sourcedir/Subs-CBI.php" reverse="true" />
+		<hook hook="integrate_boardtree_board" function="cbi_boardTree" file="$sourcedir/Subs-CBI.php" reverse="true" />
+		<hook hook="integrate_edit_board" function="cbi_editBoard" file="$sourcedir/Subs-CBI.php" reverse="true" />
+		<hook hook="integrate_getboardtree" function="cbi_getboardtree" file="$sourcedir/Subs-CBI.php" reverse="true" />
+		<hook hook="integrate_general_mod_settings" function="cbi_settings" file="$sourcedir/Subs-CBI.php" reverse="true" />
+		<modification reverse="true">install21.xml</modification>
+		<remove-file name="$sourcedir/Subs-CBI.php" />
+		<remove-file name="$languagedir/CBI.english.php" />
+	</uninstall>
+
+</package-info>

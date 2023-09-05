@@ -1,0 +1,392 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:wqw</id>
+	<version>1.0</version>
+
+	<file name="$sourcedir/RemoveTopic.php">
+		<operation>
+			<search position="before"><![CDATA[// Delete anything related to the topic.]]></search>
+			<add><![CDATA[
+
+	// Get all messages to delete quotes from according to the topic id
+	$request = $smcFunc['db_query']('', '
+		SELECT id_msg
+		FROM {db_prefix}messages
+		WHERE id_topic IN ({array_int:topics})',
+		array(
+			'topics' => $topics,
+		)
+	);
+	$messages = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$messages[] = $row['id_msg'];
+
+	$smcFunc['db_free_result']($request);
+
+	// Clean the quote catalog.
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}log_message_quotes
+		WHERE id_msg IN ({array_int:messages})',
+		array(
+			'messages' => $messages,
+		)
+	);
+	]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[// Remove the message!]]></search>
+			<add><![CDATA[
+	// Clean the quote catalog.
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}log_message_quotes
+		WHERE id_msg = {int:message}',
+		array(
+			'message' => $message,
+		)
+	);
+
+		]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Members.php">
+		<operation>
+			<search position="after"><![CDATA[	// Delete avatar.]]></search>
+			<add><![CDATA[	// Delete quotes
+	// They no longer exist, so we don't know who it was from.
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}log_message_quotes
+		WHERE id_member IN ({array_int:users})',
+		array(
+			'users' => $users,
+		)
+	);
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Profile.php">
+		<operation>
+			<search position="after"><![CDATA[	// Do some cleaning ready for the menu function.]]></search>
+			<add><![CDATA[	// Did they quote some posts?
+	$txt['showQuoted'] = 'Quoted';
+	if ($context['user']['is_owner'] && allowedTo('profile_view_own'))
+		$profile_areas['info']['areas']['showposts']['subsections']['quotes'] = array($txt['showQuoted'], 'profile_view_own');
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Profile-View.php">
+		<operation>
+			<search position="after"><![CDATA[else
+		$request = $smcFunc['db_query']('', '
+			SELECT COUNT(*)
+			FROM {db_prefix}messages]]></search>
+			<add><![CDATA[elseif (isset($_GET['sa']) && $_GET['sa'] == 'quotes')
+		$request = $smcFunc['db_query']('', '
+			SELECT COUNT(*)
+			FROM {db_prefix}messages AS m
+				INNER JOIN {db_prefix}log_message_quotes AS lmq ON (lmq.id_msg = m.id_msg)' . ($user_info['query_see_board'] == '1=1' ? '' : '
+				INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})') . '
+			WHERE lmq.id_member = {int:current_member}
+				AND lmq.id_msg = m.id_msg' . (!empty($board) ? '
+				AND m.id_board = {int:board}' : '') . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+				AND m.approved = {int:is_approved}'),
+			array(
+				'current_member' => $memID,
+				'is_approved' => 1,
+				'board' => $board,
+			)
+		);
+]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[else
+		{
+			$request = $smcFunc['db_query']('', '
+				SELECT]]></search>
+			<add><![CDATA[elseif (isset($_GET['sa']) && $_GET['sa'] == 'quotes')
+		{
+			$request = $smcFunc['db_query']('', '
+				SELECT
+					b.id_board, b.name AS bname, c.id_cat, c.name AS cname, m.id_topic, m.id_msg,
+					t.id_member_started, t.id_first_msg, t.id_last_msg, m.body, m.smileys_enabled,
+					m.subject, m.poster_time, m.approved, m.id_member, m.poster_name
+				FROM {db_prefix}messages AS m
+				INNER JOIN {db_prefix}log_message_quotes AS lmq ON (lmq.id_msg = m.id_msg)
+					INNER JOIN {db_prefix}topics AS t ON (t.id_topic = m.id_topic)
+					INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board)
+					LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
+				WHERE lmq.id_member = {int:current_member}' . (!empty($board) ? '
+					AND b.id_board = {int:board}' : '') . (empty($range_limit) ? '' : '
+					AND ' . $range_limit) . '
+					AND {query_see_board}' . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+					AND t.approved = {int:is_approved} AND m.approved = {int:is_approved}') . '
+				ORDER BY m.id_msg ' . ($reverse ? 'ASC' : 'DESC') . '
+				LIMIT ' . $start . ', ' . $maxIndex,
+				array(
+					'current_member' => $memID,
+					'is_approved' => 1,
+					'board' => $board,
+				)
+			);
+			$context[$context['profile_menu_name']]['tab_data']['tabs']['quotes'] = array(
+				'description' => $context['user']['is_owner']
+					? $txt['showOwnQuoted_help']
+					: $txt['showQuoted_help']
+			);
+		}
+		]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[// Reverse the query if we're past 50% of the pages for better performance.]]></search>
+			<add><![CDATA[if (isset($_GET['sa']) && $_GET['sa'] == 'quotes')
+		$context['page_index'] = constructPageIndex($scripturl . '?action=profile;u=' . $memID . ';area=showposts;sa=quotes' . (!empty($board) ? ';board=' . $board : ''), $context['start'], $msgCount, $maxIndex);
+
+	]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManageMaintenance.php">
+		<operation>
+			<search position="before"><![CDATA[
+				'purgeinactive' => 'MaintainPurgeInactiveMembers',]]></search>
+			<add><![CDATA[
+				'catalogquotes' => 'MaintainCatalogQuotes',]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[function MaintainMembers()
+{
+	global $context, $smcFunc, $txt]]></search>
+			<add><![CDATA[, $modSettings;
+
+	if (isset($_GET['done']) && $_GET['done'] == 'catalogquotes')
+		$context['maintenance_finished'] = $txt['maintain_' . $_GET['done']];
+	$request = $smcFunc['db_query']('', '
+		SELECT COUNT(*)
+		FROM {db_prefix}log_message_quotes');
+	list ($total_messages_cataloged) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+	$context['total_messages_cataloged'] = 0;
+	if (!empty($total_messages_cataloged))
+	{
+		$context['maintain_quoted_members_option_types'] = array(
+			'diff' => $txt['maintain_quoted_members_diff'],
+			'continue' => $txt['maintain_quoted_members_continue'],
+			'restart' => $txt['maintain_quoted_members_restart'],
+		);
+		$context['total_messages_cataloged'] = number_format($total_messages_cataloged);
+	}
+	$context['total_messages'] = number_format($modSettings['totalMessages'])]]></add>
+		</operation>
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+function MaintainCatalogQuotes()
+{
+	global $context, $modSettings, $smcFunc, $txt;
+
+	isAllowedTo('admin_forum');
+	checkSession();
+
+	$start = empty($_REQUEST['start']) ? 0 : (int) $_REQUEST['start'];
+	//$context['start_time'] = time();
+	$last_id = 0;
+	$total_messages = (int) $modSettings['totalMessages'];
+	$increment = max(1, (int) $_POST['stepping']);
+	$context['page_title'] = $txt['not_done_title'];
+	$context['continue_countdown'] = '3';
+	$context['continue_post_data'] = sprintf(
+		'<input type="hidden" name="%s" value="%s" />
+		<input type="hidden" name="start" value="%d" />
+		<input type="hidden" name="stepping" value="%d" />',
+		strtr($context['session_var'], '%', '%%'),
+		strtr($context['session_id'], '%', '%%'),
+		$start + $increment,
+		$increment
+	);
+	$context['continue_get_data'] = '?action=admin;area=maintain;sa=members;activity=catalogquotes';
+	$context['sub_template'] = 'not_done';
+
+	if (isset($_POST['type']))
+	{
+		switch (isset($_POST['type']))
+		{
+			case 'continue':
+				$start = empty($modSettings['lastMessageCataloged'])
+					? 0
+					: $modSettings['lastMessageCataloged'];
+				break;
+			case 'resart':
+				$smcFunc['db_query']('truncate_table', '
+					TRUNCATE {db_prefix}log_message_quotes');
+				break;
+		}
+	}
+	$context['continue_percent'] = round(100 * ($start / $total_messages), 1);
+
+	if (!empty($total_messages))
+	{
+		while ($start <= $total_messages)
+		{
+			$request = $smcFunc['db_query']('', '
+				SELECT id_msg, id_member, body
+				FROM {db_prefix}messages
+				WHERE id_msg > {int:id_msg_min}
+					AND id_msg <= {int:id_msg_max}
+					AND approved = 1',
+				array(
+					'id_msg_min' => $start,
+					'id_msg_max' => $start + $increment,
+				)
+			);
+			$messages = array();
+			while (list ($id, $member, $body) = $smcFunc['db_fetch_row']($request))
+				$messages[] = [$id, $member, $body];
+			$smcFunc['db_free_result']($request);
+
+			if (empty($messages))
+				redirectexit('action=admin;area=maintain;sa=members;activity=catalogquotes');
+
+			foreach ($messages as list ($id, $member, $body))
+			{
+				$members = array();
+				$inserts = array();
+				preg_match_all('/\[quote.*?link=msg=([0-9]+).*?\]/i', $body, $matches);
+				$id_msgs = $matches[1];
+				foreach ($id_msgs as $k => $id_msg)
+					$id_msgs[$k] = (int) $id_msg;
+
+				if (!empty($id_msgs))
+				{
+					$request = $smcFunc['db_query']('', '
+						SELECT id_member
+						FROM {db_prefix}messages AS m
+						WHERE id_msg IN ({array_int:msgs})',
+						array(
+							'msgs' => array_unique($id_msgs),
+						)
+					);
+					list ($mem) = $smcFunc['db_fetch_row']($request);
+					{
+						if ($mem == $member || isset($members[$mem]))
+							continue;
+						$members[$mem] = true;
+						$inserts[] = ['id_member' => $mem, 'id_msg' => $id];
+					}
+					$smcFunc['db_free_result']($request);
+				}
+				preg_match_all('/\[quote.*?author=([^\s]+).*?\]/i', $body, $matches);
+				if (!empty($matches[1]))
+				{
+					$request = $smcFunc['db_query']('', '
+						SELECT id_member
+						FROM {db_prefix}members AS m
+						WHERE member_name IN ({array_string:authors})
+							OR real_name IN ({array_string:authors})',
+						array(
+							'authors' => array_unique($matches[1]),
+						)
+					);
+					list ($mem) = $smcFunc['db_fetch_row']($request);
+					{
+						if ($mem == $member || isset($members[$mem]))
+							continue;
+						$members[$mem] = true;
+						$inserts[] = ['id_member' => $mem, 'id_msg' => $id];
+					}
+					$smcFunc['db_free_result']($request);
+				}
+				if (!empty($inserts))
+					$smcFunc['db_insert']('ignore',
+						'{db_prefix}log_message_quotes',
+						array('id_member' => 'int', 'id_msg' => 'int'),
+						$inserts,
+						array('id_member')
+					);
+				$last_id = $id;
+			}
+			updateSettings(array(
+				'lastMessageCataloged' => $last_id
+			));
+		}
+	}
+	else
+		redirectexit('action=admin;area=maintain;sa=members;done=catalogquotes');
+}
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/ManageMaintenance.template.php">
+		<operation>
+			<search position="after"><![CDATA[	</div>
+	<br class="clear" />
+
+	<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?fin20"></script>]]></search>
+			<add><![CDATA[		<div class="cat_bar">
+			<h3 class="catbg">
+				', $txt['maintain_quoted_members'], '
+			</h3>
+		</div>
+		<div class="windowbg">
+			<span class="topslice"><span></span></span>
+			<div class="content">
+				<form action="', $scripturl, '?action=admin;area=maintain;sa=members;activity=catalogquotes" method="post" accept-charset="', $context['character_set'], '">
+					<dl class="settings">
+						<dt>
+							<strong>', $txt['maintain_quoted_members_stepping'], ':</strong>
+							<div class="smalltext">', $txt['maintain_quoted_members_stepping_subtext'], '</div>
+						</dt>
+						<dd>
+							<input type="int" name="stepping" min="1" step="10" value="100" class="input_text" /> ', $txt['maintain_quoted_members_stepping_posttext'], '
+						</dd>
+					</dl>';
+
+	if (isset($context['maintain_quoted_members_option_types']))
+		foreach ($context['maintain_quoted_members_option_types'] as $type => $text)
+			echo '
+						<label><input ', $type == 'diff' ? ' checked="checked"' : '', ' type="radio" name="type" value="', $type, '" class="input_radio" /> ', $text, '</label><br />';
+
+	echo '
+					<span><input type="submit" value="', $txt['go'], '" class="button_submit" /></span>
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+				</form>
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/ManageMaintenance.english.php">
+		<operation>
+			<search position="before"><![CDATA[$txt['maintain_members_confirm'] = 'Are you sure you really want to delete these member accounts?\\n\\nThis cannot be undone!';]]></search>
+			<add><![CDATA[
+
+$txt['maintain_catalogquotes'] = 'Rebuild catalog for who quoted whom';
+$txt['maintain_quoted_members'] = 'Rebuild catalog for who quoted whom';
+$txt['maintain_quoted_members_stepping'] = 'Stepping';
+$txt['maintain_quoted_members_stepping_subtext'] = 'Number of messages to search through at a time. Use a smaller number if you have timeouts.';
+$txt['maintain_quoted_members_stepping_posttext'] = 'messages';
+$txt['maintain_quoted_members_restart'] = 'Clear the catalog and restart from scratch';
+$txt['maintain_quoted_members_continue'] = 'Continue where you left off';
+$txt['maintain_quoted_members_diff'] = 'Search all messages and only catalog what\'s missing';]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Profile.english.php">
+		<operation>
+			<search position="before"><![CDATA[$txt['showAttachments'] = 'Attachments';]]></search>
+			<add><![CDATA[
+
+$txt['showQuoted'] = 'Quoted';
+$txt['showQuoted_help'] = 'This section allows you to view all posts where this member was quoted. Note that you can only see posts made in areas you currently have access to.';
+$txt['showOwnQuoted_help'] = 'This section allows you to view all posts where someone has quoted you. Note that you can only see posts made in areas you currently have access to.';]]></add>
+		</operation>
+	</file>
+
+</modification>

@@ -1,0 +1,408 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:sceditor</id>
+	<version>1.1.0</version>
+	<file name="$themedir/scripts/topic.js">
+		<operation>
+			<search position="replace"><![CDATA[replaceText(sQuoteText, document.forms.postmodify.message);]]></search>
+			<add><![CDATA[if (typeof sceditor !== 'undefined')
+		sceditor.instance(document.forms.postmodify.message).insertText(sQuoteText);
+	else
+		replaceText(sQuoteText, document.forms.postmodify.message);]]></add>
+		</operation>
+		<operation>
+			<search position="after"><![CDATA[// Replace the subject part.]]></search>
+			<add><![CDATA[if (typeof sceditor !== 'undefined' && 'sceOptions' in window)
+	{
+		var options = window.sceOptions;
+		options.toolbarContainer = document.createElement("div");
+		options.smileyContainer = document.createElement("div");
+		options.toolbarContainer.id = "bbcBox_message";
+		document.forms.quickModForm.message.parentNode.insertBefore(options.toolbarContainer, document.forms.quickModForm.message);
+		document.forms.quickModForm.message.parentNode.insertBefore(options.smileyContainer, document.forms.quickModForm.message);
+		sceditor.create(document.forms.quickModForm.message, options);
+	}
+
+	]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/scripts/editor.js">
+		<operation>
+			<search position="before"><![CDATA[this.bRichTextEnabled = 'bWysiwyg' in this.opt && this.opt.bWysiwyg;]]></search>
+			<add><![CDATA[
+	this.bRichTextEnabled = 'bWysiwyg' in this.opt && this.opt.bWysiwyg && typeof sceditor === 'undefined';]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[// Erase it all?
+	if (bClear)]]></search>
+			<add><![CDATA[// livemods Editor
+	if (typeof sceditor !== "undefined")
+	{
+		sceditor.instance(this.editor).val(sText.replace(/<br \/>/gi, ''), bClear);
+	}
+	// Erase it all?
+	else if (bClear)]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/scripts/spellcheck.js">
+		<operation>
+			<search position="replace"><![CDATA[var sText = document.forms[formName][fieldName].value;]]></search>
+			<add><![CDATA[var sText = document.forms[formName][fieldName].value;
+
+	if (typeof sceditor != 'undefined')
+		sText = spellCheckGetText(document.forms[formName][fieldName]);]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[window.opener.document.forms[spell_formname][spell_fieldname].value = mispstr;]]></search>
+			<add><![CDATA[if (typeof window.opener.sceditor != 'undefined')
+			window.opener.spellCheckSetText(mispstr, window.opener.document.forms[spell_formname][spell_fieldname]);
+		else
+		{
+			window.opener.document.forms[spell_formname][spell_fieldname].value = mispstr;
+		}]]></add>
+		</operation>
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+function spellCheckGetText(el)
+{
+	var message = "";
+
+	if (typeof sceditor == 'undefined')
+		return el.value;
+
+	return sceditor.instance(el).val();
+}
+
+function spellCheckSetText(text, el)
+{
+	sceditor.instance(el).val(text);
+}
+			]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Editor.php">
+		<operation>
+			<search position="replace"><![CDATA[		loadTemplate('GenericControls', $context['browser']['is_ie'] ? 'editor_ie' : 'editor');]]></search>
+			<add><![CDATA[		loadTemplate('GenericControls', 'sceditor');]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[		<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/editor.js?fin20"></script>]]></search>
+			<add><![CDATA[		<script type="text/javascript" src="' . $settings['default_theme_url'] . '/scripts/sceditor.js"></script>
+		<script type="text/javascript">
+			var bbc_quote_from = \'' . addcslashes($txt['quote_from'], "'") . '\';
+			var bbc_quote = \'' . addcslashes($txt['quote'], "'") . '\';
+			var bbc_search_on = \'' . addcslashes($txt['search_on'], "'") . '\';
+		</script>]]></add>
+		</operation>
+		<operation>
+			<search position="before">function spellCheckDone</search>
+			<add>Old</add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[$context['bbc_tags'][$row][count($tagRow) - 1]['isLast'] = true;]]></search>
+			<add><![CDATA[
+
+		$context['bbc_tags'][0] = array_merge(
+			$context['bbc_tags'][0],
+			array(
+				array(),
+				array(
+					'code' => 'font',
+					'description' => $txt['font_face']
+				),
+				array(
+					'code' => 'size',
+					'description' => $txt['font_size']
+				),
+				array(
+					'code' => 'color',
+					'description' => $txt['change_color']
+				),
+			)
+		);
+
+		$editor_tag_map = array(
+			'b' => 'bold',
+			'i' => 'italic',
+			'u' => 'underline',
+			's' => 'strike',
+			'img' => 'image',
+			'url' => 'link',
+			'sup' => 'superscript',
+			'sub' => 'subscript',
+			'hr' => 'horizontalrule',
+			'list' => 'bulletlist',
+			'orderlist' => 'orderedlist',
+			'unformat' => 'removeformat',
+			'toggle' => 'source',
+		);
+
+		// Generate a list of buttons that shouldn't be shown - this should be the fastest way to do this.
+		$disabled_tags = empty($modSettings['disabledBBC']) ? [] : array_flip(explode(',', $modSettings['disabledBBC']));
+
+		if (empty($modSettings['enableEmbeddedFlash']))
+			$disabled_tags['flash'] = true;
+		if (isset($disabled_tags['list']))
+			$disabled_tags['orderlist'] = true;
+
+		$styles = '';
+		$group = 0;
+		$commands = array();
+		$toolbar = array();
+		foreach ($context['bbc_tags'] as $row => $tagRow)
+		{
+			if (!isset($toolbar[$row]))
+				$toolbar[$row] = array();
+
+			foreach ($tagRow as $tag)
+			{
+				if (!empty($tag['code']) && !isset($disabled_tags[$tag['code']]))
+				{
+					$thisTag = $editor_tag_map[$tag['code']] ?? $tag['code'];
+					$toolbar[$row][$group][] = $thisTag;
+					if (isset($tag['before']))
+						$commands[] = [$thisTag, $tag['description'], $tag['before'], $tag['after'] ?? $tag['before']];
+					if (isset($tag['image']))
+						$styles .= '
+		.sceditor-button-' . $thisTag . ' div {
+			background: url(data:image/gif;base64,' . base64_encode(file_get_contents($settings['theme_dir'] . '/images/bbc/' . $tag['image'] . '.gif')) . ');
+		}';
+				}
+				else
+					$group++;
+			}
+		}
+		$im = imagecreatefromgif($settings['theme_dir'] . '/images/bbc/bbc_bg.gif');
+		imagecolortransparent($im, imagecolorallocate($im, 0, 0, 0));
+		$im2 = imagecrop($im, ['x' => 11, 'y' => 0, 'width' => 1, 'height' => 22]);
+		ob_start();
+		imagegif($im2);
+		$styles .= '
+		.sceditor-button-font div, .sceditor-button-size div, .sceditor-button-color div {
+			background: url(data:image/gif;base64,' . base64_encode(ob_get_clean()) . ');
+		}';
+		imagedestroy($im2);
+		imagedestroy($im);
+
+		$im = imagecreatefromgif($settings['theme_dir'] . '/images/bbc/bbc_hoverbg.gif');
+		imagecolortransparent($im, imagecolorallocate($im, 0, 0, 0));
+		$im2 = imagecrop($im, ['x' => 11, 'y' => 0, 'width' => 1, 'height' => 22]);
+		ob_start();
+		imagegif($im2);
+		$styles .= '
+		.sceditor-button-font:hover div, .sceditor-button-size:hover div, .sceditor-button-color:hover div {
+			background: url(data:image/gif;base64,' . base64_encode(ob_get_clean()) . ');
+		}';
+		imagedestroy($im2);
+		imagedestroy($im);
+
+		if (!empty($styles))
+			$context['html_headers'] .= '
+	<style>' . $styles . '
+	</style>';]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[	// Generate a list of buttons that shouldn't be shown - this should be the fastest way to do this.
+	$disabled_tags = array();
+	if (!empty($modSettings['disabledBBC']))
+		$disabled_tags = explode(',', $modSettings['disabledBBC']);
+	if (empty($modSettings['enableEmbeddedFlash']))
+		$disabled_tags[] = 'flash';
+
+	foreach ($disabled_tags as $tag)
+	{
+		if ($tag == 'list')
+			$context['disabled_tags']['orderlist'] = true;
+
+		$context['disabled_tags'][trim($tag)] = true;
+	}
+
+	// Switch the URLs back... now we're back to whatever the main sub template is.  (like folder in PersonalMessage.)
+	if (isset($settings['use_default_images']) && $settings['use_default_images'] == 'defaults' && isset($settings['default_template']))
+	{
+		$settings['theme_url'] = $temp1;
+		$settings['images_url'] = $temp2;
+		$settings['theme_dir'] = $temp3;
+	}]]></search>
+			<add><![CDATA[	// Set up the SCEditor options
+	$sce_options = array(
+		'width' => $editorOptions['width'] ?? '70%',
+		'height' => $editorOptions['height'] ?? '150px',
+		'style' => $settings[file_exists($settings['theme_dir'] . '/css/sceditorframe.css') ? 'theme_url' : 'default_theme_url'] . '/css/sceditorframe.css',
+		'autoUpdate' => true,
+		'emoticonsCompat' => true,
+		'emoticons' => [],
+		'emoticonsEnabled' => (!empty($context['smileys']['postform']) || !empty($context['smileys']['popup'])) && empty($editorOptions['disable_smiley_box']),
+		'colors' => [
+			['black', $txt['black']],
+			['red', $txt['red']],
+			['yellow', $txt['yellow']],
+			['pink', $txt['pink']],
+			['green', $txt['green']],
+			['orange', $txt['orange']],
+			['purple', $txt['purple']],
+			['blue', $txt['blue']],
+			['beige', $txt['beige']],
+			['brown', $txt['brown']],
+			['teal', $txt['teal']],
+			['navy', $txt['navy']],
+			['maroon', $txt['maroon']],
+			['limegreen', $txt['lime_green']],
+			['white', $txt['white']],
+		],
+		'fonts' => 'Arial,Arial Black,Comic Sans MS,Courier New,Georgia,Impact,Sans-serif,Serif,Times New Roman,Trebuchet MS,Verdana',
+		'icons' => 'smf',
+		'format' => 'bbcode',
+		'plugins' => 'emoticons',
+		'toolbar' => implode_recursive(['||', '|', ','], $toolbar),
+		'customTextualCommands' => $commands,
+		'startInSourceMode' => !$context['controls']['richedit'][$editorOptions['id']]['rich_active'],
+		'bbcodeTrim' => false,
+		'resizeWidth' => false,
+		'locale' => $txt['lang_dictionary'] ?? 'en',
+		'autofocus' => $editorOptions['id'] != 'quickReply',
+		'rtl' => !empty($context['right_to_left']),
+	);
+
+	if ($sce_options['emoticonsEnabled'])
+	{
+		$translations = array(
+			'postform' => 'dropdown',
+			'popup' => 'more',
+		);
+		$prevRowIndex = 0;
+		foreach ($context['smileys'] as $location => $smileyRows)
+			foreach ($smileyRows as $rowIndex => $smileyRow)
+			{
+				foreach ($smileyRow['smileys'] as $smiley)
+					$sce_options['emoticons'][$translations[$location]][$smiley['code']] = [
+						'newRow' => $rowIndex != $prevRowIndex,
+						'url' => 'data:image/gif;base64,' . base64_encode(file_get_contents($modSettings['smileys_dir'] . '/' . $user_info['smiley_set'] . '/' . $smiley['filename'])),
+						'tooltip' => $smiley['description'],
+					];
+				$prevRowIndex = $rowIndex;
+			}
+	}
+
+	// Switch the URLs back... now we're back to whatever the main sub template is.  (like folder in PersonalMessage.)
+	if (isset($settings['use_default_images']) && $settings['use_default_images'] == 'defaults' && isset($settings['default_template']))
+	{
+		$settings['theme_url'] = $temp1;
+		$settings['images_url'] = $temp2;
+		$settings['theme_dir'] = $temp3;
+	}
+
+	// Allow mods to change $sce_options. Usful if, e.g., a mod wants to add an SCEditor plugin.
+	call_integration_hook('integrate_sceditor_options', array(&$sce_options));
+
+	$context['controls']['richedit'][$editorOptions['id']]['sce_options'] = $sce_options;
+}
+
+/**
+ * Recursively implodes an array
+ *
+ * @param   string[] $glue          list of values that glue elements together
+ * @param   string[] $pieces        multi-dimensional array to recursively implode
+ * @return  string   imploded array
+ */
+function implode_recursive(array $glue, array $pieces, int $counter = 0): string
+{
+	return implode(
+		$glue[$counter++],
+		array_map(function ($v) use ($glue, $counter) {
+			return is_array($v) ? implode_recursive($glue, $v, $counter) : $v;
+		}, $pieces)
+	);]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/GenericControls.template.php">
+		<operation>
+			<search position="before"><![CDATA[	$editor_context = &$context['controls']['richedit'][$editor_id];]]></search>
+			<add><![CDATA[
+
+	if ($smileyContainer === null)
+		$editor_context['sce_options']['emoticonsEnabled'] = false;
+
+	if ($bbcContainer === null)
+		$editor_context['sce_options']['toolbar'] = '';
+
+	echo '
+		<textarea class="editor" name="', $editor_id, '" id="', $editor_id, '" cols="600" tabindex="', $context['tabindex']++, '" style="width: ', $editor_context['width'], '; height: ', $editor_context['height'], ';', isset($context['post_error']['no_message']) || isset($context['post_error']['long_message']) ? 'border: 1px solid red;' : '', '"', !empty($context['editor']['required']) ? ' required' : '', '>', $editor_context['value'], '</textarea>
+		<script>
+			document.addEventListener("DOMContentLoaded", function ()
+			{
+				var textarea = document.getElementById("', $editor_id, '"), options = ', json_encode($editor_context['sce_options']), ';
+				window.sceOptions = options;
+				options.toolbarContainer = ', $bbcContainer === true ? 'document.createElement("div");' : 'document.getElementById(' . JavaScriptEscape($bbcContainer) . ');', '
+				options.smileyContainer = ', $smileyContainer === true ? 'document.createElement("div");' : 'document.getElementById(' . JavaScriptEscape($smileyContainer) . ');';
+
+	if ($bbcContainer === true)
+		echo '
+				options.toolbarContainer.id = "bbcBox_message";
+				textarea.parentNode.insertBefore(options.toolbarContainer, textarea);';
+
+	if ($smileyContainer === true)
+		echo '
+				textarea.parentNode.insertBefore(options.smileyContainer, textarea);';
+
+	echo '
+				sceditor.create(textarea, options);';
+
+	if (isset($context['post_error']['no_message']) || isset($context['post_error']['long_message']))
+		echo '
+				var frame = sceditor.instance(textarea).getContentAreaContainer();
+				frame.style.border = "1px solid red";
+				frame.nextSibling.style.border = "1px solid red"';
+
+	echo '
+			});
+		</script>';
+
+	return;]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="before"><![CDATA[		$context['email'] = isset($_SESSION['guest_email']) ? $_SESSION['guest_email'] : '';]]></search>
+			<add><![CDATA[
+
+		if (!empty($options['display_quick_reply']) && $context['can_reply'])
+		{
+			require_once $sourcedir . '/Subs-Editor.php';
+			$editorOptions = array(
+				'id' => 'message',
+				'value' => '',
+				'required' => true,
+				'height' => '150px',
+				'width' => '100%',
+			);
+			create_control_richedit($editorOptions);
+			$context['post_box_name'] = $editorOptions['id'];
+		}]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="replace"><![CDATA[				<div id="quickReplyOptions"', $options['display_quick_reply'] == 2 ? '' : ' style="display: none"', '>
+					<span class="upperframe"><span></span></span>
+					<div class="roundframe">
+						<p class="smalltext lefttext">', $txt['quick_reply_desc'], '</p>]]></search>
+			<add><![CDATA[				<div id="quickReplyOptions"', $options['display_quick_reply'] == 2 ? '' : ' style="display: none"', '>
+					<span class="upperframe"><span></span></span>
+					<div class="roundframe">]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[<textarea cols="600" rows="7" name="message" tabindex="', $context['tabindex']++, '"></textarea>]]></search>
+			<add><![CDATA[', template_control_richedit($context['post_box_name'], true, true), ']]></add>
+		</operation>
+	</file>
+
+</modification>
