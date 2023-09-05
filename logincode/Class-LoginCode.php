@@ -1363,7 +1363,7 @@ class Os
 			}
 		}
 		elseif (preg_match(
-			'/(Windows (?:98; Win 9x 4\.90|98|95|CE))/i',
+			'/(Windows (?:98; Win 9x 4\.90|9[85]|CE))/i',
 			$userAgent,
 			$matches
 		))
