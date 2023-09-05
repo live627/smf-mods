@@ -10,6 +10,7 @@ db_extend('packages');
 $column = array(
 	'name' => 'stack_trace',
 	'type' => 'text',
+	'null' => true
 );
 
 $smcFunc['db_add_column']('{db_prefix}log_errors', $column);
