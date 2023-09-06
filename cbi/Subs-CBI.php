@@ -111,7 +111,7 @@ function cbi_getboardtree($boardIndexOptions, &$categories)
 		if ($boardIndexOptions['include_categories'])
 			$categories[$board_ids[$id_board]]['boards'][$id_board] = array_merge($categories[$board_ids[$id_board]]['boards'][$id_board], $this_old_board);
 		else
-			$categories[$id_board] += $this_old_board;
+			$categories[$id_board] = array_merge($categories[$id_board], $this_old_board);
 	}
 	$smcFunc['db_free_result']($request);
 }
