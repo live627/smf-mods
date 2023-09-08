@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<name>Guest Registration Notification</name>
+	<id>Project_Evolution:GuestRegistrationNotification</id>
+	<version>1.5.1</version>
+
+	<file name="$sourcedir/ManageSettings.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+function ModifyGuestNotificationSettings($return_config = false) {
+
+	global $txt, $scripturl, $context, $settings, $sc;
+
+	$config_vars = array(
+		array('check', 'enable_guest_notify'),
+		array('text', 'guest_notify_title', 20),
+		array('text', 'guest_notify_img_path', 40),
+		array('large_text', 'guest_notify_contents'),
+		array('large_text', 'guest_notify_css'),
+		array('large_text', 'guest_notify_css_title'),
+		'',
+		array('check', 'guest_notify_enable_boards'),
+		array('check', 'guest_notify_enable_posts'),
+	);
+
+	if ($return_config)
+		return $config_vars;
+
+	if (isset($_GET['save'])) {
+		checkSession();
+
+		saveDBSettings($config_vars);
+		writeLog();
+
+		redirectexit('action=admin;area=modsettings;sa=guestnotify');
+	}
+
+	$context['post_url'] = $scripturl . '?action=admin;area=modsettings;save;sa=guestnotify';
+	$context['settings_title'] = '<span style="color: gray; font-weight: normal; font-size: 7pt; float: right;">Guest Notification Mod by Project Evolution</span>' . $txt['guest_notify'];
+
+	prepareDBSettingContext($config_vars);
+}
+
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$sourcedir/Subs.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+			
+function integrateModifyModificationsGRN($subActions) {
+	$subActions['guestnotify'] = 'ModifyGuestNotificationSettings';
+}
+			
+function integrateAdminAreasGRN($admin_areas) {
+	
+	global $txt;
+	
+	$admin_areas['config']['areas']['modsettings']['subsections']['guestnotify'] = array($txt['guest_notify_tab']);
+}
+
+function grnModifyLayer() {
+    
+    global $context, $modSettings;
+    
+    // Make sure we arent intercepting AJAX calls
+    if (isset($_REQUEST['xml']))
+        return;
+    
+	// If ... dont bother
+	if (!$context['user']['is_guest'] || empty($modSettings['enable_guest_notify']) || empty($modSettings['guest_notify_contents']) || empty($modSettings['guest_notify_title']))
+		return;
+			
+	if (empty($context['current_action']) && !empty($_REQUEST['board']) && empty($modSettings['guest_notify_enable_boards']))
+		return;
+		
+	if (empty($context['current_action']) && !empty($_REQUEST['topic']) && empty($modSettings['guest_notify_enable_posts']))
+		return;
+    
+    $context['template_layers'][] = 'grn';   
+}
+]]></add>
+		</operation>
+	</file>
+
+</modification>

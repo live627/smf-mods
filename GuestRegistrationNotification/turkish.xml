@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:GuestRegistrationNotification</id>
+	<version>1.1</version>
+	
+	<file name="$languagedir/Modifications.turkish.php" error="skip">
+		<operation>
+			<search position="end"><![CDATA[?>]]></search>
+
+            		<add><![CDATA[// Guest Registration Notify Modification
+$txt['guest_notify'] = 'Ziyaretci Not Bildirimleri';
+$txt['guest_notify_tab'] = 'Ziyaretci Not Bildirimleri';
+$txt['enable_guest_notify'] = 'Ziyaretci Not Bildirimlerini Aktif Et';
+$txt['guest_notify_img_path'] = 'Resimli Not için Resim Yolu';
+$txt['guest_notify_title'] = 'Ziyaretcilerin Not Başlığı';
+$txt['guest_notify_contents'] = 'Ziyaretci Not Bildirimi İçeriği';
+$txt['guest_notify_enable_boards'] = 'Forum İndex inde Aktif et';
+$txt['guest_notify_enable_posts'] = 'Konularda Aktif et';
+
+]]></add>
+        	</operation>
+   	</file>
+
+</modification>

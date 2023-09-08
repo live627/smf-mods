@@ -1,0 +1,296 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project Evolution:ShowUserPostsByCertainBoards</id>
+	<version>1.1.1</version>
+	
+	<file name="$languagedir/Profile.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[$txt['filter_boards'] = 'Filter to certain boards:';
+$txt['current_filtered_boards'] = 'Currently viewing by boards:';
+$txt['filter_boards_submit'] = 'Filter';
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$languagedir/Errors.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[$txt['filter_boards_notint'] = 'Please fill in only integer values seperated by commas!';
+]]></add>
+		</operation>
+	</file>
+    
+	<file name="$sourcedir/Subs-Editor.php">
+		<operation>
+			<search position="before"><![CDATA[		'member' => 'Member',]]></search>
+			<add><![CDATA[        'board' => 'Board',]]></add>
+		</operation>
+        
+		<operation>
+			<search position="end" />
+			<add><![CDATA[function AutoSuggest_Search_Board() {
+    
+	global $smcFunc, $context;
+
+	$_REQUEST['search'] = '*' . trim($smcFunc['strtolower']($_REQUEST['search'])) . '*';
+    $_REQUEST['search'] = strtr($_REQUEST['search'], array('%' => '\%', '_' => '\_', '*' => '%', '?' => '_', '&#038;' => '&amp;'));
+
+	// Find the board(s).
+	$request = $smcFunc['db_query']('', '
+		SELECT id_board, name 
+		FROM {db_prefix}boards AS b
+		WHERE {query_see_board} AND name LIKE {string:search}
+		LIMIT ' . ($smcFunc['strlen']($_REQUEST['search']) <= 2 ? '100' : '800'),
+		array(
+			'search' => $_REQUEST['search'],
+		)
+	);
+	$xml_data = array(
+		'items' => array(
+			'identifier' => 'item',
+			'children' => array(),
+		),
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($request))	{
+		$xml_data['items']['children'][] = array(
+			'attributes' => array(
+				'id' => $row['id_board'],
+			),
+			'value' => $row['name'],
+		);
+	}
+    
+	$smcFunc['db_free_result']($request);
+	return $xml_data;
+}
+]]></add>
+		</operation>
+	</file>    
+
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="replace"><![CDATA[		<div class="pagesection">
+			<span>', $txt['pages'], ': ', $context['page_index'], '</span>
+		</div>';]]></search>
+			<add><![CDATA[		<div class="pagesection">
+			<span>' . $txt['filter_boards'] . ' </span>
+			<form action="' . $scripturl . '" method="get">
+				<input type="hidden" name="action" value="profile" />
+				<input type="hidden" name="u" value="' . $context['id_member'] . '" />
+				<input type="hidden" name="area" value="showposts" />
+				<input type="hidden" name="sa" value="' . (!isset($context['attachments']) && empty($context['is_topics']) ? 'messages' : (!empty($context['is_topics']) ? 'topics' : 'attach')) . '" />
+				<input type="hidden" name="start" value="' . $context['start'] . '" />
+				<input type="text" name="boards" id="boardspec_suggest" />
+				<input type="submit" value="' . $txt['filter_boards_submit'] . '" class="button_submit" />
+			</form><br /><div id="boardspec_item_list_container"></div>';
+			if (!empty($context['boards']))
+				echo '<span>' . $txt['current_filtered_boards'] . ' <strong>' . implode(', ', $context['boards']) . '</strong></span><br />';
+				
+	echo '		<span>', $txt['pages'], ': ', $context['page_index'], '</span>
+		</div>';]]></add>
+		</operation>
+        
+		<operation>
+			<search position="replace"><![CDATA[		<div class="pagesection" style="margin-bottom: 0;">
+			<span>', $txt['pages'], ': ', $context['page_index'], '</span>
+		</div>';]]></search>
+			<add><![CDATA[		<div class="pagesection" style="margin-bottom: 0;">
+			<span>', $txt['pages'], ': ', $context['page_index'], '</span>
+		</div>
+        
+        <script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?fin20"></script>
+        <script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/boardsuggest.js?fin20"></script>
+        <script type="text/javascript">
+            <!-- // -->]]><![CDATA[<]]><![CDATA[![CDATA[
+        		var oBoardSend = new smf_BoardSend({
+        			sSelf : \'oBoardSend\',
+        			sSessionId : \'', $context['session_id'], '\',
+           			sSessionVar : \'', $context['session_var'], '\',
+        			sTextDeleteItem : \'', $txt['autosuggest_delete_item'], '\',
+        			sControlId : \'boardspec_suggest\',
+        		});
+            // ]]]]>><![CDATA[
+        </script>';]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Profile-View.php">
+		<operation>
+			<search position="after"><![CDATA[	// Is the load average too high to allow searching just now?]]></search>
+			<add><![CDATA[	// Are we filtering boards?
+	$board_list = empty($_REQUEST['boards']) ? (empty($board) ? 0 : $board) : (empty($board) ? $_REQUEST['boards'] : $board . ',' . $_REQUEST['boards']);
+	$context['boards'] = empty($board_list) ? 0 : array_unique(explode(',', str_replace(' ', '', $board_list)), SORT_NUMERIC);
+	if (!empty($context['boards'])) {
+		foreach ($context['boards'] as &$board) {
+			// We need to be sure they are only integers, they cant even be floats!
+			if (!is_numeric($board))
+				fatal_lang_error('filter_boards_notint', false);
+			$board = intval($board);
+		}	
+	}
+	
+]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[				INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board AND {query_see_board})') . '
+			WHERE t.id_member_started = {int:current_member}' . (!empty($board) ? '
+				AND t.id_board = {int:board}' : '')]]></search>
+			<add><![CDATA[				INNER JOIN {db_prefix}boards AS b ON (b.id_board = t.id_board AND {query_see_board})') . '
+			WHERE t.id_member_started = {int:current_member}' . (!empty($context['boards']) ? '
+				AND t.id_board IN ({array_int:boards})' : '')]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[				'board' => $board,
+			)
+		);
+	else]]></search>
+			<add><![CDATA[				'boards' => $context['boards'],
+			)
+		);
+	else]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[				INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})') . '
+			WHERE m.id_member = {int:current_member}' . (!empty($board) ? '
+				AND m.id_board = {int:board}' : '')]]></search>
+			<add><![CDATA[				INNER JOIN {db_prefix}boards AS b ON (b.id_board = m.id_board AND {query_see_board})') . '
+			WHERE m.id_member = {int:current_member}' . (!empty($context['boards']) ? '
+				AND m.id_board IN ({array_int:boards})' : '')]]></add>
+		</operation>
+	
+		<operation>
+			<search position="replace"><![CDATA[				'board' => $board,
+			)
+		);
+	list ($msgCount) = $smcFunc['db_fetch_row']($request);]]></search>
+			<add><![CDATA[				'boards' => $context['boards'],
+			)
+		);
+	list ($msgCount) = $smcFunc['db_fetch_row']($request);]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[		FROM {db_prefix}messages AS m
+		WHERE m.id_member = {int:current_member}' . (!empty($board) ? '
+			AND m.id_board = {int:board}' : '')]]></search>
+			<add><![CDATA[		FROM {db_prefix}messages AS m
+		WHERE m.id_member = {int:current_member}' . (!empty($context['boards']) ? '
+			AND m.id_board IN ({array_int:boards})' : '')]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[			'board' => $board,
+		)
+	);
+	list ($min_msg_member, $max_msg_member) = $smcFunc['db_fetch_row']($request);]]></search>
+			<add><![CDATA[			'boards' => $context['boards'],
+		)
+	);
+	list ($min_msg_member, $max_msg_member) = $smcFunc['db_fetch_row']($request);]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[(!empty($board) ? ';board=' . $board : '')]]></search>
+			<add><![CDATA[(!empty($context['boards']) ? ';boards=' . implode(',', $context['boards']) : '')]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[';area=showposts;sa=attach;sort=']]></search>
+			<add><![CDATA[';area=showposts;sa=attach;' . (!empty($context['boards']) ? ';boards=' . implode(',', $context['boards']) : '') . ';sort=']]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[					INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
+				WHERE t.id_member_started = {int:current_member}' . (!empty($board) ? '
+					AND t.id_board = {int:board}' : '')]]></search>
+			<add><![CDATA[					INNER JOIN {db_prefix}messages AS m ON (m.id_msg = t.id_first_msg)
+				WHERE t.id_member_started = {int:current_member}' . (!empty($context['boards']) ? '
+					AND t.id_board IN ({array_int:boards})' : '')]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[					'board' => $board,
+				)
+			);
+		}
+		else]]></search>
+			<add><![CDATA[					'boards' => $context['boards'],
+				)
+			);
+		}
+		else]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[					LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
+				WHERE m.id_member = {int:current_member}' . (!empty($board) ? '
+					AND b.id_board = {int:board}' : '')]]></search>
+			<add><![CDATA[					LEFT JOIN {db_prefix}categories AS c ON (c.id_cat = b.id_cat)
+				WHERE m.id_member = {int:current_member}' . (!empty($context['boards']) ? '
+					AND b.id_board IN ({array_int:boards})' : '')]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[					'board' => $board,
+				)
+			);
+		}
+
+		// Make sure we quit this loop.]]></search>
+			<add><![CDATA[					'boards' => $context['boards'],
+				)
+			);
+		}
+
+		// Make sure we quit this loop.]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[			AND m.id_member = {int:current_member}' . (!empty($board) ? '
+			AND b.id_board = {int:board}' : '') . (!in_array(0, $boardsAllowed) ? '
+			AND b.id_board IN ({array_int:boards_list})' : '') . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+			AND m.approved = {int:is_approved}'),]]></search>
+			<add><![CDATA[			AND m.id_member = {int:current_member}' . (!empty($context['boards']) ? '
+			AND b.id_board IN ({array_int:boards})' : '') . (!in_array(0, $boardsAllowed) ? '
+			AND b.id_board IN ({array_int:boards_list})' : '') . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+			AND m.approved = {int:is_approved}'),]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[			'board' => $board,
+		)
+	);
+	list ($attachCount) = $smcFunc['db_fetch_row']($request);]]></search>
+			<add><![CDATA[			'boards' => $context['boards'],
+		)
+	);
+	list ($attachCount) = $smcFunc['db_fetch_row']($request);]]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[			AND m.id_member = {int:current_member}' . (!empty($board) ? '
+			AND b.id_board = {int:board}' : '') . (!in_array(0, $boardsAllowed) ? '
+			AND b.id_board IN ({array_int:boards_list})' : '') . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+			AND m.approved = {int:is_approved}') . ']]></search>
+			<add><![CDATA[			AND m.id_member = {int:current_member}' . (!empty($context['boards']) ? '
+			AND b.id_board IN ({array_int:boards})' : '') . (!in_array(0, $boardsAllowed) ? '
+			AND b.id_board IN ({array_int:boards_list})' : '') . (!$modSettings['postmod_active'] || $context['user']['is_owner'] ? '' : '
+			AND m.approved = {int:is_approved}') . ']]></add>
+		</operation>
+		
+		<operation>
+			<search position="replace"><![CDATA[			'is_approved' => 1,
+			'board' => $board,
+			'sort' => $sort . ' ' . ($context['sort_direction'] == 'down' ? 'DESC' : 'ASC'),]]></search>
+			<add><![CDATA[			'is_approved' => 1,
+			'boards' => $context['boards'],
+			'sort' => $sort . ' ' . ($context['sort_direction'] == 'down' ? 'DESC' : 'ASC'),]]></add>
+		</operation>
+	</file>
+
+</modification>

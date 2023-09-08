@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project Evolution: Activity in Profile</id>
+	<version>1.1</version>
+
+	<file name="Themes/default/languages/Profile.english.php">
+		<operation>
+			<search position="replace"><![CDATA[
+$txt[80] = 'You are not allowed to change this person\'s profile.';]]></search>
+			<add><![CDATA[
+$txt['current_activity'] = 'Current Activity';
+$txt[80] = 'You are not allowed to change this person\'s profile.';]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="replace"><![CDATA[
+					<td><a href="', $context['member']['website']['url'], '" target="_blank">', $context['member']['website']['title'], '</a></td>
+				</tr><tr>
+					<td><b>', $txt[113], ' </b></td>]]></search>
+			<add><![CDATA[
+					<td><a href="', $context['member']['website']['url'], '" target="_blank">', $context['member']['website']['title'], '</a></td>
+				</tr><tr>';
+					if (isset($context['member']['action']) && allowedTo('who_view')) {
+						echo '<td><b>', $txt['current_activity'], ': </b></td>
+						<td>', $context['member']['action'], '</td>
+						</tr><tr>';
+					}
+					echo '<td><b>', $txt[113], ' </b></td>]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/UltimateProfile.template.php" error="skip">
+		<operation>
+			<search position="replace"><![CDATA[
+						<tr>
+							<td><b>', $txt[87], ': </b></td>
+							<td>', (!empty($context['member']['group']) ? $context['member']['group'] : $context['member']['post_group']), '</td>
+						</tr>
+						</table>]]></search>
+			<add><![CDATA[
+				<tr>
+							<td><b>', $txt[87], ': </b></td>
+							<td>', (!empty($context['member']['group']) ? $context['member']['group'] : $context['member']['post_group']), '</td>
+						</tr>';
+						if (isset($context['member']['action']) && allowedTo('who_view')) {
+							echo '<td><b>', $txt['current_activity'], ': </b></td>
+							<td>', $context['member']['action'], '</td>
+							</tr><tr>';
+						}
+						echo '</table>]]></add>
+		</operation>
+	</file>
+
+</modification>

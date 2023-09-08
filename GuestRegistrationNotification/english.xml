@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:GuestRegistrationNotification</id>
+	<version>1.2</version>
+	
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end"><![CDATA[?>]]></search>
+
+            		<add><![CDATA[// Guest Registration Notify Modification
+$txt['guest_notify'] = 'Guest Registration Notification';
+$txt['guest_notify_tab'] = 'Guest Reg Notification';
+$txt['enable_guest_notify'] = 'Enable Guest Reg Notification';
+$txt['guest_notify_img_path'] = 'Path to Notification Image';
+$txt['guest_notify_title'] = 'Guest Notification Title';
+$txt['guest_notify_contents'] = 'Guest Notification Contents';
+$txt['guest_notify_css'] = 'Edit box and border CSS';
+$txt['guest_notify_css_title'] = 'Edit content title CSS';
+$txt['guest_notify_enable_boards'] = 'Enable Guest Notification in Display Index';
+$txt['guest_notify_enable_posts'] = 'Enable Guest Notification in Posts';
+
+]]></add>
+        	</operation>
+   	</file>
+   	
+	<file name="$languagedir/Help.english.php">
+		<operation>
+			<search position="end"><![CDATA[?>]]></search>
+
+            		<add><![CDATA[// Guest Registration Notify Modification
+$helptxt['guest_notify_contents'] = '<b>Here is a list of popular BB codes</b>;
+<br />
+<br />
+<i>url</i> - Creates a URL which opens in a external same window/tab.
+<br />
+<i>i</i> - Italicise text.
+<br />
+<i>b</i> - Boldens text.
+<br />
+<i>u</i> - Underlines text.
+<br />
+<i>img</i> - Creates an image from the specified URL.
+<br />
+<i>code</i> - Wraps text in a code tag.
+<br />
+<i>quote</i> - Wraps text in a quote tag.
+<br />
+<i>center</i> - Centers text.
+<br />
+<i>hr</i> - Creates a horizontal rule.
+<br />
+<br />
+You can find more <a href="http://docs.simplemachines.org/index.php?topic=57.0" target"_blank">here</a>.';
+
+]]></add>
+        	</operation>
+   	</file>
+
+</modification>

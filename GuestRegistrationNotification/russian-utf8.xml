@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:GuestRegistrationNotification</id>
+	<version>1.2</version>
+
+	<file name="$languagedir/Modifications.russian-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Guest Registration Notify Modification
+$txt['guest_notify'] = 'Уведомление для гостей';
+$txt['guest_notify_tab'] = 'Уведомление для гостей';
+$txt['enable_guest_notify'] = 'Включить уведомления?';
+$txt['guest_notify_img_path'] = 'Путь к иконке для заголовка';
+$txt['guest_notify_title'] = 'Заголовок уведомления';
+$txt['guest_notify_contents'] = 'Текст уведомления';
+$txt['guest_notify_css'] = 'CSS-оформление текста уведомления';
+$txt['guest_notify_css_title'] = 'CSS-оформление заголовка уведомления';
+$txt['guest_notify_enable_boards'] = 'Показывать уведомление внутри разделов';
+$txt['guest_notify_enable_posts'] = 'Показывать уведомление при просмотре тем';
+]]></add>
+		</operation>
+	</file>
+	
+	<file name="$languagedir/Help.russian-utf8.php" error="skip">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// Guest Registration Notify Modification
+$helptxt['guest_notify_contents'] = '<b>Список популярных BB-тегов</b>;
+<br />
+<br />
+<i>url</i> - Ссылка, которая открывается в новом окне/вкладке.
+<br />
+<i>i</i> - Текст курсивом.
+<br />
+<i>b</i> - Жирный текст.
+<br />
+<i>u</i> - Подчёркнутый текст.
+<br />
+<i>img</i> - URL-адрес изображения.
+<br />
+<i>code</i> - Код.
+<br />
+<i>quote</i> - Цитата.
+<br />
+<i>center</i> - Текст, выровненный по центру.
+<br />
+<i>hr</i> - Горизонтальная линия.
+<br />
+<br />
+<a href="http://docs.simplemachines.org/index.php?topic=57.0" target"_blank">Дополнительная информация</a>.';
+]]></add>
+        </operation>
+   	</file>
+	
+</modification>

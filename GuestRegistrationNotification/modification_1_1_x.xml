@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:GuestRegistrationNotification</id>
+	<version>1.2</version>
+
+	<file name="$sourcedir/ModSettings.php">
+		<operation>
+			<search position="after"><![CDATA[		'karma' => 'ModifyKarmaSettings',]]></search>
+			<add><![CDATA[
+		'guestnotify' => 'ModifyGuestNotificationSettings',]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+			),
+		),
+	);
+
+	// Select the right tab based on the sub action.]]></search>
+			<add><![CDATA[
+			),
+			'guestnotify' => array(
+				'title' => $txt['guest_notify_tab'],
+				'href' => $scripturl . '?action=featuresettings;sa=guestnotify;sesc=' . $context['session_id'],
+			),
+		),
+	);
+
+	// Select the right tab based on the sub action.]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[	require_once($sourcedir . '/ManageServer.php');
+
+	$subActions = array(]]></search>
+			<add><![CDATA[
+		'guestnotify' => 'ModifyGuestNotificationSettings',]]></add>
+		</operation>
+		<operation>
+			<search position="end" />
+			<add><![CDATA[function ModifyGuestNotificationSettings() {
+
+	global $txt, $scripturl, $context, $settings, $sc, $modSettings;
+
+	$config_vars = array(
+	array('check', 'enable_guest_notify'),
+	array('text', 'guest_notify_title', 20),
+	array('text', 'guest_notify_img_path', 40),
+	array('large_text', 'guest_notify_contents', 'guest_notify_contents'),
+	array('large_text', 'guest_notify_css'),
+	array('large_text', 'guest_notify_css_title'),
+	'',
+	array('check', 'guest_notify_enable_boards'),
+	array('check', 'guest_notify_enable_posts'),
+	);
+
+	// Saving?
+	if (isset($_GET['save']))
+	{
+		checkSession();
+
+		saveDBSettings($config_vars);
+		writeLog();
+
+		redirectexit('action=featuresettings;sa=guestnotify');
+	}
+
+	$context['post_url'] = $scripturl . '?action=featuresettings2;save;sa=guestnotify';
+	$context['settings_title'] = '<span style="color: gray; font-weight: normal; font-size: 7pt; float: right;">Guest Notification Mod by Project Evolution</span>' . $txt['guest_notify'];
+
+	prepareDBSettingContext($config_vars);
+}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/BoardIndex.template.php">
+		<operation>
+			<search position="after"><![CDATA[// Show some statistics next to the link tree if SP1 info is off.]]></search>
+			<add><![CDATA[
+	if ($context['user']['is_guest'] && !empty($modSettings['guest_notify_contents']) && !empty($modSettings['guest_notify_title']) && !empty($modSettings['enable_guest_notify'])) {
+			echo (!empty($modSettings['guest_notify_css'])) ? '<div style="margin: 2ex; padding: 2ex; ' . $modSettings['guest_notify_css'] . '">' : '<div style="margin: 2ex; padding: 2ex; border: 2px dashed #cc3344; color: black; background-color: #ffe4e9;">';
+				echo (!empty($modSettings['guest_notify_img_path'])) ? '<img style="float: left; width: 2ex; font-size: 2em; color: red;" src="' . $modSettings['guest_notify_img_path'] . '" title="" />'
+					: '<div style="float: left; width: 2ex; font-size: 2em; color: red;">!!</div>';
+				echo (!empty($modSettings['guest_notify_css_title'])) ? '<b style="' . $modSettings['guest_notify_css_title'] . '">' . $modSettings['guest_notify_title'] . '</b><br />' : '<b style="text-decoration: underline;">' . $modSettings['guest_notify_title'] . '</b><br />';
+				echo '<div style="padding-left: 6ex;">' . parse_bbc($modSettings['guest_notify_contents']) . '<br /></div>
+			</div>';
+	}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="after"><![CDATA[// Show the anchor for the top and for the first message. If the first message is new, say so.]]></search>
+			<add><![CDATA[
+	if ($context['user']['is_guest'] && !empty($modSettings['guest_notify_contents']) && !empty($modSettings['guest_notify_title']) && !empty($modSettings['enable_guest_notify'])
+		&& !empty($modSettings['guest_notify_enable_posts'])) {
+			echo (!empty($modSettings['guest_notify_css'])) ? '<div style="margin: 2ex; padding: 2ex; ' . $modSettings['guest_notify_css'] . '">' : '<div style="margin: 2ex; padding: 2ex; border: 2px dashed #cc3344; color: black; background-color: #ffe4e9;">';
+				echo (!empty($modSettings['guest_notify_img_path'])) ? '<img style="float: left; width: 2ex; font-size: 2em; color: red;" src="' . $modSettings['guest_notify_img_path'] . '" title="" />'
+					: '<div style="float: left; width: 2ex; font-size: 2em; color: red;">!!</div>';
+				echo (!empty($modSettings['guest_notify_css_title'])) ? '<b style="' . $modSettings['guest_notify_css_title'] . '">' . $modSettings['guest_notify_title'] . '</b><br />' : '<b style="text-decoration: underline;">' . $modSettings['guest_notify_title'] . '</b><br />';
+				echo '<div style="padding-left: 6ex;">' . parse_bbc($modSettings['guest_notify_contents']) . '<br /></div>
+			</div>';
+	}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/MessageIndex.template.php">
+		<operation>
+			<search position="before"><![CDATA[global $context, $settings, $options, $scripturl, $modSettings, $txt;]]></search>
+			<add><![CDATA[
+	if ($context['user']['is_guest'] && !empty($modSettings['guest_notify_contents']) && !empty($modSettings['guest_notify_title']) && !empty($modSettings['enable_guest_notify'])
+		&& !empty($modSettings['guest_notify_enable_boards'])) {
+			echo (!empty($modSettings['guest_notify_css'])) ? '<div style="margin: 2ex; padding: 2ex; ' . $modSettings['guest_notify_css'] . '">' : '<div style="margin: 2ex; padding: 2ex; border: 2px dashed #cc3344; color: black; background-color: #ffe4e9;">';
+				echo (!empty($modSettings['guest_notify_img_path'])) ? '<img style="float: left; width: 2ex; font-size: 2em; color: red;" src="' . $modSettings['guest_notify_img_path'] . '" title="" />'
+					: '<div style="float: left; width: 2ex; font-size: 2em; color: red;">!!</div>';
+				echo (!empty($modSettings['guest_notify_css_title'])) ? '<b style="' . $modSettings['guest_notify_css_title'] . '">' . $modSettings['guest_notify_title'] . '</b><br />' : '<b style="text-decoration: underline;">' . $modSettings['guest_notify_title'] . '</b><br />';
+				echo '<div style="padding-left: 6ex;">' . parse_bbc($modSettings['guest_notify_contents']) . '<br /></div>
+			</div>';
+	}
+
+]]></add>
+		</operation>
+	</file>
+
+</modification>
