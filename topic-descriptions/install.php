@@ -14,14 +14,3 @@ $smcFunc['db_add_column']("{db_prefix}topics",
         	'null' => true,
         ), array(), 'do_nothing', 'fatal'
 );
-
-// RC5 bug aw man :(
-
-/*$hooks = array(
-	'integrate_modify_modifications' => 'integrateTopicdescSettings',
-);
-
-foreach ($hooks as $hook => $function)
-	add_integration_function($hook, $function);*/
-
-?>
