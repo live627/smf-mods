@@ -1,0 +1,351 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:TopicDescriptions</id>
+	<version>1.2</version>
+
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="after"><![CDATA[			<p>', $txt['started_by'], ' ', $context['topic_poster_name'], ', ', $context['topic_started_time'], '</p>';]]></search>
+			<add><![CDATA[';
+
+	if ($context['can_see_description'])
+		echo '
+			<p>', $context['topicinfo']['description'], '</p>';
+
+	echo '
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="before"><![CDATA[	$context['topic_last_message'] = $context['topicinfo']['id_last_msg'];]]></search>
+			<add><![CDATA[
+	$context['can_see_description'] = !empty($context['topicinfo']['description']) && !empty($modSettings['topic_descriptions_topics']) && !empty($modSettings['topic_descriptions_boards']) && in_array($board, explode(",", $modSettings['topic_descriptions_boards']));]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/MessageIndex.template.php">
+		<operation>
+			<search position="before"><![CDATA[', !empty($topic['pages']) ? '<span id="pages' . $topic['first_post']['id'] . '" class="topic_pages">' . $topic['pages'] . '</span>' : '', ']]></search>
+			<add><![CDATA[' . (!empty($modSettings['topic_descriptions_enable']) && $topic['description'] != '' ? '<small id="topicdesc_' . $topic['first_post']['id'] . '">' . $topic['description'] . '</small>' : '') . ']]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Xml.template.php">
+		<operation>
+			<search position="before"><![CDATA[	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
+<smf>
+	<subject>]]><![CDATA[<]]><![CDATA[![CDATA[', cleanXml($context['message']['subject']), ']]]]>><![CDATA[</subject>]]></search>
+			<add><![CDATA[
+	<description>]]><![CDATA[<]]><![CDATA[![CDATA[' . cleanXml($context['message']['description']) . ']]]]>><![CDATA[</description>]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[		<subject is_first="', $context['message']['first_in_topic'] ? '1' : '0', '">]]><![CDATA[<]]><![CDATA[![CDATA[', cleanXml($context['message']['subject']), ']]]]>><![CDATA[</subject>]]></search>
+			<add><![CDATA[
+	<description>]]><![CDATA[<]]><![CDATA[![CDATA[' . cleanXml($context['message']['description']) . ']]]]>><![CDATA[</description>]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[		if (!empty($context['message']['subject']))
+			echo '
+		<subject>]]><![CDATA[<]]><![CDATA[![CDATA[', cleanXml($context['message']['subject']), ']]]]>><![CDATA[</subject>';]]></search>
+			<add><![CDATA[		if (!empty($context['message']['subject']))
+			echo '
+		<subject>]]><![CDATA[<]]><![CDATA[![CDATA[', cleanXml($context['message']['subject']), ']]]]>><![CDATA[</subject>
+	<description>]]><![CDATA[<]]><![CDATA[![CDATA[' . cleanXml($context['message']['description']) . ']]]]>><![CDATA[</description>';]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/scripts/topic.js">
+		<operation>
+			<search position="replace"><![CDATA[	this.init();
+}
+
+// Used to initialise the object event handlers
+QuickModifyTopic.prototype.init = function ()
+{
+	// Attach some events to it so we can respond to actions
+	this.oTopicModHandle.instanceRef = this;
+
+	// detect and act on keypress
+	this.oTopicModHandle.onkeydown = function (oEvent) {return this.instanceRef.modify_topic_keypress(oEvent);};
+
+	// Used to detect when we've stopped editing.
+	this.oTopicModHandle.onclick = function (oEvent) {return this.instanceRef.modify_topic_click(oEvent);};]]></search>
+			<add><![CDATA[
+	this.aTextFields = ['subject', 'description'];
+	this.aHidePrefixes.push('msg_');
+	this.aHidePrefixes.push('topicdesc_');
+	this.oSourceElments = {};
+
+	// Used to detect when we've stopped editing.
+	this.oTopicModHandle.onclick = function (oEvent)
+	{
+		if (this.bInEditMode && oEvent.target.tagName != 'INPUT')
+			this.modify_topic_save(smf_session_id, smf_session_var);
+	}.bind(this);]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[this.bMouseOnDiv = true;
+	this.iCurTopicId = topic_id;
+
+	// Get the topics current subject
+	ajax_indicator(true);
+	sendXMLDocument.call(this, smf_prepareScriptUrl(smf_scripturl) + "action=quotefast;quote=" + first_msg_id + ";modify;xml", '', this.onDocReceived_modify_topic);]]></search>
+			<add><![CDATA[
+	this.iCurTopicId = topic_id;
+
+	this.sCurMessageId = 'msg_' + first_msg_id;
+	this.oCurSubjectDiv = document.getElementById('msg_' + first_msg_id);
+	var oInput = document.createElement('input');
+	oInput.type = 'text';
+	oInput.name = 'subject';
+	oInput.value = this.oCurSubjectDiv.textContent;
+	oInput.size = '60';
+	oInput.style.width = '99%';
+	oInput.maxlength = '80';
+	oInput.onkeydown = this.modify_topic_keypress.bind(this);
+	this.oCurSubjectDiv.after(oInput);
+	oInput.focus();
+
+	const oCurDescDiv = document.getElementById('topicdesc_' + first_msg_id);
+	this.oSourceElments['description'] = oCurDescDiv;
+	if (oCurDescDiv)
+	{
+		oInput = document.createElement('input');
+		oInput.type = 'text';
+		oInput.name = 'description';
+		oInput.value = oCurDescDiv.textContent;
+		oInput.size = '60';
+		oInput.style.width = '99%';
+		oInput.maxlength = topic_descriptions_maxlen;
+		oInput.onkeydown = this.modify_topic_keypress.bind(this);
+		oCurDescDiv.after(oInput);
+	}
+
+	// Here we hide any other things they want hidden on edit.
+	this.set_hidden_topic_areas('none');]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[	// Add backwards compatibility with old themes.
+	if (typeof(cur_session_var) == 'undefined')
+		cur_session_var = 'sesc';
+
+	var i, x = new Array();
+	x[x.length] = 'subject=' + document.forms.quickModForm['subject'].value.php_to8bit().php_urlencode();
+	x[x.length] = 'topic=' + parseInt(document.forms.quickModForm.elements['topic'].value);
+	x[x.length] = 'msg=' + parseInt(document.forms.quickModForm.elements['msg'].value);
+
+	// send in the call to save the updated topic subject
+	ajax_indicator(true);
+	sendXMLDocument.call(this, smf_prepareScriptUrl(smf_scripturl) + "action=jsmodify;topic=" + parseInt(document.forms.quickModForm.elements['topic'].value) + ";" + cur_session_var + "=" + cur_session_id + ";xml", x.join("&"), this.modify_topic_done);]]></search>
+			<add><![CDATA[	let x = [];
+	for (var i of this.aTextFields)
+		if (i in document.forms.quickModForm)
+			x.push(i + '=' + document.forms.quickModForm[i].value.php_to8bit().php_urlencode());
+
+	// send in the call to save the updated topic subject
+	ajax_indicator(true);
+	sendXMLDocument.call(this, smf_prepareScriptUrl(smf_scripturl) + "action=jsmodify;topic=" + this.iCurTopicId + ";" + cur_session_var + "=" + cur_session_id + ";xml", x.join("&"), this.modify_topic_done);]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[
+	setInnerHTML(this.oCurSubjectDiv, this.sBuffSubject);]]></search>
+			<add><![CDATA[	for (var i of this.aTextFields)
+		if (i in document.forms.quickModForm)
+			document.forms.quickModForm[i].remove();
+
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[	// redo tips if they are on since we just pulled the rug out on this one]]></search>
+			<add><![CDATA[
+	{
+		if (this.oSourceElments[i])
+			setInnerHTML(this.oSourceElments[i], message.getElementsByTagName(i)[0].childNodes[0].nodeValue);
+
+		if (i in document.forms.quickModForm)
+			document.forms.quickModForm[i].remove();
+	}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/MessageIndex.php">
+		<operation>
+			<search position="before"><![CDATA[			'unapproved_posts' => $row['unapproved_posts'],]]></search>
+			<add><![CDATA[
+			'description' => $row['description'],]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="after"><![CDATA[	// Nothing to do?
+	if (empty($messages_columns))
+		return true;]]></search>
+			<add><![CDATA[
+	if (isset($msgOptions['description']))
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}topics
+			SET description = {string:description}
+			WHERE id_first_msg = {int:id_first_msg}',
+			array(
+				'id_first_msg' => $msgOptions['id'],
+				'description' => $msgOptions['description'],
+			)
+		);
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Post.php">
+		<operation>
+			<search position="before"><![CDATA[			$form_subject = $smcFunc['substr']($form_subject, 0, 100);]]></search>
+			<add><![CDATA[
+
+		$form_description = $smcFunc['htmlspecialchars']($_REQUEST['message'], ENT_QUOTES);]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[				COALESCE(a.size, -1) AS filesize, a.filename, a.id_attach, a.mime_type, a.id_thumb,
+				a.approved AS attachment_approved, t.id_member_started AS id_member_poster,
+				m.poster_time]]></search>
+			<add><![CDATA[, COALESCE(t.description, "") AS description]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[		censorText($form_message);]]></search>
+			<add><![CDATA[
+		$form_description = $row['description'];
+		censorText($form_description);]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[	$context['subject'] = addcslashes($form_subject, '"');]]></search>
+			<add><![CDATA[
+	$context['description'] = addcslashes($form_description, '"');]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[	// Add special html entities to the subject, name, and email.
+	$_POST['subject'] = strtr($smcFunc['htmlspecialchars']($_POST['subject']), array("\r" => '', "\n" => '', "\t" => ''));]]></search>
+			<add><![CDATA[
+	$form_description = '';
+	$topic_desc_boards = !empty($modSettings['topic_descriptions_boards']) ? explode(",", $modSettings['topic_descriptions_boards']) : array();
+	if (isset($_POST['description']) && in_array($board, $topic_desc_boards))
+	{
+		$form_description = $_POST['description'];
+		censorText($form_description);
+	}
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[		'smileys_enabled' => !isset($_POST['ns']),]]></search>
+			<add><![CDATA[
+		'description' => $form_description,]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[	$request = $smcFunc['db_query']('', '
+		SELECT COALESCE(mem.real_name, m.poster_name) AS poster_name, m.poster_time, m.body, m.id_topic, m.subject,
+			m.id_board, m.id_member, m.approved]]></search>
+			<add><![CDATA[	$request = $smcFunc['db_query']('', '
+		SELECT COALESCE(mem.real_name, m.poster_name) AS poster_name, m.poster_time, m.body, m.id_topic, m.subject,
+			m.id_board, m.id_member, m.approved, COALESCE(t.description, "") AS description]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[			$form_message = '';
+		}
+		else
+		{
+			$form_subject = isset($_GET['subject']) ? $_GET['subject'] : '';
+			$form_message = '';]]></search>
+			<add><![CDATA[			$form_message = '';
+		}
+		else
+		{
+			$form_subject = isset($_GET['subject']) ? $_GET['subject'] : '';
+	$form_description = '';
+			$form_message = '';]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[			$context['message'] = array(
+				'id' => $_REQUEST['quote'],
+				'body' => $row['body'],
+				'subject' => addcslashes($row['subject'], '"'),]]></search>
+			<add><![CDATA[
+				'description' => addcslashes($row['description'], '"'),]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[			'body' => isset($_POST['message']) ? $_POST['message'] : null,
+			'icon' => isset($_REQUEST['icon']) ? preg_replace('~[\./\\\\*\':"<>]~', '', $_REQUEST['icon']) : null,]]></search>
+			<add><![CDATA[
+			'description' => isset($_POST['description']) ? $_POST['description'] : null,]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Recent.php">
+		<operation>
+			<search position="before"><![CDATA[		SUBSTRING(ms.body, 1, 385) AS first_body, ml.smileys_enabled AS last_smileys, ms.smileys_enabled AS first_smileys, t.id_first_msg, t.id_last_msg]]></search>
+			<add><![CDATA[, COALESCE(t.description, "") AS description]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[			'board' => array(
+				'id' => $row['id_board'],
+				'name' => $row['bname'],
+				'href' => $scripturl . '?board=' . $row['id_board'] . '.0',
+				'link' => '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['bname'] . '</a>'
+			)
+		);]]></search>
+			<add><![CDATA[			'board' => array(
+				'id' => $row['id_board'],
+				'name' => $row['bname'],
+				'href' => $scripturl . '?board=' . $row['id_board'] . '.0',
+				'link' => '<a href="' . $scripturl . '?board=' . $row['id_board'] . '.0">' . $row['bname'] . '</a>'
+			),
+			'description' => $row['description'],
+		);]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Recent.template.php">
+		<operation>
+			<search position="replace"><![CDATA[</div>
+							<p class="floatleft">
+								', $topic['first_post']['started_by'], '
+							</p>]]></search>
+			<add><![CDATA[</div>', !empty($modSettings['topic_descriptions_enable']) && $topic['description'] != "" ? '
+							<p><small>' . $topic['description'] . '</small></p>' : '', '
+							<p class="floatleft">
+								', $topic['first_post']['started_by'], '
+							</p>]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[</div>
+							<p class="floatleft">
+								', $topic['first_post']['started_by'], '
+							</p>]]></search>
+			<add><![CDATA[</div>', !empty($modSettings['topic_descriptions_enable']) && $topic['description'] != "" ? '
+							<p><small>' . $topic['description'] . '</small></p>' : '', '
+							<p class="floatleft">
+								', $topic['first_post']['started_by'], '
+							</p>]]></add>
+		</operation>
+	</file>
+
+</modification>

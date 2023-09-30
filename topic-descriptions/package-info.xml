@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	This is a simplified package manifest for SMF packages.
+
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+
+================================================================================
+
+	This script can be used to make your package do many different things.
+	The following documentation should be available on the format of this
+	file and the things you can do with it:
+		http://mods.simplemachines.org/docs/package-info.php
+
+	Please see the other included file, package-info_advanced.xml, for
+	a more detailed description of what you can do with this file.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>Project_Evolution:TopicDescriptions</id>
+	<name>Topic Descriptions</name>
+	<version>2.0.0</version>
+	<type>modification</type>
+
+	<install for="2.1 - 2.1.99">
+		<code type="inline"><![CDATA[<?php
+define('REQUIRED_PHP_VERSION', '7.1');
+if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
+	fatal_error(
+		sprintf(
+			'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
+			REQUIRED_PHP_VERSION,
+			PHP_VERSION
+		),
+		false
+	);
+?>]]></code>
+		<require-file name="Subs-TopicDescriptions.php" destination="$sourcedir" />
+		<require-file name="ManageTopicDescriptions.php" destination="$sourcedir" />
+		<require-file name="ManageTopicDescriptions.template.php" destination="$themedir" />
+		<require-file name="TopicDescriptions.english.php" destination="$languagedir" />
+		<modification>install21.xml</modification>
+		<database>install.php</database>
+		<hook hook="integrate_modify_modifications" function="topic_descriptions_modify_modifications" file="$sourcedir/Subs-TopicDescriptions.php" />
+		<hook hook="integrate_admin_areas" function="topic_descriptions_admin_areas" file="$sourcedir/Subs-TopicDescriptions.php" />
+		<hook hook="integrate_admin_search" function="topic_descriptions_admin_search" file="$sourcedir/Subs-TopicDescriptions.php" />
+		<hook hook="integrate_message_index" function="topic_descriptions_message_index" file="$sourcedir/Subs-TopicDescriptions.php" />
+		<hook hook="integrate_display_topic" function="topic_descriptions_display_topic" file="$sourcedir/Subs-TopicDescriptions.php" />
+		<hook hook="integrate_before_create_topic" function="topic_descriptions_before_create_topic" file="$sourcedir/Subs-TopicDescriptions.php" />
+		<hook hook="integrate_post_end" function="topic_descriptions_post_end" file="$sourcedir/Subs-TopicDescriptions.php" />
+		<hook hook="integrate_jsmodify_xml" function="topic_descriptions_jsmodify_xml" file="$sourcedir/Subs-TopicDescriptions.php" />
+		<hook hook="integrate_post_JavascriptModify" function="topic_descriptions_post_JavascriptModify" file="$sourcedir/Subs-TopicDescriptions.php" />
+		<redirect url="?action=admin;area=modsettings;sa=topicdescriptions" type="inline">
+			Please wait while you are being redirected to this modification's configuration settings.
+		</redirect>
+	</install>
+
+	<uninstall for="2.1 - 2.1.99">
+		<remove-file name="$sourcedir/Subs-TopicDescriptions.php" />
+		<remove-file name="$sourcedir/ManageTopicDescriptions.php" />
+		<remove-file name="$themedir/ManageTopicDescriptions.template.php" />
+		<remove-file name="$languagedir/TopicDescriptions.english.php" />
+		<modification reverse="true">install21.xml</modification>
+		<hook hook="integrate_modify_modifications" function="topic_descriptions_modify_modifications" file="$sourcedir/Subs-TopicDescriptions.php" reverse="true" />
+		<hook hook="integrate_admin_areas" function="topic_descriptions_admin_areas" file="$sourcedir/Subs-TopicDescriptions.php" reverse="true" />
+		<hook hook="integrate_admin_search" function="topic_descriptions_admin_search" file="$sourcedir/Subs-TopicDescriptions.php" reverse="true" />
+		<hook hook="integrate_message_index" function="topic_descriptions_message_index" file="$sourcedir/Subs-TopicDescriptions.php" reverse="true" />
+		<hook hook="integrate_display_topic" function="topic_descriptions_display_topic" file="$sourcedir/Subs-TopicDescriptions.php" reverse="true" />
+		<hook hook="integrate_before_create_topic" function="topic_descriptions_before_create_topic" file="$sourcedir/Subs-TopicDescriptions.php" reverse="true" />
+		<hook hook="integrate_post_end" function="topic_descriptions_post_end" file="$sourcedir/Subs-TopicDescriptions.php" reverse="true" />
+		<hook hook="integrate_jsmodify_xml" function="topic_descriptions_jsmodify_xml" file="$sourcedir/Subs-TopicDescriptions.php" reverse="true" />
+		<hook hook="integrate_post_JavascriptModify" function="topic_descriptions_post_JavascriptModify" file="$sourcedir/Subs-TopicDescriptions.php" reverse="true" />
+	</uninstall>
+
+	<install for="2.0 - 2.0.99">
+		<code type="inline"><![CDATA[<?php
+define('REQUIRED_PHP_VERSION', '7.1.0');
+if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
+	fatal_error(
+		sprintf(
+			'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
+			REQUIRED_PHP_VERSION,
+			PHP_VERSION
+		),
+		false
+	);
+add_integration_function('integrate_pre_include', '$sourcedir/Subs-TopicDescriptions.php');
+add_integration_function('integrate_modify_modifications', 'topic_descriptions_modify_modifications');
+add_integration_function('integrate_load_theme', 'topic_descriptions_load_theme');
+add_integration_function('integrate_admin_areas', 'topic_descriptions_admin_areas');
+?>]]></code>
+		<database>install.php</database>
+		<require-file name="Subs-TopicDescriptions.php" destination="$sourcedir" />
+		<require-file name="ManageTopicDescriptions.php" destination="$sourcedir" />
+		<require-file name="ManageTopicDescriptions.template.php" destination="$themedir" />
+		<require-file name="TopicDescriptions.english.php" destination="$languagedir" />
+		<modification>modification_2.xml</modification>
+		<redirect url="?action=admin;area=modsettings;sa=topicdescriptions" type="inline">
+			Please wait while you are being redirected to this modification's configuration settings.
+		</redirect>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<code type="inline"><![CDATA[<?php
+remove_integration_function('integrate_pre_include', '$sourcedir/Subs-TopicDescriptions.php');
+remove_integration_function('integrate_modify_modifications', 'topic_descriptions_modify_modifications');
+remove_integration_function('integrate_load_theme', 'topic_descriptions_load_theme');
+remove_integration_function('integrate_admin_areas', 'topic_descriptions_admin_areas');
+?>]]></code>
+		<remove-file name="$sourcedir/Subs-TopicDescriptions.php" />
+		<remove-file name="$sourcedir/ManageTopicDescriptions.php" />
+		<remove-file name="$themedir/ManageTopicDescriptions.template.php" />
+		<remove-file name="$languagedir/TopicDescriptions.english.php" />
+		<modification reverse="true">modification_2.xml</modification>
+	</uninstall>
+
+</package-info>
