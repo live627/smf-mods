@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>runic:Topic_Count_In_Profile</id>
+	<version>2.1</version>
+
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="after"><![CDATA[	if (!empty($new_loaded_ids) && $set !== 'minimal')]]></search>
+			<add><![CDATA[	// if this is the user's profile screen, also grab the count of topics they've made
+	if (!empty($new_loaded_ids) && $set == 'profile')
+	{
+		$request = $smcFunc['db_query']('', '
+			SELECT id_member_started, COUNT( id_topic ) AS topics
+			FROM {db_prefix}topics
+			WHERE id_member_started' . (count($new_loaded_ids) == 1 ? ' = {int:loaded_ids}' : ' IN ({array_int:loaded_ids})') . '
+			GROUP BY id_member_started',
+			array(
+				'loaded_ids' => count($new_loaded_ids) == 1 ? $new_loaded_ids[0] : $new_loaded_ids,
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+			$user_profile[$row['id_member_started']]['topics'] = $row['topics'];
+		$smcFunc['db_free_result']($request);
+
+		$request = $smcFunc['db_query']('', '
+			SELECT id_member, COUNT(DISTINCT id_topic) AS topic_count
+			FROM {db_prefix}messages
+			WHERE id_member' . (count($new_loaded_ids) == 1 ? ' = {int:loaded_ids}' : ' IN ({array_int:loaded_ids})') . '
+			GROUP BY id_member',
+			array(
+				'loaded_ids' => count($new_loaded_ids) == 1 ? $new_loaded_ids[0] : $new_loaded_ids,
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($request))
+			$user_profile[$row['id_member']]['topic_count'] = $row['topic_count'];
+		$smcFunc['db_free_result']($request);
+	}
+
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA['real_posts' => $profile['posts'],]]></search>
+			<add><![CDATA[
+		'topics' => (isset($profile['topics']) ? comma_format($profile['topics']) : 0),
+		'topic_count' => (isset($profile['topic_count']) ? comma_format($profile['topic_count']) : 0),]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="before"><![CDATA[<dd>', $context['member']['posts'], ' (', $context['member']['posts_per_day'], ' ', $txt['posts_per_day'], ')</dd>';]]></search>
+			<add><![CDATA[
+
+	echo '
+				<dt>', $txt['profile_topics_started'], ': </dt>
+				<dd>', $context['member']['topics'], ' (', $context['member']['topics_per_day'], ' ', $txt['posts_per_day'], ')</dd>
+				<dt>', $txt['profile_topics_participated'], ': </dt>
+				<dd>', $context['member']['topic_count'], '</dd>';
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[	// Otherwise do!
+	else
+	{
+		echo '
+			<ul class="activity_stats flow_hidden">';
+
+		// The labels.
+		foreach ($context['posts_by_time'] as $time_of_day)
+			echo '
+				<li>
+					<div class="generic_bar vertical">
+						<div class="bar" style="height: ', (int) $time_of_day['relative_percent'], '%;">
+							<span>', sprintf($txt['statPanel_activityTime_posts'], $time_of_day['posts'], $time_of_day['posts_percent']), '</span>
+						</div>
+					</div>
+					<span class="stats_hour">', $time_of_day['hour_format'], '</span>
+				</li>';
+
+		echo '
+			</ul>';]]></search>
+			<add><![CDATA[	// Otherwise do!
+	else
+	{
+		echo '
+			<p align="center"><b>', $txt['tcip_posts'] ,'</b></p>
+			<ul class="activity_stats flow_hidden">';
+
+		// The labels.
+		foreach ($context['posts_by_time'] as $time_of_day)
+			echo '
+				<li>
+					<div class="generic_bar vertical">
+						<div class="bar" style="height: ', (int) $time_of_day['relative_percent'], '%;">
+							<span>', sprintf($txt['statPanel_activityTime_posts'], $time_of_day['posts'], $time_of_day['posts_percent']), '</span>
+						</div>
+					</div>
+					<span class="stats_hour">', $time_of_day['hour_format'], '</span>
+				</li>';
+
+		echo '
+			</ul>
+			<p align="center"><br /><b>', $txt['tcip_topics'] ,'</b></p>
+			<ul class="activity_stats flow_hidden">';
+
+		// The labels.
+		foreach ($context['topics_by_time'] as $time_of_day)
+			echo '
+				<li>
+					<div class="generic_bar vertical">
+						<div class="bar" style="height: ', (int) $time_of_day['relative_percent'], '%;">
+							<span>', sprintf($txt['statPanel_activityTime_posts'], $time_of_day['posts'], $time_of_day['posts_percent']), '</span>
+						</div>
+					</div>
+					<span class="stats_hour">', $time_of_day['hour_format'], '</span>
+				</li>';
+
+		echo '
+			</ul>';]]></add>
+		</operation>
+	</file>
+
+</modification>
