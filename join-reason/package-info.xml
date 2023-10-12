@@ -2,30 +2,20 @@
 <!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
 
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
-	<id>runic:join_reason</id>
+	<id>live627:join-reason</id>
 	<name>Join Reason</name>
 	<type>modification</type>
-	<version>2.0</version>
+	<version>1.3</version>
 
-	<install for="2.0 - 2.0.99">
-		<modification type="file">install.xml</modification>
+	<install for="2.0 - 2.99.99">
+		<modification type="file">install20.xml</modification>
 		<modification type="file">english.xml</modification>
-		<database>install.php</database>
+		<database>install20.php</database>
 	</install>
 
-	<uninstall for="2.0 - 2.0.99">
-		<modification type="file" reverse="true">install.xml</modification>
+	<uninstall for="2.0 - 2.99.99">
+		<modification type="file" reverse="true">install20.xml</modification>
 		<modification type="file" reverse="true">english.xml</modification>
 	</uninstall>
-
-	<install for="2.1 - 2.1.99">
-		<modification type="file">install21.xml</modification>
-		<modification type="file">english.xml</modification>
-		<database>install.php</database>
-	</install>
-
-	<uninstall for="2.1 - 2.1.99">
-		<modification type="file" reverse="true">install21.xml</modification>
-		<modification type="file" reverse="true">english.xml</modification>
-	</uninstall>
+	
 </package-info>
