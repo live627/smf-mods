@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package   Wordpress Bridge
+ * @package   WordPress Bridge
  * @version   2.0.0
  * @author    John Rayes <live627@gmail.com>
  * @copyright Copyright (c) 2017, John Rayes
@@ -69,18 +69,18 @@ class WordpressBridge
 				];
 
 				require_once __DIR__ . '/Subs-Members.php';
-				$this->bypassRegisterHook = true;
+				self::$bypassRegisterHook = true;
 				registerMember($regOptions, true);
 			}
 		}
 	}
 
 	/**
-	 * Adds the Wordpress menu options to SMF's admin panel
+	 * Adds the WordPress menu options to SMF's admin panel
 	 *
 	 * @param array &$admin_areas Admin areas from SMF
 	 */
-	public static function admin_areas(&$admin_areas)
+	public static function admin_areas(array &$admin_areas)
 	{
 		global $txt, $modSettings;
 
@@ -113,11 +113,11 @@ class WordpressBridge
 	}
 
 	/**
-	 * Logs a user into Wordpress by setting cookies
+	 * Logs a user into WordPress by setting cookies
 	 *
 	 * @param string $member_name
 	 */
-	public static function login($member_name)
+	public static function login(string $member_name)
 	{
 		global $modSettings, $smcFunc, $user_settings;
 
@@ -168,7 +168,7 @@ class WordpressBridge
 	}
 
 	/**
-	 * Deletes the Wordpress cookies
+	 * Deletes the WordPress cookies
 	 */
 	public static function logout()
 	{
@@ -190,11 +190,11 @@ class WordpressBridge
 	 *
 	 * @param array &$regOptions Array of Registration data)
 	 */
-	public static function register(&$regOptions)
+	public static function register(array &$regOptions)
 	{
-		global $context, $modSettings;
+		global $modSettings;
 
-		if (empty($modSettings['wordpress_enabled']) || $this->bypassRegisterHook)
+		if (empty($modSettings['wordpress_enabled']) || self::$bypassRegisterHook)
 			return;
 
 		require_once $modSettings['wordpress_path'] . '/wp-config.php';
@@ -217,11 +217,11 @@ class WordpressBridge
 	 * Called when a user resets their password in SMF.  It will properly hash
 	 * it into a WordPress compatible version and modify the user in WordPress.
 	 *
-	 * @param string $user     Username to change
-	 * @param string $user2    Username to change (again?)
+	 * @param string $member_name
+	 * @param string $member_name2
 	 * @param string $password Plaintext password to reset to
 	 */
-	public static function reset_pass($member_name, $member_name2, $password)
+	public static function reset_pass(string $member_name, string $member_name2, string $password)
 	{
 		global $context, $modSettings;
 
@@ -249,11 +249,11 @@ class WordpressBridge
 	/**
 	 * Updates a users' WordPress information when they change in SMF
 	 *
-	 * @param array  $member_names All of the members to change
+	 * @param array  $member_names A list of all the members to change
 	 * @param string $var          Variable that is being updated in SMF
 	 * @param mixed  $data         Data being updated in SMF
 	 */
-	public static function change_member_data($member_names, $var, $data)
+	public static function change_member_data(array $member_names, string $var, $data)
 	{
 		if (empty($modSettings['wordpress_enabled']))
 			return;

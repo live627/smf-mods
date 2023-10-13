@@ -18,8 +18,6 @@
 					),
 					false
 				);
-			global $boarddir;
-			require_once($boarddir . '/SSI.php');
 			add_integration_function('integrate_pre_include', '$sourcedir/WordpressBridge.php');
 			add_integration_function('integrate_load_theme', 'WordpressBridge::load_theme');
 			add_integration_function('integrate_admin_areas', 'WordpressBridge::admin_areas');
@@ -40,8 +38,6 @@
 	<uninstall for="2.0 - 2.0.99">
 		<readme parsebbc="true">uninstall.txt</readme>
 		<code type="inline"><![CDATA[<?php
-			global $boarddir;
-			require_once($boarddir . '/SSI.php');
 			remove_integration_function('integrate_pre_include', '$sourcedir/WordpressBridge.php');
 			remove_integration_function('integrate_load_theme', 'WordpressBridge::load_theme');
 			remove_integration_function('integrate_admin_areas', 'WordpressBridge::admin_areas');
@@ -55,6 +51,5 @@
 		<remove-file name="$themedir/WordpressBridge.template.php" />
 		<remove-file name="$sourcedir/WordpressBridge.php" />
 		<remove-file name="$sourcedir/ManageWordpressBridge.php" />
-		<hook reverse="true" hook="integrate_pre_load" file="SOURCEDIR/WordpressBridge.php" function="WordpressBridge::getInstance"/>
 	</uninstall>
 </package-info>

@@ -13,8 +13,9 @@ function template_callback_wordpress_edit_roles()
 	global $context, $txt;
 
 	echo '
-			<dt><strong>', $txt['wordpress_smf_groups'], '</strong></dt>
-			<dd><strong>', $txt['wordpress_wp_groups'], '</strong></dd>';
+			<dt><b>', $txt['wordpress_smf_groups'], '</b></dt>
+			<dd><b>', $txt['wordpress_wp_groups'], '</b></dd>';
+
 	foreach ($context['smfGroups'] as $id_group => $group_name)
 	{
 		echo '
@@ -22,11 +23,11 @@ function template_callback_wordpress_edit_roles()
 			<dd>
 				<select name="smfroles[', $id_group, ']">
 					<option value="">', $txt['wordpress_select_one'], '</option>';
+
 		foreach ($context['wpRoles'] as $id => $name)
-		{
 			echo '
 					<option value="', $id, '"', (!empty($context['wpMapping']['smf'][$id_group]) && $context['wpMapping']['smf'][$id_group] === $id ? ' selected="selected"' : ''), '>', $name, '</option>';
-		}
+
 		echo '
 				</select>
 			</dd>';
@@ -38,8 +39,9 @@ function template_callback_wordpress_edit_membergroups()
 	global $context, $txt;
 
 	echo '
-			<dt><strong>', $txt['wordpress_wp_groups'], '</strong></dt>
-			<dd><strong>', $txt['wordpress_smf_groups'], '</strong></dd>';
+			<dt><b>', $txt['wordpress_wp_groups'], '</b></dt>
+			<dd><b>', $txt['wordpress_smf_groups'], '</b></dd>';
+
 	foreach ($context['wpRoles'] as $id => $name)
 	{
 		echo '
@@ -47,11 +49,11 @@ function template_callback_wordpress_edit_membergroups()
 			<dd>
 				<select name="wproles[', $id, ']">
 					<option value="">', $txt['wordpress_select_one'], '</option>';
-		foreach ($context['smfGroups'] as $group)
-		{
+
+		foreach ($context['smfGroups'] as $id_group => $group_name)
 			echo '
 					<option value="', $id_group, '"', (isset($context['wpMapping']['wp'][$id]) && $context['wpMapping']['wp'][$id] === $id_group ? ' selected="selected"' : ''), '>', $group_name, '</option>';
-		}
+
 		echo '
 				</select>
 			</dd>';

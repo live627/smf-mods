@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package   Wordpress Bridge
+ * @package   WordPress Bridge
  * @version   2.0.0
  * @author    John Rayes <live627@gmail.com>
  * @copyright Copyright (c) 2017, John Rayes
@@ -9,8 +9,8 @@
  */
 
 /*
-Plugin Name: elk-wp-auth
-Description: Login redirect to elk
+Plugin Name: smf-wp-auth
+Description: Login redirect to smf
 Version: 2.0.0
 Author: live627
 */
@@ -19,17 +19,17 @@ add_action(
 	'init',
 	function ()
 	{
-		if (stripos($_SERVER['REQUEST_URI'], 'wp-login.php') !== false && get_option('elk_path') !== false)
+		if (stripos($_SERVER['REQUEST_URI'], 'wp-login.php') !== false && get_option('smf_path') !== false)
 		{
-			require get_option('elk_path') . '/SSI.php';
-			$orgin = parse_url($_SERVER['REQUEST_URI']);
+			require get_option('smf_path') . '/SSI.php';
+			$origin = parse_url($_SERVER['REQUEST_URI']);
 			// Coming from wp-login.php?
-			if (strpos($orgin['path'], 'wp-login.php') !== false)
+			if (strpos($origin['path'], 'wp-login.php') !== false)
 			{
-				if (empty($orgin['query']))
-					$orgin['query'] = 'action=login';
+				if (empty($origin['query']))
+					$origin['query'] = 'action=login';
 				$query = [];
-				parse_str($orgin['query'], $query);
+				parse_str($origin['query'], $query);
 				if (empty($query['action']))
 					$query['action'] = 'login';
 				switch ($query['action'])
@@ -39,7 +39,7 @@ add_action(
 						break;
 
 					case 'logout':
-						// Need to load the session real quick so we can properly logout and redirect
+						// Need to load the session real quick, so we can properly log out and redirect
 						//loadSession();
 						$_SESSION['logout_url'] = home_url();
 						redirectexit(

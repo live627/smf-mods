@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package   Wordpress Bridge
+ * @package   WordPress Bridge
  * @version   2.0.0
  * @author    John Rayes <live627@gmail.com>
  * @copyright Copyright (c) 2017, John Rayes
@@ -10,8 +10,6 @@
 
 class ManageWordpressBridge
 {
-	private $plugin_path;
-
 	/**
 	 * Base admin callback function
 	 */
@@ -70,18 +68,18 @@ class ManageWordpressBridge
 			if (isset($_POST['activate']))
 			{
 				require_once $modSettings['wordpress_path'] . '/wp-config.php';
-				$this->plugin_path = 'smf-wp-auth.php';
+				$plugin_path = 'smf-wp-auth.php';
 				include_once ABSPATH . 'wp-admin/includes/plugin.php';
-				$result = activate_plugin($this->plugin_path);
+				$result = activate_plugin($plugin_path);
 				$context['settings_insert_above'] = sprintf(
-					'<div class="errorbox">' .  . '</div>',
+					'<div class="errorbox">%s</div>',
 					$result instanceof WP_Error
 						? sprintf(
 							'%s<ul><li>%s</li></ul>',
 							$txt['wordpress_problems'],
 							implode('</li><li>', $result->get_error_messages())
 						)
-						: $txt['wordpress_activated'];
+						: $txt['wordpress_activated']
 				);
 			}
 			else
@@ -115,10 +113,10 @@ class ManageWordpressBridge
 				]
 			);
 			require_once $modSettings['wordpress_path'] . '/wp-config.php';
-			$this->plugin_path = 'smf-wp-auth.php';
+			$plugin_path = 'smf-wp-auth.php';
 			include_once ABSPATH . 'wp-admin/includes/plugin.php';
 			$config_vars[3]['var_message'] = $wp_version;
-			if (is_plugin_inactive($this->plugin_path))
+			if (is_plugin_inactive($plugin_path))
 			{
 				$context['settings_insert_above'] = '<div class="errorbox">' . $txt['wordpress_inactive'] . '</div>';
 				$config_vars[1]['postinput'] = sprintf(
@@ -153,7 +151,7 @@ class ManageWordpressBridge
 			WHERE min_posts = -1 AND id_group != 3
 			ORDER BY CASE WHEN id_group < 4 THEN id_group ELSE 4 END, group_name'
 		);
-		$context['smfGroups'] = [[$txt['membergroups_members']];
+		$context['smfGroups'] = [$txt['membergroups_members']];
 		while ([$id_group, $group_name] = $smcFunc['db_fetch_row']($request))
 			$context['smfGroups'][$id_group] = $group_name];
 		$smcFunc['db_free_result']($request);
@@ -193,7 +191,7 @@ class ManageWordpressBridge
 					$_POST['wproles'],
 					fn(int $id_group, int $role): bool => isset($context['smfGroups'][$id_group], $context['wpRoles'][$role]),
 					ARRAY_FILTER_USE_BOTH
-				);
+				)
 			]);
 
 			$save_vars = [
