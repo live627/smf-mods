@@ -1,4 +1,4 @@
-# Ultimate Menu
+# Join Reason
 [![Support](http://img.shields.io/badge/PayPal-$-009966.svg)](https://www.paypal.me/JohnRayes)
 
 Package name | SMF version | Minimmum PHP version
