@@ -1,0 +1,23 @@
+Version 1.3
++ Join reason now in admin's memberlist thanks to Chas Large
+* Updated for SMF 2.0 RC3
+
+Version 1.2.2
+! Bug fixes
+
+Version 1.2.1
+! Bug fix
+
+Version 1.2
+! Database adaption fix
+
+Version 1.1
+* Added 2.0 RC1 and 2.0 RC2 support
+
+Legend:
+--------------------------------------------------------------------------------
+! Minor change or bugfix
+* Feature edit
+& Known bug
++ Feature addition
+- Feature removal
