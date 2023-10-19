@@ -5,17 +5,62 @@
 	<id>live627:join-reason</id>
 	<name>Join Reason</name>
 	<type>modification</type>
-	<version>1.3</version>
+	<version>3.0.0</version>
 
-	<install for="2.0 - 2.99.99">
-		<modification type="file">install20.xml</modification>
-		<modification type="file">english.xml</modification>
-		<database>install20.php</database>
+	<install for="2.1 - 2.1.99">
+		<code type="inline"><![CDATA[<?php
+define('REQUIRED_PHP_VERSION', '7.1');
+if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
+	fatal_error(
+		sprintf(
+			'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
+			REQUIRED_PHP_VERSION,
+			PHP_VERSION
+		),
+		false
+	);
+?>]]></code>
+		<require-file name="Subs-JoinReason.php" destination="$sourcedir" />
+		<require-file name="JoinReason.english.php" destination="$languagedir" />
+		<database type="inline"><![CDATA[<?php
+
+$column = array(
+	'name' => 'join_reason',
+	'type' => 'varchar',
+	'size' => 250,
+	'null' => true
+);
+
+$smcFunc['db_add_column']('{db_prefix}members', $column);
+
+?>]]></database>
+		<modification type="file">install21.xml</modification>
+		<hook hook="integrate_member_context" function="JoinReason\member_context" file="$sourcedir/Subs-JoinReason.php" />
+		<hook hook="integrate_load_member_data" function="JoinReason\load_member_data" file="$sourcedir/Subs-JoinReason.php" />
+		<hook hook="integrate_profile_areas" function="JoinReason\profile_areas" file="$sourcedir/Subs-JoinReason.php" />
+		<hook hook="integrate_register" function="JoinReason\register" file="$sourcedir/Subs-JoinReason.php" />
+		<hook hook="integrate_manage_members" function="JoinReason\manage_members" file="$sourcedir/Subs-JoinReason.php" />
+		<hook hook="integrate_view_members_params" function="JoinReason\view_members_params" file="$sourcedir/Subs-JoinReason.php" />
+		<hook hook="integrate_member_list" function="JoinReason\member_list" file="$sourcedir/Subs-JoinReason.php" />
+		<hook hook="integrate_approve_list" function="JoinReason\approve_list" file="$sourcedir/Subs-JoinReason.php" />
+		<hook hook="integrate_load_profile_fields" function="JoinReason\load_profile_fields" file="$sourcedir/Subs-JoinReason.php" />
+		<hook hook="integrate_setup_profile_context" function="JoinReason\setup_profile_context" file="$sourcedir/Subs-JoinReason.php" />
 	</install>
 
-	<uninstall for="2.0 - 2.99.99">
-		<modification type="file" reverse="true">install20.xml</modification>
-		<modification type="file" reverse="true">english.xml</modification>
+	<uninstall for="2.1 - 2.1.99">
+		<modification type="file" reverse="true">install21.xml</modification>
+		<remove-file name="$sourcedir/Subs-JoinReason.php" />
+		<remove-file name="$languagedir/JoinReason.english.php" />
+		<hook hook="integrate_member_context" function="JoinReason\member_context" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
+		<hook hook="integrate_load_member_data" function="JoinReason\load_member_data" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
+		<hook hook="integrate_profile_areas" function="JoinReason\profile_areas" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
+		<hook hook="integrate_register" function="JoinReason\register" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
+		<hook hook="integrate_manage_members" function="JoinReason\manage_members" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
+		<hook hook="integrate_view_members_params" function="JoinReason\view_members_params" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
+		<hook hook="integrate_member_list" function="JoinReason\member_list" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
+		<hook hook="integrate_approve_list" function="JoinReason\approve_list" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
+		<hook hook="integrate_load_profile_fields" function="JoinReason\load_profile_fields" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
+		<hook hook="integrate_setup_profile_context" function="JoinReason\setup_profile_context" file="$sourcedir/Subs-JoinReason.php" reverse="true" />
 	</uninstall>
-	
+
 </package-info>

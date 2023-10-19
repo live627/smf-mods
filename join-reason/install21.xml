@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:join-reason</id>
+	<version>3.0.0</version>
+
+	<file name="$themedir/ManageMembers.template.php">
+		<operation>
+			<search position="before"><![CDATA[							<dt class="righttext">
+								<strong><label for="membername">', $txt['username'], ':</label></strong>
+							</dt>
+							<dd>
+								<input type="text" name="membername" id="membername" value="">
+							</dd>]]></search>
+			<add><![CDATA[
+							<dt class="righttext">
+								<strong><label for="join_reason">', $txt['join_reason'], ':</label></strong>
+							</dt>
+							<dd>
+								<input type="text" name="join_reason" id="join_reason" value="">
+							</dd>]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Register.template.php">
+		<operation>
+			<search position="before"><![CDATA[<dl class="register_form" id="password2_group">
+						<dt>
+							<strong><label for="smf_autov_pwverify">', $txt['verify_pass'], ':</label></strong>
+						</dt>
+						<dd>
+							<input type="password" name="passwrd2" id="smf_autov_pwverify" size="50" tabindex="', $context['tabindex']++, '">
+							<span id="smf_autov_pwverify_div" style="display: none;">
+								<span id="smf_autov_pwverify_img" class="main_icons valid"></span>
+							</span>
+						</dd>]]></search>
+			<add><![CDATA[
+						<dt><strong><label for="smf_join_reason">', $txt['join_reason'], ':</label></strong></dt>
+						<dd>
+							<input type="text" name="join_reason" id="smf_join_reason" size="30" tabindex="', $context['tabindex']++, '" />
+						</dd>]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Register.php">
+		<operation>
+			<search position="before"><![CDATA[createToken('register');]]></search>
+			<add><![CDATA[
+
+	loadLanguage('JoinReason');]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[// You can't register if it's disabled.
+	if (!empty($modSettings['registration_method']) && $modSettings['registration_method'] == 3)
+		fatal_lang_error('registration_disabled', false);]]></search>
+			<add><![CDATA[
+
+	// You can't register without a reason..
+	if (empty($_POST['join_reason']) || trim($_POST['join_reason']) == '')
+	{
+		loadLanguage('JoinReason');
+		$reg_errors[] = $txt['error_join_reason_empty'];
+	}]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[ 'secret_answer',]]></search>
+			<add><![CDATA[ 'join_reason',]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA['theme_vars' => array(),]]></search>
+			<add><![CDATA[
+		'join_reason' => $_POST['join_reason'] ?? '',]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Members.php">
+		<operation>
+			<search position="before"><![CDATA[mem.last_login,]]></search>
+			<add><![CDATA[ mem.join_reason,]]></add>
+		</operation>
+	</file>
+
+</modification>
