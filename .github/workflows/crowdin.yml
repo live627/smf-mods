@@ -4,8 +4,14 @@ on:
 jobs:
   crowdin:
     runs-on: ubuntu-latest
+    permissions:
+        contents: write
+        pull-requests: write
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Synchronize with Crowdin
       - uses: crowdin/github-action@v1
         with:
           download_translations: true
