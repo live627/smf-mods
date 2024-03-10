@@ -1,0 +1,51 @@
+/*---------- Glossary mod -----------*/
+span.glossary{
+    position:relative;
+    z-index:7;
+    color:#3CA3FF;
+    font-weight:bold;
+    text-decoration:none;
+    cursor: help;
+}
+.glossary{    
+    font-size: small;
+    font-family: tahoma, sans-serif;
+}
+div.letter_selection{
+    border-bottom:1px solid #696969;
+    background : #D6D6D6;
+    padding-bottom:10px;
+    padding-top:6px;
+    font-weight:bold;
+    font-size:25px;
+    font-family : times new roman;
+}
+.catbg:has(.righttext) {
+	display: flex;
+}
+.modal-dialog {
+	background: #568d;
+	height: 100%;
+	left: 0;
+	overflow: auto;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	/* Cover the menu icons */
+	z-index: 100
+}
+body:has(.modal-dialog) {
+	overflow: hidden;
+}
+.modal-dialog .windowbg {
+	margin: 5% auto;
+	padding: 1rem;
+	position: relative;
+	width: 40%
+}
+.modal-dialog .ModalContent,
+.modal-dialog form{
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
