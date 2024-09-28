@@ -39,7 +39,7 @@ if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
 		false
 	);
 ?>]]></code>
-		<require-file name="Subs-TopicDescriptions.php" destination="$sourcedir" />
+		<require-file name="smf21/Subs-TopicDescriptions.php" destination="$sourcedir" />
 		<require-file name="ManageTopicDescriptions.php" destination="$sourcedir" />
 		<require-file name="ManageTopicDescriptions.template.php" destination="$themedir" />
 		<require-file name="TopicDescriptions.english.php" destination="$languagedir" />
