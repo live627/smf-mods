@@ -10,6 +10,10 @@ function topic_descriptions_admin_areas(array &$admin_areas): void
 
 function topic_descriptions_modify_modifications(array &$sub_actions): void
 {
+	global $sourcedir;
+
+	require_once $sourcedir . '/ManageTopicDescriptions.php';
+	loadLanguage('TopicDescriptions');
 	$sub_actions['topicdescriptions'] = 'ModifyTopicDescriptionsSettings';
 }
 
@@ -45,13 +49,14 @@ function topic_descriptions_display_topic(array &$topic_selects): void
 function topic_descriptions_before_create_topic(array &$msgOptions, array &$topicOptions, array &$posterOptions, &$topic_columns, &$topic_parameters): void
 {
 	$topic_columns['description'] = 'string';
-	$topic_columns[] = $msgOptions['description'] ?? null;
+	$topic_parameters[] = $msgOptions['description'] ?? null;
 }
 
 function topic_descriptions_post_end(): void
 {
 	global $context, $modSettings, $txt;
 
+	loadLanguage('TopicDescriptions');
 	$context['can_see_description'] = !empty($modSettings['topic_descriptions_boards']) && $context['is_first_post'] && in_array($context['current_board'], explode(",", $modSettings['topic_descriptions_boards']));
 
 	if ($context['can_see_description'])
