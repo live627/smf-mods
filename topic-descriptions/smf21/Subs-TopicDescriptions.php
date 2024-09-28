@@ -12,7 +12,7 @@ function topic_descriptions_modify_modifications(array &$sub_actions): void
 {
 	global $sourcedir;
 
-	require_once($sourcedir . '/ManageTopicDescriptions.php');
+	require_once $sourcedir . '/ManageTopicDescriptions.php';
 	loadLanguage('TopicDescriptions');
 	$sub_actions['topicdescriptions'] = 'ModifyTopicDescriptionsSettings';
 }
