@@ -28,6 +28,30 @@
 
 	<file name="$themedir/MessageIndex.template.php">
 		<operation>
+			<search position="after"><![CDATA[			echo '
+							<div class="message_index_title"]]></search>
+			<add><![CDATA[			if (!empty($modSettings['topic_descriptions_enable']) && !empty($topic['description']))
+			{
+				$topicDescriptionWhere = empty($modSettings['topic_descriptions_where']) ? 'below' : 'right';
+				$topicDescription = '<small id="topicdesc_' . $topic['first_post']['id'] . '" class="em" > &nbsp;(' . $topic['description'] . ')</small>';
+			}
+			else
+				$topicDescriptionWhere = '';
+
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[<span id="msg_', $topic['first_post']['id'], '">', $topic['first_post']['link'], (!$topic['approved'] ? '&nbsp;<em>(' . $txt['awaiting_approval'] . ')</em>' : ''), '</span>]]></search>
+			<add><![CDATA[' . ($topicDescriptionWhere === 'right' ? $topicDescription : '') . ']]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[', !empty($topic['pages']) ? '<span id="pages' . $topic['first_post']['id'] . '" class="topic_pages">' . $topic['pages'] . '</span>' : '', ']]></search>
+			<add><![CDATA[' . ($topicDescriptionWhere === 'below' ? '<br>' . $topicDescription : '') . ']]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/MessageIndex.template.php">
+		<operation>
 			<search position="before"><![CDATA[', !empty($topic['pages']) ? '<span id="pages' . $topic['first_post']['id'] . '" class="topic_pages">' . $topic['pages'] . '</span>' : '', ']]></search>
 			<add><![CDATA[' . (!empty($modSettings['topic_descriptions_enable']) && $topic['description'] != '' ? '<small id="topicdesc_' . $topic['first_post']['id'] . '">' . $topic['description'] . '</small>' : '') . ']]></add>
 		</operation>
