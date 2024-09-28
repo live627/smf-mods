@@ -7,6 +7,7 @@ function ModifyTopicDescriptionsSettings(bool $return_config = false)
 	$config_vars = array(
 		array('title', 'settings'),
 		array('check', 'topic_descriptions_enable'),
+		array('select', 'topic_descriptions_where', array($txt['topic_descriptions_below'], $txt['topic_descriptions_right'])),
 		'',
 		array('check', 'topic_descriptions_topics'),
 		array('int', 'topic_descriptions_maxlen', 4),
