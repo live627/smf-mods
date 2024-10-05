@@ -19,7 +19,7 @@ function topic_descriptions_modify_modifications(array &$sub_actions): void
 
 function topic_descriptions_admin_search(array &$language_files, array &$include_files, array &$settings_search): void
 {
-	//~ $language_files[] = 'TopicDescriptions';
+	$language_files[] = 'TopicDescriptions';
 	$include_files[] = 'ManageTopicDescriptions';
 	$settings_search[] = array('ModifyTopicDescriptionsSettings', 'area=modsettings;sa=topicdescriptions');
 }
@@ -31,7 +31,6 @@ function topic_descriptions_message_index(array &$message_index_selects): void
 	$message_index_selects[] = 'COALESCE(t.description, "") AS description';
 
 	loadLanguage('TopicDescriptions');
-	//~ loadJavaScriptFile('linkpreview.js', array('defer' => true, 'minimize' => true));
 	addJavaScriptVar('topic_descriptions_maxlen', !empty($modSettings['topic_descriptions_maxlen']) ? (int) $modSettings['topic_descriptions_maxlen'] : 25);
 }
 
@@ -42,14 +41,13 @@ function topic_descriptions_display_topic(array &$topic_selects): void
 	$topic_selects[] = 'COALESCE(t.description, "") AS description';
 
 	loadLanguage('TopicDescriptions');
-	//~ loadJavaScriptFile('linkpreview.js', array('defer' => true, 'minimize' => true));
 	addJavaScriptVar('topic_descriptions_maxlen', !empty($modSettings['topic_descriptions_maxlen']) ? (int) $modSettings['topic_descriptions_maxlen'] : 25);
 }
 
 function topic_descriptions_before_create_topic(array &$msgOptions, array &$topicOptions, array &$posterOptions, &$topic_columns, &$topic_parameters): void
 {
 	$topic_columns['description'] = 'string';
-	$topic_parameters[] = $msgOptions['description'] ?? null;
+	$topic_parameters[] = $msgOptions['description'] ?? '';
 }
 
 function topic_descriptions_post_end(): void
@@ -102,7 +100,7 @@ function topic_descriptions_jsmodify_xml(): void
 
 	if (!isset($context['message']['errors']))
 	{
-		$context['message']['description'] = $smcFunc['htmlspecialchars']($_POST['description'], ENT_QUOTES);
+		$context['message']['description'] = $_POST['description'];
 		censorText($context['message']['description']);
 	}
 }
