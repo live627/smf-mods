@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:footer_menu</id>
+	<name>Footer Menu</name>
+	<type>modification</type>
+	<version>1.1.2</version>
+
+	<install for="2.0 - 2.0.99">
+		<database>install.php</database>
+		<require-file name="FooterMenu.php" destination="$sourcedir" />
+		<require-file name="FooterMenu.template.php" destination="$themedir" />
+		<require-file name="footermenu.css" destination="$themedir/css" />
+		<require-file name="FooterMenu.english.php" destination="$languagedir" />
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<database>uninstall-optional.php</database>
+		<code>uninstall-required.php</code>
+		<remove-file name="$sourcedir/FooterMenu.php" />
+		<remove-file name="$themedir/FooterMenu.template.php" />
+		<remove-file name="$themedir/css/footermenu.css" />
+		<remove-file name="$languagedir/FooterMenu.english.php" />
+	</uninstall>
+
+</package-info>

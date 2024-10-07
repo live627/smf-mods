@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<plugin id="live627:active_members">
+	<name>Active Members in Topic</name>
+	<author email="live627@gmail.com" url="http://livemods.net/">live627</author>
+	<description>Allows your members to restrict topics to those members they choose.</description>
+	<version>1.0</version>
+	<website>http://wedge.livemods.net/</website>
+	<settings>
+		<setting name="activemembers_num" default="5" />
+	</settings>
+	<settings-page area="activemembers" icon="$pluginurl/img/tick.png" bigicon="$pluginurl/img/tick_big.png">
+		<language file="ActiveMembers" />
+		<text name="activemembers_num" />
+	</settings-page>
+	<newperms filename="ActiveMembers">
+		<permissionlist>
+			<permission type="board" name="view_active_members" ownany="true" classic="topic" simple="make_posts" />
+		</permissionlist>
+	</newperms>
+	<hooks>
+		<function point="display_main" function="active_members_display_main" filename="$plugindir/ActiveMembers" />
+		<language point="lang_help" filename="$plugindir/ActiveMembers" />
+	</hooks>
+	<readmes>
+		<readme lang="english">$plugindir/readme/readme.english.txt</readme>
+	</readmes>
+	<actions>
+		<action action="activemembers" function="active_members_action" filename="ActiveMembers" />
+	</actions>
+</plugin>

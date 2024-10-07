@@ -1,108 +1,103 @@
-[hr]
-[center][color=red][size=16pt][b]GLOSSARY v0.3.1[/b][/size][/color]
-[url=http://custom.simplemachines.org/mods/index.php?action=search;author=68142][b]By Slinouille[/b][/url]
+[center][color=blue][size=16pt][b]Glossary for SMF 2.1
+v1.0[/b][/size][/color]
+Based on [url="https://custom.simplemachines.org/index.php?mod=1525"]Glossary mod[/url] by [url="http://custom.simplemachines.org/mods/index.php?action=search;author=68142"][b]Slinouille[/b][/url]
 [/center]
 [hr]
 
 [color=blue][b][size=12pt][u]Introduction[/u][/size][/b][/color]
-The mod adds a glossary to your forum. You can manage the words and associated definition and display a tooltip containing the definition in the messages.
-Glossary mod uses:
-- jQuery javascript library : http://jquery.com/
-- jQuery Tooltip pluggin for tooltip activity from http://bassistance.de/jquery-plugins/jquery-plugin-tooltip.
-- jQuery SimpleModal pluggin for modal forms from http://www.ericmmartin.com/projects/simplemodal/.
-- famfam Silk icon set from http://www.famfamfam.com/
+The mod adds a Glossary to your forum.  You can manage the keywords and associated definition and optionally display a tooltip containing the keyword definition in the messages.
 
-[color=blue][b][size=12pt][u]Features[/u][/size][/b][/color]
-o Display a full list with words in your glossary
-o Classification and selection by alphabetic order
-o Can define one level of groups for your words in Glossary
-o Manage rights for seeing and administrating the glossary, and for authorizing suggestion by membergroup
-o Display a bubble tooltip on all words in the forms messages
-o Activation in Admin Panel
-o Enable or not the member keywords suggestion functionnality
-o Keywords administration possibility for adding, updating and deleting
-o Keywords detection can be optionaly case insensitive in messages
-o Display title and body in tooltips
-o Can activate or not bbccode in tooltips
-o Define for each word if shown or not in messages
-o bbc code for glossary word (in order to force tooltip for "not shown" words)
-o If wanted, only display each word once per message
-o Specific glossary administrators menu
-o Enable a "right-click" administration menu (usefull for big glossaries)
-o Languages : French, English, German
+This mod uses the following JavaScript plugins (some with associated CSS).
+- jQuery Tooltip plugin from [url="https://jqueryui.com"]jQuery UI[/url] (customised for this mod).
+- jQuery SimpleModal plugin from [url="https://www.ericmmartin.com/projects/simplemodal"]SimpleModal 1.4.4[/url] (updated for this mod).
+- jQuery ContextMenu plugin originally from [url="https://abeautifulsite.net"]A Beautiful Site[/url].
+- famfamfam Silk icons available from [url="https://peacocksoftware.com/silk"]Peacock Software[/url].
 
-[color=blue][b][size=12pt][u]Installation[/u][/size][/b][/color]
-Simply install the package to install this modification on the SMF Default Core theme.
-Manual edits will be required for other themes.
+[color=blue][b][size=12pt][u]Glossary for SMF 2.0[/u][/size][/b][/color]
+[b]v0.3.1 - 25-Apr-09[/b]
+o Create a Glossary consisting of keywords and keyword definitions for your forum community.
+o Allow numeric keywords in addition to alphabetic keywords.
+o Allow categories for grouping of keywords.
+o Allow keywords to have synonyms.
+o New BBCode to enable keywords to be inserted inline in messages.
+o Option to allow keyword definitions to contain BBCodes.
+o Tooltips:.
+   ~ Option to view keyword definition when hovering over keyword in a message.
+   ~ Option for BBCode keywords to be not case-sensitive.
+   ~ If a keyword is used more than once per message option to only display tooltip once.
+   ~ Specify character to be used to insert line breaks in keywords definitions.
+   ~ Support for tooltips with SimplePortal mod.
+o Membergroup permissions to allow/disallow members to:
+   ~ View the Glossary index.
+   ~ Suggest new Glossary keywords with definitions.
+   ~ Manage/administer the Glossary keywords, keyword definitions and categories.
+o Glossary Index Administration:.
+   ~ Keywords (with keyword definitions) can be:.
+     * Added.
+     * Updated (including being renamed and/or having synonyms added, updated, or deleted).
+     * Deleted.
+     * Approved.
+     * Unapproved.
+     * Have tooltip for keyword definition enabled.
+     * Have tooltip for keyword definition disabled.
+     * Assigned to a category (or no category).
+   ~ Categories can be:
+     * Added.
+     * Updated (including being renamed).
+     * Deleted.
+o Enable a 'right-click' Glossary administration menu in Glossary ' Alphabetic/Alphanumeric' view (useful for large glossaries).
+o Languages: French, English, and German.
+o Mod setting to enable/disable mod.
+o Mod setting to enable checkbox to enable tooltips for new/updated keywords by default.
+o Mod settings to specify width of keyword/keyword definition columns in Glossary index.
 
-Glossary mod is totaly compliant with any other javascript library.
+[hr]
 
-[b]If you have a previous install, after update don't forget to save the glossary settings in admin panel so that all variables are reinitialised[/b]
+[color=blue][b][size=12pt][u]Glossary for SMF 2.1[/u][/size][/b][/color]
+[b]v1.0 - 25-Jan-24[/b]
+o Hooks Only!!
+o SMF 2.1.4 compatibility.
+o Keyword checking to ensure keyword is not already in use as a synonym.
+o Synonym checking to ensure:
+   ~ Synonym is not already in use as a keyword.
+   ~ Synonym is not already assigned to another keyword.
+o Specific error messages for keyword/synonym conflicts.
+o Link to member profile for unapproved keywords (if guests are allowed to make keyword suggestions the word 'Guest' will be shown).
+o Improved processing of keyword for tooltip to remove [i]http(s)://[/i] from keyword to ensure tooltip is displayed correctly.
+o Membergroup permissions to allow/disallow members to:
+   ~ View Glossary tooltips in messages.
+   ~ Insert Glossary BBCode in messages.
+   ~ Not allow guests to manage/administer the Glossary.
+o Glossary Index:
+   ~ Keyword synonyms shown below keywords.
+     * If the synonyms mod setting is not enabled the word '[i]Disabled[/i] is shown at the top of the list of synonyms.
+   ~ Synonym icon and tooltip removed.
+o Mod settings to show keyword author to Glossary admins and/or all members in the Glossary index.
+o Mod setting to only show alphanumeric characters with an associated keyword in the Glossary index.
+o Mod setting to enable checkbox to approve tooltips for new/updated keywords by default.
+   ~ Added 'right-click' Glossary administration menu to [i]'Categories'[/i] view.
+o Improved removal of mod features (eg, Glossary index, membergroup permissions, BBCode, etc) if mod is disabled.
+o Updated error message reporting to provide SMF 2.1 compatibility.
+o Replaced jQuery Tooltip and SimpleModal scripts – both customised/updated to work with this mod.
+o Updated installation process to use mod specific directories/folders for images, languages, CSS files, and scripts.
+o Removal of support for SimplePortal mod.
+o Removed unused strings from language file.
+o Other minor performance improvements, bug fixes and tweaks.
+o Languages: English.
 
-[color=blue][b][size=12pt][u]Customize the Tooltips[/u][/size][/b][/color]
-Please customize the file "jquery.tooltip.css" to fit Tootip Effect with your Forum template.
+[hr]
 
-This mod is compatible with SMF 2.0 Beta 4 Public and above only.
+[b]Release History:[/b]
+1.0 - 26-Jan-24
+o Initial release.
 
-[color=blue][b][size=12pt][u]Support[/u][/b][/color]
-Please use the modification thread for support with this modification.
+[hr]
+[color=blue][i][size=10pt]License[/size][/i][/color]
+Copyright 2024 Kathy Leslie.
 
-[color=blue][b][size=12pt][u]Changelog[/u][/size][/b][/color]
-[b]0.3.1 - 25th April 2009[/b]
-- bug correction: some .JS files and images were not associated to default theme directory (thanks to Kindred)
-- bug correction: when keyword was ending a line, the tooltip description was badly interpreted (thanks to dekay)
-- bug correction: url tag was visible in links when bbc was enabled in tooltips
-- bug correction: in german language, a quote was missing (thanks to dekay)
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 
-[b]0.3.0 - 04th April 2009[/b]
-o New specific Glossary page in admin panel
-o New drop menu for Glossary administrators
-o Enable a "right-click" administration menu (usefull for big glossaries)
-o Add words selection for specific activity
-o New option "By default, show definition in post"
-o Installation and upgrading database has been entierely recoded
-o Nicer dialog boxes
-o Correcting errors in log
-o Correcting bug "if a glossary word is also in the definition of another one"
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-[b]0.2.0 - 03th February 2009[/b]
-o New admin actions directly in main page
-o Categories management in one unique form
-
-[b]0.1.9 - 03th February 2009[/b]
-o Added option "Show glossary words only once per message"
-o Added value "Show in message" for each glossary word. This permits to authorize or not a word to be shown in messages
-o Added BBC code glossary in order to force a glossary word to be shown in message
-o Added one level of category
-o Correction of bug in tooltip for special caracters
-
-[b]0.1.8 - 29th January 2009[/b]
-o Correction of a (stupid) bug
-
-[b]0.1.7 - 26th January 2009[/b]
-o Correction of a bug if database in UTF-8 (reported by PerryM)
-
-[b]0.1.6 - 24th January 2009[/b]
-o Code rewritting for better management of non conflict mode. 
-  jQuery library is now loaded independently of other libraries.
-
-[b]0.1.5 - 17th January 2009[/b]
-o Solved conflict mode with other than jQuery javascript librairies
-o Added GERMAN translation (by CvH)
-
-[b]0.1.4 - 2d January 2009[/b]
-o Add possibility to have title and body in keywords definition. Administrator can choose a special character to delimit title and body.
-o Administrator can activate bbccode in tooltip.
-
-[b]0.1.3 - 1st December 2008[/b]
-o Add members keywords suggestion functionnality
-
-[b]0.1.2 - 1st December 2008[/b]
-o Add Thickobx pluggin for better management keywords administration
-
-[b]0.1.1 - 30th November 2008[/b]
-o Glossary analyzer improvment
-o Corrections after code review
-
-[b]0.1.0 - 21th November 2008[/b]
-o Initial release

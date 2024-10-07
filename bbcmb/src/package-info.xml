@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:bbc_message_boxes</id>
+	<name>BBC Message Boxes</name>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="2.1 - 2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3">
+		<readme parsebbc="true">readme.txt</readme>
+		<hook hook="integrate_bbc_codes" function="MessageBoxesIntegration::bbc_codes" file="$sourcedir/Class-MessageBoxes.php" />
+		<hook hook="integrate_sceditor_options" function="MessageBoxesIntegration::sce_options" file="$sourcedir/Class-MessageBoxes.php" />
+		<hook hook="integrate_bbc_buttons" function="MessageBoxesIntegration::bbc_buttons" file="$sourcedir/Class-MessageBoxes.php" />
+		<require-file name="Class-MessageBoxes.php" destination="$sourcedir" />
+		<require-file name="MessageBoxes.english.php" destination="$themedir/languages" />
+		<require-file name="error.png" destination="$themedir/images/bbc" />
+		<require-file name="warning.png" destination="$themedir/images/bbc" />
+		<require-file name="okay.png" destination="$themedir/images/bbc" />
+		<require-file name="info.png" destination="$themedir/images/bbc" />
+		<require-file name="error-bullet.png" destination="$themedir/images/bbc" />
+		<require-file name="warning-bullet.png" destination="$themedir/images/bbc" />
+		<require-file name="okay-bullet.png" destination="$themedir/images/bbc" />
+		<require-file name="info-bullet.png" destination="$themedir/images/bbc" />
+		<require-file name="mbox.js" destination="$themedir/scripts" />
+		<require-file name="mbox.css" destination="$themedir/css" />
+	</install>
+
+	<uninstall for="2.1 - 2.1.99, 2.1 RC1, 2.1 RC2, 2.1 RC3">
+		<hook hook="integrate_bbc_codes" function="MessageBoxesIntegration::bbc_codes" file="$sourcedir/Class-MessageBoxes.php" reverse="true" />
+		<hook hook="integrate_sceditor_options" function="MessageBoxesIntegration::sce_options" file="$sourcedir/Class-MessageBoxes.php" reverse="true" />
+		<hook hook="integrate_bbc_buttons" function="MessageBoxesIntegration::bbc_buttons" file="$sourcedir/Class-MessageBoxes.php" reverse="true" />
+		<remove-file name="$sourcedir/Class-MessageBoxes.php" />
+		<remove-file name="$themedir/languages/MessageBoxes.english.php" />
+		<remove-file name="$themedir/images/bbc/error.png" />
+		<remove-file name="$themedir/images/bbc/warning.png" />
+		<remove-file name="$themedir/images/bbc/okay.png" />
+		<remove-file name="$themedir/images/bbc/info.png" />
+		<remove-file name="$themedir/images/bbc/error-bullet.png" />
+		<remove-file name="$themedir/images/bbc/warning-bullet.png" />
+		<remove-file name="$themedir/images/bbc/okay-bullet.png" />
+		<remove-file name="$themedir/images/bbc/info-bullet.png" />
+		<remove-file name="$themedir/scripts/mbox.js" />
+		<remove-file name="$themedir/css/mbox.css" />
+	</uninstall>
+
+</package-info>

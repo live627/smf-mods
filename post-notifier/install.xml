@@ -1,0 +1,13 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>live6627:post_notifier</id>
+
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="before"><![CDATA[if (empty($_REQUEST['action']) || !in_array($_REQUEST['action'], array(]]></search>
+			<add><![CDATA['postnotifier', ]]></add>
+		</operation>
+	</file>
+
+</modification>

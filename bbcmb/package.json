@@ -1,0 +1,19 @@
+{
+  "name": "smf-bbcmb",
+  "version": "1.0.0",
+  "description": "Add four new BB codes with editor buttons for easy access",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/live627/smf-bbcmb.git"
+  },
+  "author": "live627",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/live627/smf-bbcmb/issues"
+  },
+  "homepage": "https://github.com/live627/smf-bbcmb#readme"
+}

@@ -1,0 +1,46 @@
+.sceditor-button-error div {
+	background: url(../images/bbc/error.png);
+}
+.sceditor-button-warning div {
+	background: url(../images/bbc/warning.png);
+}
+.sceditor-button-okay div {
+	background: url(../images/bbc/okay.png);
+}
+.sceditor-button-info div {
+	background: url(../images/bbc/info.png);
+}
+
+.error_bbc, .warning_bbc, .okay_bbc, .info_bbc {
+	margin-bottom: 1.5em;
+	padding: 1em 1.5em 1em 5.5em;
+	border-bottom: 2px solid #fff;
+	border-top: 2px solid #fff;
+	color: #444
+}
+
+.error_bbc { background: #fbe3e4 url(../images/bbc/error.png) 2.2em center no-repeat; border-color: #e0011b }
+.error_bbc a  { color: #d12f19 }
+
+.warning_bbc { background: #fff6bf url(../images/bbc/warning.png) 2.2em center no-repeat; border-color: #ffd324 }
+.warning_bbc a { color: #817134 }
+
+.okay_bbc { background: #e9ffdd url(../images/bbc/okay.png) 2.2em center no-repeat; border-color: #72c868 }
+.okay_bbc a { color: #529214 }
+
+.info_bbc { background: #e2ecee url(../images/bbc/info.png) 2.2em center no-repeat; border-color: #9ddae6 }
+.info_bbc a { color: #2d7ba2 }
+
+
+/* Lists */
+.error_bbc ul, .warning_bbc ul, .okay_bbc ul, .info_bbc ul {
+	list-style: none;
+	margin: 1.3em 1.5em
+}
+.error_bbc ul li, .warning_bbc ul li, .okay_bbc ul li, .info_bbc ul li {
+	padding-left: 1.3em
+}
+.error_bbc ul li  { background: url(../images/bbc/error-bullet.png)  0 0.55em no-repeat }
+.warning_bbc ul li  { background: url(../images/bbc/warning-bullet.png)  0 0.55em no-repeat }
+.okay_bbc ul li { background: url(../images/bbc/okay-bullet.png) 0 0.55em no-repeat }
+.info_bbc ul li { background: url(../images/bbc/info-bullet.png) 0 0.55em no-repeat }

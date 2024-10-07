@@ -1,0 +1,15 @@
+#topbar
+{
+	background: #ffffe0;
+	border-bottom: solid 1px #F0C36D;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+	display: none;
+	clear: both;
+	float: left;
+	left: 0px;
+	padding: .45em .3em .45em 2em;
+	position: absolute;
+	top: 0px;
+	width: 100%;
+}

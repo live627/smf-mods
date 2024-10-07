@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Contact</name>
+	<id>live627:contact</id>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install>
+		<code>install.php</code>
+		<require-file name="Contact.php" destination="$sourcedir" />
+		<require-file name="Subs-Contact.php" destination="$sourcedir" />
+		<require-file name="Contact.template.php" destination="$themedir" />
+		<require-file name="Contact.english.php" destination="$languagedir" />
+	</install>
+
+	<uninstall>
+		<code>uninstall-required.php</code>
+		<remove-file name="$sourcedir/Contact.php" />
+		<remove-file name="$sourcedir/Subs-Contact.php" />
+		<remove-file name="$themedir/Contact.template.php" />
+		<remove-file name="$languagedir/Contact.english.php" />
+	</uninstall>
+
+</package-info>

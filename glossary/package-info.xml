@@ -1,114 +1,54 @@
 <?xml version="1.0"?>
 <!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
-	<name>Glossary</name>
-	<id>slinouille:Glossary</id>
+	<name>Glossary for SMF 2.1</name>
+	<id>GL700Wing:GlossarySMF21</id>
 	<type>modification</type>
-	<version>2.0.0</version>
-
-	<install for="2.0 - 2.0.99">
-		<code type="inline"><![CDATA[<?php
-define('REQUIRED_PHP_VERSION', '7.1');
-if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
-	fatal_error(
-		sprintf(
-			'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
-			REQUIRED_PHP_VERSION,
-			PHP_VERSION
-		),
-		false
-	);
-?>]]></code>
-		<readme type="file" parsebbc="true">install.txt</readme>
-		<hook hook="integrate_actions" function="Glossary\actions" file="$sourcedir/Subs-Glossary.php" />
-		<hook hook="integrate_menu_buttons" function="Glossary\buttons" file="$sourcedir/Subs-Glossary.php" />
-		<hook hook="integrate_admin_areas" function="Glossary\admin_areas" file="$sourcedir/Subs-Glossary.php" />
-		<hook hook="integrate_modify_modifications" function="Glossary\modify_modifications" file="$sourcedir/Subs-Glossary.php" />
-		<hook hook="integrate_load_theme" function="Glossary\load_theme" file="$sourcedir/Subs-Glossary.php" />
-		<hook hook="integrate_load_permissions" function="Glossary\load_permissions" file="$sourcedir/Subs-Glossary.php" />
-		<hook hook="integrate_bbc_codes" function="Glossary\bbc_codes" file="$sourcedir/Subs-Glossary.php" />
-		<hook hook="integrate_bbc_buttons" function="Glossary\bbc_buttons" file="$sourcedir/Subs-Glossary.php" />
-		<require-file name="Subs-Glossary.php" destination="$sourcedir" />
-		<require-file name="Glossary.english.php" destination="$themedir/languages" />
-		<require-file name="Glossary.french.php" destination="$themedir/languages" />
-		<require-file name="Glossary.german.php" destination="$themedir/languages" />
-		<require-file name="ManageGlossary.php" destination="$sourcedir" />
+	<version>1.0</version>
+	
+	<install for="2.1.4">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<database>db_install.php</database>
 		<require-file name="Glossary.php" destination="$sourcedir" />
 		<require-file name="Glossary.template.php" destination="$themedir" />
-		<require-file name="glossary.css" destination="$themedir/css" />
-		<require-file name="glossary.js" destination="$themedir/scripts" />
-		<require-file name="images/glossary_bubble.gif" destination="$themedir/images" />
-		<require-file name="images/glossary_bubble_filler.gif" destination="$themedir/images" />
-		<require-file name="images/glossary_blue.png" destination="$themedir/images" />
-		<require-file name="images/glossary_green.png" destination="$themedir/images" />
-		<require-file name="images/glossary_blue_add.png" destination="$themedir/images" />
-		<require-file name="images/glossary_blue_delete.png" destination="$themedir/images" />
-		<require-file name="images/glossary_blue_edit.png" destination="$themedir/images" />
-		<require-file name="images/glossary_error.png" destination="$themedir/images" />
-		<require-file name="images/glossary_category_add.png" destination="$themedir/images" />
-		<require-file name="images/glossary_approved.png" destination="$themedir/images" />
-		<require-file name="images/glossary_unapproved.png" destination="$themedir/images" />	
-		<require-file name="images/glossary_unvisible.png" destination="$themedir/images" />
-		<require-file name="images/glossary_visible.png" destination="$themedir/images" />	
-		<require-file name="images/glossary_bubble_disable_all.png" destination="$themedir/images" />
-		<require-file name="images/glossary_bubble_enable_all.png" destination="$themedir/images" />
-		<require-file name="images/glossary_category.png" destination="$themedir/images" />
-		<require-file name="images/glossary_change_group.png" destination="$themedir/images" />
-		<require-file name="images/glossary_selectall.png" destination="$themedir/images" />
-		<require-file name="images/glossary_synonyms.png" destination="$themedir/images" />
-		<require-file name="images/glossary_tags_admin.png" destination="$themedir/images" />
-		<require-file name="images/glossary_unselectall.png" destination="$themedir/images" />
-		<require-file name="images/glossary_wand.png" destination="$themedir/images" />
-		<require-file name="images/glossary_header.gif" destination="$themedir/images" />	
-		<require-file name="images/glossary_button.gif" destination="$themedir/images" />		
-		<require-file name="images/glossary.gif" destination="$themedir/images/bbc" />
-		<database>install.php</database>
-		<modification>install.xml</modification>
-		<redirect url="?action=admin;area=modsettings;sa=glossary">redirect.txt</redirect>
+		<require-dir name="images/glossary" destination="$imagesdir" />
+		<require-dir name="languages/glossary" destination="$languagedir" />
+		<require-dir name="css/glossary" destination="$themedir/css" />
+		<require-dir name="scripts/glossary" destination="$themedir/scripts" />
+		<hook hook="integrate_pre_include" function="$sourcedir/Glossary.php" />
+		<hook hook="integrate_actions" function="glossary_actions" />
+		<hook hook="integrate_admin_areas" function="glossary_adminAreas" />
+		<hook hook="integrate_bbc_buttons" function="glossary_bbcButtons" />
+		<hook hook="integrate_bbc_codes" function="glossary_bbcCodes" />
+		<hook hook="integrate_display_topic" function="glossary_displayTopic" />
+		<hook hook="integrate_load_illegal_guest_permissions" function="glossary_illegalPerms" />
+		<hook hook="integrate_load_permissions" function="glossary_loadPerms" />
+		<hook hook="integrate_load_theme" function="glossary_loadTheme" />
+		<hook hook="integrate_menu_buttons" function="glossary_menuButtons" />
+		<hook hook="integrate_modify_modifications" function="glossary_modifyMods" />
+		<hook hook="integrate_pre_parsebbc" function="glossary_preParseBBC" />
+		<redirect url="?action=admin;area=modsettings;sa=glossary" timeout="1500">redirect.txt</redirect>
 	</install>
-	<uninstall for="2.0 - 2.0.99">
-		<hook hook="integrate_actions" function="Glossary\actions" file="$sourcedir/Subs-Glossary.php" reverse="true" />
-		<hook hook="integrate_menu_buttons" function="Glossary\buttons" file="$sourcedir/Subs-Glossary.php" reverse="true" />
-		<hook hook="integrate_admin_areas" function="Glossary\admin_areas" file="$sourcedir/Subs-Glossary.php" reverse="true" />
-		<hook hook="integrate_modify_modifications" function="Glossary\modify_modifications" file="$sourcedir/Subs-Glossary.php" reverse="true" />
-		<hook hook="integrate_load_theme" function="Glossary\load_theme" file="$sourcedir/Subs-Glossary.php" reverse="true" />
-		<hook hook="integrate_load_permissions" function="Glossary\load_permissions" file="$sourcedir/Subs-Glossary.php" reverse="true" />
-		<hook hook="integrate_bbc_codes" function="Glossary\bbc_codes" file="$sourcedir/Subs-Glossary.php" reverse="true" />
-		<hook hook="integrate_bbc_buttons" function="Glossary\bbc_buttons" file="$sourcedir/Subs-Glossary.php" reverse="true" />
-		<remove-file name="$sourcedir/Subs-Glossary.php" />
-		<remove-file name="$themedir/languages/Glossary.english.php" />
-		<remove-file name="$themedir/languages/Glossary.french.php" />
-		<remove-file name="$themedir/languages/Glossary.german.php" />
-		<modification reverse="true">install.xml</modification>
-		<remove-file name="$sourcedir/ManageGlossary.php" />
+
+	<uninstall for="2.1.4 - 2.1.99">
+		<hook hook="integrate_actions" function="glossary_actions" reverse="true" />
+		<hook hook="integrate_admin_areas" function="glossary_adminAreas" reverse="true" />
+		<hook hook="integrate_bbc_buttons" function="glossary_bbcButtons" reverse="true" />
+		<hook hook="integrate_bbc_codes" function="glossary_bbcCodes" reverse="true" />
+		<hook hook="integrate_display_topic" function="glossary_displayTopic" reverse="true" />
+		<hook hook="integrate_load_illegal_guest_permissions" function="glossary_illegalPerms" reverse="true" />
+		<hook hook="integrate_load_permissions" function="glossary_loadPerms" reverse="true" />
+		<hook hook="integrate_load_theme" function="glossary_loadTheme" reverse="true" />
+		<hook hook="integrate_menu_buttons" function="glossary_menuButtons" reverse="true" />
+		<hook hook="integrate_modify_modifications" function="glossary_modifyMods" reverse="true" />
+		<hook hook="integrate_pre_parsebbc" function="glossary_preParseBBC" reverse="true" />
+		<hook hook="integrate_pre_include" function="$sourcedir/Glossary.php" reverse="true" />
 		<remove-file name="$sourcedir/Glossary.php" />
 		<remove-file name="$themedir/Glossary.template.php" />
-		<remove-file name="$themedir/css/glossary.css" />
-		<remove-file name="$themedir/scripts/glossary.js" />
-		<remove-file name="$themedir/images/glossary_bubble.gif" />
-		<remove-file name="$themedir/images/glossary_bubble_filler.gif" />
-		<remove-file name="$themedir/images/glossary_blue.png" />
-		<remove-file name="$themedir/images/glossary_green.png" />
-		<remove-file name="$themedir/images/glossary_blue_add.png" />
-		<remove-file name="$themedir/images/glossary_blue_delete.png" />
-		<remove-file name="$themedir/images/glossary_blue_edit.png" />
-		<remove-file name="$themedir/images/glossary_error.png" />
-		<remove-file name="$themedir/images/glossary_category_add.png" />
-		<remove-file name="$themedir/images/glossary_approved.png" />
-		<remove-file name="$themedir/images/glossary_unapproved.png" />
-		<remove-file name="$themedir/images/glossary_unvisible.png" />
-		<remove-file name="$themedir/images/glossary_visible.png" />
-		<remove-file name="$themedir/images/glossary_header.gif" />
-		<remove-file name="$themedir/images/glossary_button.gif" />
-		<remove-file name="$themedir/images/bbc/glossary.gif" />
-		<remove-file name="$themedir/images/glossary_bubble_disable_all.png" />
-		<remove-file name="$themedir/images/glossary_bubble_enable_all.png" />
-		<remove-file name="$themedir/images/glossary_category.png" />
-		<remove-file name="$themedir/images/glossary_change_group.png" />
-		<remove-file name="$themedir/images/glossary_selectall.png" />
-		<remove-file name="$themedir/images/glossary_synonyms.png" />
-		<remove-file name="$themedir/images/glossary_tags_admin.png" />
-		<remove-file name="$themedir/images/glossary_unselectall.png" />
-		<remove-file name="$themedir/images/glossary_wand.png" />
+		<remove-dir name="$imagesdir/glossary" />
+		<remove-dir name="$languagedir/glossary" />
+		<remove-dir name="$themedir/css/glossary" />
+		<remove-dir name="$themedir/scripts/glossary" />
 	</uninstall>
+
 </package-info>

@@ -1,0 +1,63 @@
+Changes go downward, versions go upward.  Please scroll to the bottom for a legend.
+Changelog started July 31, 2010.
+Changelog last updated July 29, 2014.
+
+
+2.2
+================================================================================
++ Added "Save as Draft" button to Quick Reply
++ Added pl_PL (thanks Nolt)
++ Added ru_RU (thanks Bugo)
++ Added uk_UA (thanks Crazy_Nick)
+
+2.1
+================================================================================
+! Users could see each others' drafts in the profile area
+- Remove support for SMF 1.1.x
++ Added it_it (thanks Flavio93Zena)
+! Wrong variable used (thanks TourFL)
++ Added pt_br (thanks DSystem)
+
+2.0.5
+================================================================================
+! Parse error in template (thanks emanuele)
+
+2.0.4
+================================================================================
+! An icon was misaligned
+! Several areas used the wrong URL (thanks msauser2)
+! Wrong column name in a query (thanks emanuele)
+
+2.0.3
+================================================================================
+! Members could see each other's drafts
+
+2.0.2
+================================================================================
+! Simple permissions drafts category had no title (thanks jm_araujo)
+! Profile title caused error in log; also clean up (thanks jm_araujo)
+! Error in log when posting a new topic from a draft (thanks jm_araujo)
++ Added pt_PT (thanks jm_araujo)
+
+2.0.1
+================================================================================
+! Fixed Sticky problem
+! Fixed breaking-spaces and general html entities problems
+! Log actions, notifications, member post count updates, and mark read now done properly after posting a draft using "Post it!"
+! Improved redirects (after deleting / posting drafts)
+! Minimized edits to SMF Source files by separating Drafts source code into its own source file
+! Eliminated edits to SMF Language files by separating Drafts txt strings into its own language files
+! Minimized edits to SMF Template files by separating Drafts templates into its own template file
+! Eliminated inline css
+- Dropped support for other modifications
++ Polls now supported
++ Added board select on post form for new topics
++ Support for SMF 2.0 added
+
+
+
+Legend:
+--------------------------------------------------------------------------------
+! Minor change or bugfix.
++ Feature addition or improvement.
+- Feature or option removal.

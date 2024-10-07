@@ -1,0 +1,301 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>charlesh:drafts</id>
+	<version>2.2</version>
+
+
+<file name="$boarddir/index.php">
+
+	<operation>
+
+<search position="before"><![CDATA[// Load the current user's permissions.
+	loadPermissions();]]></search>
+
+<add><![CDATA[
+
+	if (file_exists($sourcedir . '/Drafts.php'))
+		loadLanguage('Drafts');]]></add>
+
+	</operation>
+
+</file>
+
+
+<file name="$sourcedir/ManagePermissions.php">
+
+	<operation>
+
+<search position="replace"><![CDATA['pm_read' => array(false, 'pm', 'use_pm_system'),]]></search>
+
+<add><![CDATA['pm_read' => array(false, 'pm', 'use_pm_system'),
+			'save_drafts' => array(false, 'drafts', 'drafts'),]]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="replace"><![CDATA[				'pm',]]></search>
+
+<add><![CDATA[				'pm',
+				'drafts',]]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="replace"><![CDATA[				'use_pm_system',]]></search>
+
+<add><![CDATA[				'use_pm_system',
+				'drafts',]]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="replace"><![CDATA[$context['non_guest_permissions'] = array(]]></search>
+
+<add><![CDATA[$context['non_guest_permissions'] = array(
+		'save_drafts',]]></add>
+
+	</operation>
+
+</file>
+
+
+<file name="$sourcedir/Post.php">
+
+	<operation>
+
+<search position="replace"><![CDATA[if (isset($_REQUEST['poll']))
+		$context['page_title'] = $txt['new_poll'];]]></search>
+
+<add><![CDATA[if (isset($context['draft_saved']) && $context['draft_saved'] === true)
+		$context['page_title'] = $txt['drafts'][15];
+	elseif (isset($_REQUEST['poll']))
+		$context['page_title'] = $txt['new_poll'];]]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="after"><![CDATA[// ...or attach a new file...]]></search>
+
+<add><![CDATA[global $sourcedir;
+
+	if (!isset($_REQUEST['msg']) && file_exists($sourcedir . '/Drafts.php') && allowedTo('save_drafts'))
+	{
+		require_once($sourcedir . '/Drafts.php');
+
+		// maybe we are trying to save this as a draft?
+		if (!empty($_POST['drafts-save_as_draft']))
+		{
+			drafts_save_draft();
+			return Post();
+		}
+
+		// if we got this far we don't need this draft anymore... so delete it
+		if (!empty($_POST['drafts-draft_id']))
+			drafts_delete_draft($_POST['drafts-draft_id']);
+	}
+
+	]]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="after"><![CDATA[// Now create the editor.]]></search>
+
+<add><![CDATA[global $sourcedir;
+
+	if (file_exists($sourcedir . '/Drafts.php') && allowedTo('save_drafts'))
+	{
+		require_once($sourcedir . '/Drafts.php');
+
+		// loads an individual draft (populates variables used in post form)
+		if (!empty($_REQUEST['draft']))
+			drafts_load_draft();
+
+		// load list of drafts
+		$context['list_of_drafts'] = drafts_load_list_of_drafts();
+	}
+
+	]]></add>
+
+	</operation>
+
+</file>
+
+
+<file name="$sourcedir/Profile.php">
+
+	<operation>
+
+<search position="replace"><![CDATA[				'permissions' => array(]]></search>
+
+<add><![CDATA[				'show_drafts' => array(
+					'label' => '',
+					'file' => 'Drafts.php',
+					'function' => 'drafts_profile_show_drafts',
+					'permission' => array(
+						'own' => array('profile_view_own'),
+					),
+				),
+				'permissions' => array(]]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="after"><![CDATA[// Do some cleaning ready for the menu function.]]></search>
+
+<add><![CDATA[if (isset($profile_areas['info']['areas']['show_drafts']))
+	{
+		if (file_exists($sourcedir . '/Drafts.php') && (($context['user']['is_owner'] && allowedTo('profile_view_own') && allowedTo('save_drafts'))))
+		{
+			require_once($sourcedir . '/Drafts.php');
+
+			$num_drafts = drafts_get_num_drafts($memID);
+
+			$profile_areas['info']['areas']['show_drafts']['label'] = $txt['drafts'][2] . ' (' . $num_drafts . ')</span>';
+		}
+		else
+			unset($profile_areas['info']['areas']['show_drafts']);
+	}
+
+	]]></add>
+
+	</operation>
+
+</file>
+
+
+<file name="$sourcedir/Subs-Members.php">
+
+	<operation>
+
+<search position="after"><![CDATA[// Delete personal messages.]]></search>
+
+<add><![CDATA[if (file_exists($sourcedir . '/Drafts.php'))
+	{
+		$smcFunc['db_query']('', '
+			DELETE FROM {db_prefix}drafts
+			WHERE member_id IN ({array_int:users})',
+			array(
+				'users' => $users
+			)
+		);
+	}
+
+	]]></add>
+
+	</operation>
+
+</file>
+
+
+<file name="$themedir/Post.template.php">
+
+	<operation>
+
+<search position="after"><![CDATA[// If an error occurred]]></search>
+
+<add><![CDATA[if (isset($context['draft_saved']) && $context['draft_saved'] === true)
+	{
+		echo '
+					<div id="drafts-success">', $txt['drafts'][1], '</div>';
+	}
+
+	]]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="replace"><![CDATA[is where it's at!
+	echo ']]></search>
+
+<add><![CDATA[is where it's at!
+	if (!isset($context['draft_saved']) || $context['draft_saved'] !== true)
+		echo ']]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="after"><![CDATA[// Now show the subject box for this post.]]></search>
+
+<add><![CDATA[// Drafts Modification for SMF 2.0 / 1.1
+	if (!$context['make_event'] && ($drafts_template_loaded = loadTemplate('Drafts', false)) !== false)
+		template_drafts_post_extra_inputs();
+
+	]]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="after"><![CDATA[// Option to delete an event]]></search>
+
+<add><![CDATA[if (!$context['make_event'] && $drafts_template_loaded !== false)
+		template_drafts_post_save_as_draft_button();
+
+	]]></add>
+
+	</operation>
+
+	<operation>
+
+<search position="before"><![CDATA[/>
+		</form>';]]></search>
+
+<add><![CDATA[
+
+	if (!$context['make_event'] && $drafts_template_loaded !== false)
+		template_drafts_post_list_of_drafts();]]></add>
+
+	</operation>
+
+</file>
+
+	<file name="$sourcedir/Display.php"><!-- enable draft saving for quick reply box -->
+		<operation>
+			<search position="before"><![CDATA[// Cleanup all the permissions with extra stuff...]]></search>
+			<add><![CDATA[
+	$context['save_draft'] = $context['can_reply'] && allowedTo('save_drafts');]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Display.template.php">
+		<operation><!-- add the button for quick reply to be able to save draft -->
+			<search position="after"><![CDATA[			if ($context['show_spellchecking'])]]></search>
+			<add><![CDATA[			// Add drafts
+			if (!empty($context['save_draft']))
+				echo '
+		<input type="hidden" name="drafts-save_as_draft" id="drafts-save_as_draft" value="0" />
+		<input type="submit" onclick="document.getElementById(\'drafts-save_as_draft\').value = \'1\';" value="', $txt['drafts'][14], '" class="button_submit" />';
+
+]]></add>
+		</operation>
+	</file>
+
+
+<file name="$themedir/css/index.css">
+
+	<operation>
+
+<search position="end"></search>
+
+<add><![CDATA[
+/*  Drafts Modification for SMF 2.0/1.1  */
+#drafts-success{color:green; padding:1ex 0 2ex 3ex;}
+/*  Drafts Modification for SMF 2.0/1.1  */
+]]></add>
+
+	</operation>
+
+</file>
+
+
+</modification>

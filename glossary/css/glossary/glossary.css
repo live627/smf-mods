@@ -1,0 +1,186 @@
+/*---------- Glossary mod -----------*/
+.glossarytitle {
+	padding: 5px 2.5%;
+}
+.glossarytitle table tbody tr {
+	margin: 4px 0 0 0;
+	padding: 0 10px;
+	overflow: hidden;
+	border: 1px solid #ddd;
+	border-radius: 2px;
+	box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.08);
+	background: #fff;
+	background-image: linear-gradient(to bottom, #fff 0%, #f1f3f5 95%);
+}
+
+span.glossary {
+	position: relative;
+	z-index: 7;
+	color: #3CA3FF;
+	font-weight: bold;
+	text-decoration: none;
+	cursor: help;
+}
+
+.glossary {
+	font-size: small;
+	font-family: 'Tahoma', sans-serif;
+}
+
+.glossary-tooltip {
+	padding: 25px !important;
+	border: 25px !important;
+	margin: 25px !important;
+}
+
+div.letter_selection {
+	border-bottom: 1px solid #696969;
+	background: #D6D6D6;
+	padding-bottom: 10px;
+	padding-top: 6px;
+	font-weight: bold;
+	font-size: 25px;
+	font-family: 'Times New Roman';
+}
+
+.glossarytitle a {
+	background: none;
+	color: #555;
+	font-family: 'Trebuchet MS', Verdana, Arial;
+	font-weight: bold;
+	text-shadow: none;
+	text-decoration: none;
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+.glossarytitle a:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+
+/* ---- Modal Dialog Box ------ */
+/* Overlay */
+#ModalOverlay {
+	background-color: #eee;
+	cursor: wait;
+}
+
+/* Container */
+#ModalContainer {
+	position: fixed !important;
+	top: 10vh !important;
+	left: 50vw !important;
+	transform: translate(-50%, 0);
+	font-family: 'Trebuchet MS', Verdana, Arial;
+	font-size: 16px;
+	height: auto !important;
+	width: 420px;
+	padding-bottom: 10px;
+	text-align: left;
+	background: #fff;
+	border: 2px solid #336699;
+}
+
+#ModalContainer .header {
+	height: 30px;
+	width: 100%;
+	background: url(../glossary/images/glossary_header.gif) repeat-x;
+	color: #fff;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+#ModalContainer .header span {
+	padding-left: 8px;
+}
+
+#ModalContainer .buttons {
+	float: right;
+	padding: 0 8px;
+}
+
+#ModalContainer .buttons div {
+	float: right;
+	margin-left: 8px;
+	width: 70px;
+	height: 26px;
+	color: #666;
+	font-weight: bold;
+	text-align: center;
+	background: url(../glossary/images/glossary_button.gif) repeat-x;
+	border: 1px solid #bbb;
+	cursor: pointer;
+	font-size: 13px;
+}
+
+#ModalContainer a.modalCloseX,
+#ModalContainer a.modalCloseX:link,
+#ModalContainer a.modalCloseX:active,
+#ModalContainer a.modalCloseX:visited {
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 1.1em;
+	position: absolute;
+	top: -1px;
+	left: 400px;
+	color: #fff;
+}
+
+#ModalContainer a.modalCloseX:hover {
+	color: #9bb3b3;
+}
+
+#ModalContainer .ModalContent {
+	font-size: 0.8em;
+	padding: 10px;
+}
+
+#ModalContainer .ModalContent fieldset{
+	padding: 5px;
+}
+
+#ModalContainer .ModalContent input.text {
+	margin-bottom: 12px;
+	width: 96%;
+	padding: .4em;
+}
+
+#ModalContainer .ModalContent textarea {
+	margin-bottom: 12px;
+	width: 96%;
+	padding: .4em;
+}
+
+
+#ModalContainer label {
+	display: -moz-inline-box;
+	display: inline-block;
+	padding: 5px 0 0;
+	font-weight: bold;
+}
+
+#IE #ModalContainer label,
+#IE #ModalContainer .input-submit{
+	display: inline;
+}
+
+#glossary_admin_menu {
+	background-color: #F0F0F0;
+	width: auto;
+	max-width: 240px;
+	position: absolute;
+	margin-top: 7px;
+	padding: 5px;
+	border: 1px solid #969696;
+	line-height: 25px;
+	display:none;
+	right: 21%;
+}
+
+#glossary_admin_menu img {
+	vertical-align: middle;
+	padding-left: 5px;
+}
+

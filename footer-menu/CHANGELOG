@@ -1,0 +1,20 @@
+Changes go downward, versions go upward.  Please scroll to the bottom for a legend.
+Changelog started October 12, 2013
+Changelog last updated October 15, 2013.
+
+
+2.0.2                                                           October 12, 2013
+================================================================================
+! Footer cache would not refresh upon link deletion and some other actions
+
+2.0.1                                                           October 15, 2013
+================================================================================
+! Encoring: UTF-8 was forced on all inputs
+! URL got truncated to 40 characters; set the new length to 400
+
+
+Legend:
+--------------------------------------------------------------------------------
+! Minor change or bugfix.
++ Feature addition or improvement.
+- Feature or option removal.

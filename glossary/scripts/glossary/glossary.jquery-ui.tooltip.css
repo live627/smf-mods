@@ -1,0 +1,58 @@
+/*! jQuery UI - v1.13.2 - 2024-01-14
+* http://jqueryui.com
+* Includes: core.css, tooltip.css, theme.css
+* Copyright jQuery Foundation and other contributors; Licensed MIT */
+
+.ui-tooltip {
+	padding: 8px;
+	position: absolute;
+	z-index: 9999;
+	max-width: 300px;
+}
+body .ui-tooltip {
+	border-width: 2px;
+}
+
+/* Component containers
+----------------------------------*/
+.ui-widget {
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 1em;
+}
+.ui-widget-content {
+	border: 1px solid #dddddd;
+	background: #ffffff;
+	color: #333333;
+}
+.ui-widget-content a {
+	color: #333333;
+}
+.ui-widget-shadow {
+	-webkit-box-shadow: 0px 0px 5px #666666;
+	box-shadow: 0px 0px 5px #666666;
+}
+
+/* Misc visuals
+----------------------------------*/
+
+/* Corner radius */
+.ui-corner-all {
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
+
+/*	Glossary mod customisation
+	Line breaks at newline characters
+	and maximum tooltip display width
+---------------------------------------*/
+.ui-tooltip {
+	padding: 20px;
+	white-space: pre-line;
+	max-width: 90%;
+	max-width: 940px;
+	width: auto;
+}
+

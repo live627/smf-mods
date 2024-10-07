@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Drafts</name>
+	<id>charlesh:drafts</id>
+	<version>2.2/version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.99.99">
+		<modification format="xml" type="file">install2.xml</modification>
+
+		<!-- Source files -->
+		<require-file name="smf2/Sources/Drafts.php" destination="$sourcedir" />
+
+		<!-- Theme files -->
+		<require-file name="smf2/Themes/default/Drafts.template.php" destination="$themedir" />
+		<require-file name="images/icons/edit.gif" destination="$themedir/images/icons" />
+
+		<!-- Language files -->
+		<require-file name="languages/Drafts.english.php" destination="$languagedir" />
+		<require-file name="languages/Drafts.english-utf8.php" destination="$languagedir" />
+		<require-file name="languages/Drafts.polish-utf8.php" destination="$languagedir" />
+		<require-file name="languages/Drafts.portuguese_brazilian-utf8.php" destination="$languagedir" />
+		<require-file name="languages/Drafts.portuguese_pt-utf8.php" destination="$languagedir" />
+		<require-file name="languages/Drafts.italian-utf8.php" destination="$languagedir" />
+		<require-file name="languages/Drafts.german.php" destination="$languagedir" />
+		<require-file name="languages/Drafts.german-utf8.php" destination="$languagedir" />
+		<require-file name="languages/Drafts.russian-utf8.php" destination="$languagedir" />
+		<require-file name="languages/Drafts.ukrainian-utf8.php" destination="$languagedir" />
+
+		<!-- Install scripts -->
+		<database>install2.php</database>
+
+	</install>
+
+	<uninstall for="2.0 - 2.99.99">
+		<modification format="xml" type="file" reverse="true">install2.xml</modification>
+
+		<!-- Source files -->
+		<remove-file name="$sourcedir/Drafts.php" />
+
+		<!-- Theme files -->
+		<remove-file name="$themedir/Drafts.template.php" />
+		<remove-file name="$themedir/images/icons/edit.gif" />
+
+		<!-- Language files -->
+		<remove-file name="$languagedir/Drafts.english.php" />
+		<remove-file name="$languagedir/Drafts.english-utf8.php" />
+		<remove-file name="$languagedir/Drafts.polish-utf8.php" />
+		<remove-file name="$languagedir/Drafts.portuguese_brazilian-utf8.php" />
+		<remove-file name="$languagedir/Drafts.portuguese_pt-utf8.php" />
+		<remove-file name="$languagedir/Drafts.italian-utf8.php" />
+		<remove-file name="$languagedir/Drafts.german.php" />
+		<remove-file name="$languagedir/Drafts.german-utf8.php" />
+		<remove-file name="$languagedir/Drafts.russian-utf8.php" />
+		<remove-file name="$languagedir/Drafts.ukrainian-utf8.php" />
+
+	</uninstall>
+
+</package-info>
