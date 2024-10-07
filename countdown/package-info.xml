@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:countdown</id>
+	<name>Countdown BBC</name>
+	<version>1.0.0</version>
+	<type>modification</type>
+	<install for="2.1 RC3, 2.1 RC4, 2.1 RC5, 2.1 - 2.1.99">
+		<require-file name="CountdownBBC.english.php" destination="$themedir/languages" />
+		<require-file name="Subs-CountdownBBC.php" destination="$sourcedir" />
+		<require-file name="countdown.png" destination="$themedir/images/bbc" />
+		<code>hooks.php</code>
+	</install>
+	<uninstall for="2.1 RC3, 2.1 RC4, 2.1 RC5, 2.1 - 2.1.99">
+		<remove-file name="$languagedir/CountdownBBC.english.php" />
+		<remove-file name="$sourcedir/Subs-CountdownBBC.php" />
+		<remove-file name="$themedir/images/bbc/countdown.png" />
+		<code>hooks.php</code>
+	</uninstall>
+</package-info>
