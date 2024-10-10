@@ -50,13 +50,6 @@
 		</operation>
 	</file>
 
-	<file name="$themedir/MessageIndex.template.php">
-		<operation>
-			<search position="before"><![CDATA[', !empty($topic['pages']) ? '<span id="pages' . $topic['first_post']['id'] . '" class="topic_pages">' . $topic['pages'] . '</span>' : '', ']]></search>
-			<add><![CDATA[' . (!empty($modSettings['topic_descriptions_enable']) && $topic['description'] != '' ? '<small id="topicdesc_' . $topic['first_post']['id'] . '">' . $topic['description'] . '</small>' : '') . ']]></add>
-		</operation>
-	</file>
-
 	<file name="$themedir/Xml.template.php">
 		<operation>
 			<search position="before"><![CDATA[	echo '<', '?xml version="1.0" encoding="', $context['character_set'], '"?', '>
