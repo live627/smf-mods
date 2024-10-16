@@ -4,38 +4,43 @@
 	<name>Glossary for SMF 2.1</name>
 	<id>GL700Wing:GlossarySMF21</id>
 	<type>modification</type>
-	<version>1.0</version>
-	
+	<version>1.4</version>
+
 	<install for="2.1.4">
 		<readme type="file" parsebbc="true">readme.txt</readme>
 		<database>db_install.php</database>
 		<require-file name="Glossary.php" destination="$sourcedir" />
 		<require-file name="Glossary.template.php" destination="$themedir" />
+		<require-dir name="css/glossary" destination="$themedir/css" />
 		<require-dir name="images/glossary" destination="$imagesdir" />
 		<require-dir name="languages/glossary" destination="$languagedir" />
-		<require-dir name="css/glossary" destination="$themedir/css" />
 		<require-dir name="scripts/glossary" destination="$themedir/scripts" />
-		<hook hook="integrate_pre_include" function="$sourcedir/Glossary.php" />
-		<hook hook="integrate_actions" function="glossary_actions" />
-		<hook hook="integrate_admin_areas" function="glossary_adminAreas" />
-		<hook hook="integrate_bbc_buttons" function="glossary_bbcButtons" />
-		<hook hook="integrate_bbc_codes" function="glossary_bbcCodes" />
-		<hook hook="integrate_display_topic" function="glossary_displayTopic" />
-		<hook hook="integrate_load_illegal_guest_permissions" function="glossary_illegalPerms" />
-		<hook hook="integrate_load_permissions" function="glossary_loadPerms" />
-		<hook hook="integrate_load_theme" function="glossary_loadTheme" />
-		<hook hook="integrate_menu_buttons" function="glossary_menuButtons" />
-		<hook hook="integrate_modify_modifications" function="glossary_modifyMods" />
-		<hook hook="integrate_pre_parsebbc" function="glossary_preParseBBC" />
+		<hook hook="integrate_actions" file="$sourcedir/Glossary.php" function="glossary_actions" />
+		<hook hook="integrate_admin_areas" file="$sourcedir/Glossary.php" function="glossary_adminAreas" />
+		<hook hook="integrate_bbc_buttons" file="$sourcedir/Glossary.php" function="glossary_bbcButtons" />
+		<hook hook="integrate_bbc_codes" file="$sourcedir/Glossary.php" function="glossary_bbcCodes" />
+		<hook hook="integrate_boards_main" file="$sourcedir/Glossary.php" function="glossary_boardsMain" />
+		<hook hook="integrate_load_illegal_guest_permissions" file="$sourcedir/Glossary.php" function="glossary_illegalPerms" />
+		<hook hook="integrate_load_permissions" file="$sourcedir/Glossary.php" function="glossary_loadPerms" />
+		<hook hook="integrate_load_theme" file="$sourcedir/Glossary.php" function="glossary_loadTheme" />
+		<hook hook="integrate_menu_buttons" file="$sourcedir/Glossary.php" function="glossary_menuButtons" />
+		<hook hook="integrate_modify_modifications" file="$sourcedir/Glossary.php" function="glossary_modifyMods" />
+		<hook hook="integrate_pre_parsebbc" file="$sourcedir/Glossary.php" function="glossary_preParseBBC" />
 		<redirect url="?action=admin;area=modsettings;sa=glossary" timeout="1500">redirect.txt</redirect>
 	</install>
 
-	<uninstall for="2.1.4 - 2.1.99">
+	<upgrade from="1.0 - 1.1" for="2.1.4">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<database>db_install.php</database>
+		<require-file name="Glossary.php" destination="$sourcedir" />
+		<require-file name="Glossary.template.php" destination="$themedir" />
+		<require-dir name="css/glossary" destination="$themedir/css" />
+		<require-dir name="images/glossary" destination="$imagesdir" />
+		<require-dir name="languages/glossary" destination="$languagedir" />
 		<hook hook="integrate_actions" function="glossary_actions" reverse="true" />
 		<hook hook="integrate_admin_areas" function="glossary_adminAreas" reverse="true" />
 		<hook hook="integrate_bbc_buttons" function="glossary_bbcButtons" reverse="true" />
 		<hook hook="integrate_bbc_codes" function="glossary_bbcCodes" reverse="true" />
-		<hook hook="integrate_display_topic" function="glossary_displayTopic" reverse="true" />
 		<hook hook="integrate_load_illegal_guest_permissions" function="glossary_illegalPerms" reverse="true" />
 		<hook hook="integrate_load_permissions" function="glossary_loadPerms" reverse="true" />
 		<hook hook="integrate_load_theme" function="glossary_loadTheme" reverse="true" />
@@ -43,6 +48,43 @@
 		<hook hook="integrate_modify_modifications" function="glossary_modifyMods" reverse="true" />
 		<hook hook="integrate_pre_parsebbc" function="glossary_preParseBBC" reverse="true" />
 		<hook hook="integrate_pre_include" function="$sourcedir/Glossary.php" reverse="true" />
+		<hook hook="integrate_actions" file="$sourcedir/Glossary.php" function="glossary_actions" />
+		<hook hook="integrate_admin_areas" file="$sourcedir/Glossary.php" function="glossary_adminAreas" />
+		<hook hook="integrate_bbc_buttons" file="$sourcedir/Glossary.php" function="glossary_bbcButtons" />
+		<hook hook="integrate_bbc_codes" file="$sourcedir/Glossary.php" function="glossary_bbcCodes" />
+		<hook hook="integrate_boards_main" file="$sourcedir/Glossary.php" function="glossary_boardsMain" />
+		<hook hook="integrate_load_illegal_guest_permissions" file="$sourcedir/Glossary.php" function="glossary_illegalPerms" />
+		<hook hook="integrate_load_permissions" file="$sourcedir/Glossary.php" function="glossary_loadPerms" />
+		<hook hook="integrate_load_theme" file="$sourcedir/Glossary.php" function="glossary_loadTheme" />
+		<hook hook="integrate_menu_buttons" file="$sourcedir/Glossary.php" function="glossary_menuButtons" />
+		<hook hook="integrate_modify_modifications" file="$sourcedir/Glossary.php" function="glossary_modifyMods" />
+		<hook hook="integrate_pre_parsebbc" file="$sourcedir/Glossary.php" function="glossary_preParseBBC" />
+		<redirect url="?action=admin;area=modsettings;sa=glossary" timeout="1500">redirect.txt</redirect>
+	</upgrade>
+
+	<upgrade from="1.2 - 1.3" for="2.1.4">
+		<readme type="file" parsebbc="true">readme.txt</readme>
+		<database>db_install.php</database>
+		<require-file name="Glossary.template.php" destination="$themedir" />
+		<require-file name="Glossary.php" destination="$sourcedir" />
+		<require-dir name="css/glossary" destination="$themedir/css" />
+		<require-dir name="images/glossary" destination="$imagesdir" />
+		<require-dir name="languages/glossary" destination="$languagedir" />
+		<redirect url="?action=admin;area=modsettings;sa=glossary" timeout="1500">redirect.txt</redirect>
+	</upgrade>
+
+	<uninstall for="2.1.4 - 2.1.99">
+		<hook hook="integrate_actions" file="$sourcedir/Glossary.php" function="glossary_actions" reverse="true" />
+		<hook hook="integrate_admin_areas" file="$sourcedir/Glossary.php" function="glossary_adminAreas" reverse="true" />
+		<hook hook="integrate_bbc_buttons" file="$sourcedir/Glossary.php" function="glossary_bbcButtons" reverse="true" />
+		<hook hook="integrate_bbc_codes" file="$sourcedir/Glossary.php" function="glossary_bbcCodes" reverse="true" />
+		<hook hook="integrate_boards_main" file="$sourcedir/Glossary.php" function="glossary_boardsMain" reverse="true" />
+		<hook hook="integrate_load_illegal_guest_permissions" file="$sourcedir/Glossary.php" function="glossary_illegalPerms" reverse="true" />
+		<hook hook="integrate_load_permissions" file="$sourcedir/Glossary.php" function="glossary_loadPerms" reverse="true" />
+		<hook hook="integrate_load_theme" file="$sourcedir/Glossary.php" function="glossary_loadTheme" reverse="true" />
+		<hook hook="integrate_menu_buttons" file="$sourcedir/Glossary.php" function="glossary_menuButtons" reverse="true" />
+		<hook hook="integrate_modify_modifications" file="$sourcedir/Glossary.php" function="glossary_modifyMods" reverse="true" />
+		<hook hook="integrate_pre_parsebbc" file="$sourcedir/Glossary.php" function="glossary_preParseBBC" reverse="true" />
 		<remove-file name="$sourcedir/Glossary.php" />
 		<remove-file name="$themedir/Glossary.template.php" />
 		<remove-dir name="$imagesdir/glossary" />

@@ -1,4 +1,5 @@
-/*---------- Glossary mod -----------*/
+/* ---- Glossary List Menu ------ */
+/* Glossary list heading */
 .glossarytitle {
 	padding: 5px 2.5%;
 }
@@ -11,42 +12,20 @@
 	box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.08);
 	background: #fff;
 	background-image: linear-gradient(to bottom, #fff 0%, #f1f3f5 95%);
-}
-
-span.glossary {
-	position: relative;
-	z-index: 7;
-	color: #3CA3FF;
+	font-size: larger;
 	font-weight: bold;
-	text-decoration: none;
-	cursor: help;
 }
 
-.glossary {
+.glossarytitle table tbody tr td span.smalltext, .glossarytitle table tbody tr td.smalltext {
 	font-size: small;
-	font-family: 'Tahoma', sans-serif;
-}
-
-.glossary-tooltip {
-	padding: 25px !important;
-	border: 25px !important;
-	margin: 25px !important;
-}
-
-div.letter_selection {
-	border-bottom: 1px solid #696969;
-	background: #D6D6D6;
-	padding-bottom: 10px;
-	padding-top: 6px;
-	font-weight: bold;
-	font-size: 25px;
-	font-family: 'Times New Roman';
+	font-weight: normal;
 }
 
 .glossarytitle a {
 	background: none;
 	color: #555;
-	font-family: 'Trebuchet MS', Verdana, Arial;
+	font-family: Georgia, TimesNewRoman, Times New Roman, Times, Baskerville, serif;
+	font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;
 	font-weight: bold;
 	text-shadow: none;
 	text-decoration: none;
@@ -57,6 +36,87 @@ div.letter_selection {
 .glossarytitle a:hover {
 	text-decoration: underline;
 	cursor: pointer;
+}
+
+.glossarytitle a img, .glossarytitle button span img {
+	vertical-align: text-bottom;
+}
+
+div.letter_selection {
+	border-bottom: 1px solid #696969;
+	background: #F0F0F0;
+	padding: 8px 0;
+	font-weight: bold;
+	font-size: 1.5em;
+	font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;
+	font-family: Georgia, TimesNewRoman, Times New Roman, Times, Baskerville, serif;
+}
+
+.glossary_alert {
+	color: red !important;
+	text-decoration: underline;
+}
+
+/* Glossary actions, keywords and definitions */
+.glossary_keyword_def {
+	vertical-align: top;
+	padding: 3px 0;
+	font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;
+	font-family: Georgia, TimesNewRoman, Times New Roman, Times, Baskerville, serif;
+}
+
+.glossary_keyword_def div, .glossary_keyword_def b div {
+	float: left;
+}
+
+.glossary_hr {
+	width: 95%;
+	margin: 6px 0;
+}
+
+.glossary_heading {
+	font-family: Georgia, TimesNewRoman, Times New Roman, Times, Baskerville, serif;
+	font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;
+}
+
+.glossary_item {
+	font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;
+	font-family: Georgia, TimesNewRoman, Times New Roman, Times, Baskerville, serif;
+}
+
+/* Tooltip for action titles */
+.glossaryaction {
+	vertical-align: top;
+	padding: 5px 15px 0 0;
+}
+
+.glossaryaction a {
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.glossaryaction a:hover::after {
+	content: attr(data-title);
+	position: absolute;
+	z-index: 1;
+	white-space: nowrap;
+	max-width: 300px;
+	width: auto;
+	border-style: solid;
+	border-color: rgba(0, 0, 0, 0.6);
+	border-width: thin;
+	background-color: #fff;
+	color: rgba(0, 0, 0, 0.6);
+	text-align: center;
+	border-radius: 6px;
+	padding: 5px 15px;
+	top: 100%;
+	left: 50%;
+}
+
+td.glossaryaction input, td.glossaryaction a img {
+	padding: 0 1px;
 }
 
 
@@ -73,10 +133,11 @@ div.letter_selection {
 	top: 10vh !important;
 	left: 50vw !important;
 	transform: translate(-50%, 0);
-	font-family: 'Trebuchet MS', Verdana, Arial;
-	font-size: 16px;
+	font-family: Georgia, TimesNewRoman, Times New Roman, Times, Baskerville, serif;
+	font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;
+	font-size: 1em;
 	height: auto !important;
-	width: 420px;
+	width: 450px;
 	padding-bottom: 10px;
 	text-align: left;
 	background: #fff;
@@ -112,24 +173,7 @@ div.letter_selection {
 	background: url(../glossary/images/glossary_button.gif) repeat-x;
 	border: 1px solid #bbb;
 	cursor: pointer;
-	font-size: 13px;
-}
-
-#ModalContainer a.modalCloseX,
-#ModalContainer a.modalCloseX:link,
-#ModalContainer a.modalCloseX:active,
-#ModalContainer a.modalCloseX:visited {
-	text-decoration: none;
-	font-weight: bold;
-	font-size: 1.1em;
-	position: absolute;
-	top: -1px;
-	left: 400px;
-	color: #fff;
-}
-
-#ModalContainer a.modalCloseX:hover {
-	color: #9bb3b3;
+	font-size: 0.8em;
 }
 
 #ModalContainer .ModalContent {
@@ -153,7 +197,6 @@ div.letter_selection {
 	padding: .4em;
 }
 
-
 #ModalContainer label {
 	display: -moz-inline-box;
 	display: inline-block;
@@ -167,16 +210,17 @@ div.letter_selection {
 }
 
 #glossary_admin_menu {
-	background-color: #F0F0F0;
-	width: auto;
+	background-color: #FAFAFA;
 	max-width: 240px;
+	width: auto;
 	position: absolute;
 	margin-top: 7px;
 	padding: 5px;
 	border: 1px solid #969696;
-	line-height: 25px;
-	display:none;
+	line-height: 150%;
+	display: none;
 	right: 21%;
+	font-size: 110%;
 }
 
 #glossary_admin_menu img {
@@ -184,3 +228,15 @@ div.letter_selection {
 	padding-left: 5px;
 }
 
+/* ---- Keyword Tooltips in Messages, PMs, signatures, and/or News items ------ */
+/* Font and color used for showing keyword tooltip in message */
+span.glossary {
+	font-family: Georgia, TimesNewRoman, Times New Roman, Times, Baskerville, serif;
+	font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;
+	position: relative;
+	z-index: 7;
+	color: #3CA3FF;
+	font-weight: bold;
+	text-decoration: none;
+	cursor: help;
+}
