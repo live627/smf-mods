@@ -26,22 +26,16 @@ function topic_descriptions_admin_search(array &$language_files, array &$include
 
 function topic_descriptions_message_index(array &$message_index_selects): void
 {
-	global $modSettings;
-
 	$message_index_selects[] = 'COALESCE(t.description, "") AS description';
 
 	loadLanguage('TopicDescriptions');
-	addJavaScriptVar('topic_descriptions_maxlen', !empty($modSettings['topic_descriptions_maxlen']) ? (int) $modSettings['topic_descriptions_maxlen'] : 25);
 }
 
 function topic_descriptions_display_topic(array &$topic_selects): void
 {
-	global $modSettings;
-
 	$topic_selects[] = 'COALESCE(t.description, "") AS description';
 
 	loadLanguage('TopicDescriptions');
-	addJavaScriptVar('topic_descriptions_maxlen', !empty($modSettings['topic_descriptions_maxlen']) ? (int) $modSettings['topic_descriptions_maxlen'] : 25);
 }
 
 function topic_descriptions_before_create_topic(array &$msgOptions, array &$topicOptions, array &$posterOptions, &$topic_columns, &$topic_parameters): void
@@ -98,9 +92,14 @@ function topic_descriptions_jsmodify_xml(): void
 {
 	global $context;
 
-	if (isset($_POST['description']) && !isset($context['message']['errors']))
+	if (isset($_POST['description']))
 	{
-		$context['message']['description'] = $_POST['description'];
-		censorText($context['message']['description']);
+		if (!isset($context['message']['errors']))
+		{
+			$context['message']['description'] = $_POST['description'];
+			censorText($context['message']['description']);
+		}
 	}
+ 	else
+		$context['message']['description'] = '';
 }
