@@ -98,7 +98,7 @@ function topic_descriptions_jsmodify_xml(): void
 {
 	global $context;
 
-	if (!isset($context['message']['errors']))
+	if (isset($_POST['description']) && !isset($context['message']['errors']))
 	{
 		$context['message']['description'] = $_POST['description'];
 		censorText($context['message']['description']);
