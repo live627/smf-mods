@@ -1,0 +1,56 @@
+<?xml version="1.1"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>Daniel15:PackageManagerSort</id>
+	<version>1.1</version>
+	<name>Sorted Package Manager Listing</name>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+		<modification type="file">install20.xml</modification>
+		<require-file name="Subs-PackageSort.php" destination="$sourcedir" />
+		<require-file name="PackageSort.english.php" destination="$languagedir" />
+		<require-file name="PackageSort.polish.php" destination="$languagedir" />
+		<require-file name="PackageSort.russian.php" destination="$languagedir" />
+		<require-file name="PackageSort.spanish_es.php" destination="$languagedir" />
+		<require-file name="PackageSort.spanish_latin.php" destination="$languagedir" />
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<modification type="file" reverse="true">install20.xml</modification>
+		<remove-file name="$sourcedir/Subs-PackageSort.php" />
+		<remove-file name="$languagedir/PackageSort.english.php" />
+		<remove-file name="$languagedir/PackageSort.polish.php" />
+		<remove-file name="$languagedir/PackageSort.russian.php" />
+		<remove-file name="$languagedir/PackageSort.spanish_es.php" />
+		<remove-file name="$languagedir/PackageSort.spanish_latin.php" />
+	</uninstall>
+
+	<install for="2.1 RC2, 2.1 - 2.1.99">
+		<hook hook="integrate_helpadmin" function="packagesort_helpadmin" file="$sourcedir/Subs-PackageSort.php" />
+		<hook hook="integrate_modification_types" function="packagesort_modification_types" file="$sourcedir/Subs-PackageSort.php" />
+		<hook hook="integrate_packages_sort_id" function="packagesort_packages_sort_id" file="$sourcedir/Subs-PackageSort.php" />
+		<modification type="file">install21.xml</modification>
+		<require-file name="Subs-PackageSort.php" destination="$sourcedir" />
+		<require-file name="PackageSort.english.php" destination="$languagedir" />
+		<require-file name="PackageSort.polish.php" destination="$languagedir" />
+		<require-file name="PackageSort.russian.php" destination="$languagedir" />
+		<require-file name="PackageSort.spanish_es.php" destination="$languagedir" />
+		<require-file name="PackageSort.spanish_latin.php" destination="$languagedir" />
+	</install>
+
+	<uninstall for="2.1 RC2, 2.1 - 2.1.99">
+		<hook hook="integrate_helpadmin" function="packagesort_helpadmin" file="$sourcedir/Subs-PackageSort.php" reverse="true" />
+		<hook hook="integrate_modification_types" function="packagesort_modification_types" file="$sourcedir/Subs-PackageSort.php" reverse="true" />
+		<hook hook="integrate_packages_sort_id" function="packagesort_packages_sort_id" file="$sourcedir/Subs-PackageSort.php" reverse="true" />
+		<modification type="file" reverse="true">install21.xml</modification>
+		<remove-file name="$sourcedir/Subs-PackageSort.php" />
+		<remove-file name="$languagedir/PackageSort.english.php" />
+		<remove-file name="$languagedir/PackageSort.polish.php" />
+		<remove-file name="$languagedir/PackageSort.russian.php" />
+		<remove-file name="$languagedir/PackageSort.spanish_es.php" />
+		<remove-file name="$languagedir/PackageSort.spanish_latin.php" />
+	</uninstall>
+
+</package-info>

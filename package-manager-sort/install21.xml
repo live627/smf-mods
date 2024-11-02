@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="xslt/modification.xsl" type="text/xsl"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Daniel15:PackageManagerSort</id>
+	<version>1.1</version>
+
+	<file name="$sourcedir/Packages.php">
+		<operation>
+			<search position="before"><![CDATA[
+				if (!$packageInfo['is_installed'] && $packageInfo['xml']->exists('install'))
+				{]]></search>
+			<add><![CDATA[
+					// By default, assume we can't install it.
+					$packageInfo['state'] = 'cannot_install';
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+							$packageInfo['can_install'] = true;]]></search>
+			<add><![CDATA[
+							$packageInfo['state'] = 'install';]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[$packageInfo['can_emulate_install'] = matchHighestPackageVersion($install->fetch('@for'), $reset, $the_version);]]></search>
+			<add><![CDATA[
+							if ($packageInfo['can_emulate_install'] !== false)
+								$packageInfo['state'] = 'install';]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+				// An already installed, but old, package.  Can we upgrade it?
+				elseif ($packageInfo['is_installed'] && !$packageInfo['is_current'] && $packageInfo['xml']->exists('upgrade'))
+				{]]></search>
+			<add><![CDATA[
+					// By default, assume we can't upgrade it (invalid version, whatever).
+					$packageInfo['state'] = 'cannot_upgrade';
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+							if (!$upgrade->exists('@from') || matchPackageVersion($installed_mods[$packageInfo['id']]['version'], $upgrade->fetch('@from')))
+							{
+								$packageInfo['can_upgrade'] = true;]]></search>
+			<add><![CDATA[
+								$packageInfo['state'] = 'upgrade';]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[$packageInfo['can_uninstall'] = true;]]></search>
+			<add><![CDATA[
+							$packageInfo['state'] = 'uninstall';]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[$packageInfo['can_emulate_uninstall'] = matchHighestPackageVersion($uninstall->fetch('@for'), $reset, $the_version);]]></search>
+			<add><![CDATA[
+							if ($packageInfo['can_emulate_uninstall'] !== false)
+								$packageInfo['state'] = 'uninstall';]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[// Save some memory by not passing the xmlArray object into context.]]></search>
+			<add><![CDATA[// No uninstall section? No uninstall!
+				elseif (!$packageInfo['xml']->exists('uninstall'))
+					$packageInfo['state'] = 'cannot_uninstall_2';
+
+				]]></add>
+		</operation>
+
+<!--
+		<operation>
+			<search position="replace"><![CDATA[elseif (!isset($sort_id[$packageInfo['type']], $packages[$packageInfo['type']], $context['available_' . $packageInfo['type']]) && $params == 'unknown')]]></search>
+			<add><![CDATA[elseif (isset($sort_id[$packageInfo['state']], $packages[$packageInfo['state']], $context['available_' . $packageInfo['state']]) && $params == $packageInfo['state'] && $packageInfo['type'] == 'modification')
+				{
+					$packageInfo['sort_id'] = $sort_id[$packageInfo['state']];
+					$sort_id[$packageInfo['state']]++;
+					$packages[$packageInfo['state']][strtolower($packageInfo[$sort]) . '_' . $sort_id[$packageInfo['state']]] = md5($package);
+					$context['available_' . $packageInfo['state']][md5($package)] = $packageInfo;
+				}
+				elseif (!isset($sort_id[$packageInfo['type']], $packages[$packageInfo['type']], $context['available_' . $packageInfo['type']]) && $params == 'unknown' && $packageInfo['type'] != 'modification')]]></add>
+		</operation>
+
+		<operation>
+			<search position="replace"><![CDATA[}
+
+				// Modification.
+				if ($packageInfo['type'] == 'modification' || $packageInfo['type'] == 'mod')
+				{
+					$sort_id['modification']++;
+					$sort_id['mod']++;
+					$packages['modification'][strtolower($packageInfo[$sort]) . '_' . $sort_id['mod']] = md5($package);
+					$context['available_modification'][md5($package)] = $packageInfo;
+				}
+				// Avatar package.
+				else]]></search>
+			<add><![CDATA[}
+				// No uninstall section? No uninstall!
+				elseif (!$packageInfo['xml']->exists('uninstall'))
+					$packageInfo['state'] = 'cannot_uninstall_2';
+
+				// Avatar package.
+				]]></add>
+		</operation>
+-->
+
+		<operation>
+			<search position="after"><![CDATA[// Other stuff.
+				else]]></search>
+			<add><![CDATA[elseif (isset($sort_id[$packageInfo['state']]) && $params == $packageInfo['state'])
+				{
+					$packageInfo['sort_id'] = $sort_id[$packageInfo['state']];
+					$sort_id[$packageInfo['state']]++;
+					$packages[$packageInfo['state']][strtolower($packageInfo[$sort]) . '_' . $sort_id[$packageInfo['state']]] = md5($package);
+					$context['available_' . $packageInfo['state']][md5($package)] = $packageInfo;
+				}
+				]]></add>
+		</operation>
+	</file>
+
+</modification>

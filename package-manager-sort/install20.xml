@@ -1,0 +1,373 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="xslt/modification.xsl" type="text/xsl"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>Daniel15:PackageManagerSort</id>
+	<version>1.1</version>
+
+	<file name="$sourcedir/Subs-Package.php">
+		<operation>
+			<search position="before"><![CDATA[name, version]]></search>
+			<add><![CDATA[, time_installed]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[			'version' => $row['version'],]]></search>
+			<add><![CDATA[
+			'time_installed' => $row['time_installed'],]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Packages.php">
+		<operation>
+			<search position="before"><![CDATA[			'version' => $installed_mod['version'],]]></search>
+			<add><![CDATA[
+			'time_installed' => $installed_mod['time_installed'],]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[	if ($dir = @opendir($boarddir . '/Packages'))
+	{
+		$dirs = array();]]></search>
+			<add><![CDATA[
+		$packages = array();
+		$sort_id = array(
+			'install' => 1,
+			'upgrade' => 1,
+			'uninstall' => 1,
+			'cannot_install' => 1,
+			'cannot_upgrade' => 1,
+			'cannot_uninstall' => 1,
+			'cannot_uninstall_2' => 1,
+			'avatar' => 1,
+			'language' => 1,
+			'unknown' => 1,
+		);]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[			$packageInfo['installed_id'] = isset($installed_mods[$packageInfo['id']]) ? $installed_mods[$packageInfo['id']]['id'] : 0;]]></search>
+			<add><![CDATA[
+			$packageInfo['time_installed'] = isset($installed_mods[$packageInfo['id']])
+				? $installed_mods[$packageInfo['id']]['time_installed']
+				: 0;
+
+			if (!isset($sort_id[$packageInfo['type']]))
+				$packageInfo['type'] = 'unknown';
+
+			$packageInfo['sort_id'] = $sort_id[$packageInfo['type']]++;]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[			if (!$packageInfo['is_installed'] && $packageInfo['xml']->exists('install'))
+			{]]></search>
+			<add><![CDATA[
+				// By default, assume we can't install it.
+				$packageInfo['state'] = 'cannot_install';
+
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[						$packageInfo['can_install'] = true;]]></search>
+			<add><![CDATA[
+						$packageInfo['state'] = 'install';]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[			// An already installed, but old, package.  Can we upgrade it?
+			elseif ($packageInfo['is_installed'] && !$packageInfo['is_current'] && $packageInfo['xml']->exists('upgrade'))
+			{]]></search>
+			<add><![CDATA[
+				// By default, assume we can't upgrade it (invalid version, whatever).
+				$packageInfo['state'] = 'cannot_upgrade';
+
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[						if (!$upgrade->exists('@from') || matchPackageVersion($installed_mods[$packageInfo['id']]['version'], $upgrade->fetch('@from')))
+						{
+							$packageInfo['can_upgrade'] = true;]]></search>
+			<add><![CDATA[
+							$packageInfo['state'] = 'upgrade';]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[			// Note that it has to be the current version to be uninstallable.  Shucks.
+			elseif ($packageInfo['is_installed'] && $packageInfo['is_current'] && $packageInfo['xml']->exists('uninstall'))
+			{
+				$uninstalls = $packageInfo['xml']->set('uninstall');
+
+				// Can we find any uninstallation methods that work for this SMF version?
+				foreach ($uninstalls as $uninstall)
+					if (!$uninstall->exists('@for') || matchPackageVersion($the_version, $uninstall->fetch('@for')))
+					{
+						$packageInfo['can_uninstall'] = true;
+						break;
+					}
+			}]]></search>
+			<add><![CDATA[			// Is it installed, and the latest version? Maybe we can uninstall it?
+			elseif ($packageInfo['is_installed'] && $packageInfo['is_current'])
+			{
+				// Is there an uninstall section?
+				if ($packageInfo['xml']->exists('uninstall'))
+				{
+					// Assume we can't uninstall it (version difference, whatever).
+					$packageInfo['state'] = 'cannot_uninstall';
+
+					$uninstalls = $packageInfo['xml']->set('uninstall');
+
+					// Can we find any uninstallation methods that work for this SMF version?
+					foreach ($uninstalls as $uninstall)
+						if (!$uninstall->exists('@for') || matchPackageVersion($the_version, $uninstall->fetch('@for')))
+						{
+							$packageInfo['can_uninstall'] = true;
+							$packageInfo['state'] = 'uninstall';
+							break;
+						}
+				}
+				// No uninstall section? No uninstall!
+				else
+					$packageInfo['state'] = 'cannot_uninstall_2';
+			}
+			// What else could it be?!
+			else
+				$packageInfo['state'] = 'unknown';]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[			// Store a complete list.
+			$context['available_all'][] = $packageInfo;
+
+			// Modification.
+			if ($packageInfo['type'] == 'modification' || $packageInfo['type'] == 'mod')
+				$context['available_mods'][] = $packageInfo;
+			// Avatar package.
+			elseif ($packageInfo['type'] == 'avatar')
+				$context['available_avatars'][] = $packageInfo;
+			// Language package.
+			elseif ($packageInfo['type'] == 'language')
+				$context['available_languages'][] = $packageInfo;
+			// Other stuff.
+			else
+				$context['available_other'][] = $packageInfo;]]></search>
+			<add><![CDATA[			// Save some memory by not passing the xmlArray object into context.
+			unset($packageInfo['xml']);
+
+			if (isset($sort_id[$packageInfo['state']]))
+			{
+				$packageInfo['sort_id'] = $sort_id[$packageInfo['state']];
+				$sort_id[$packageInfo['state']]++;
+				$packages[$packageInfo['state']][] = $packageInfo;
+			}
+			elseif (isset($sort_id[$packageInfo['type']]))
+				$packages[$packageInfo['type']][] = $packageInfo;]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[		closedir($dir);]]></search>
+			<add><![CDATA[
+		$context['has_packages'] = !empty($packages);
+		$context['modification_types'] = array(
+			'install',
+			'upgrade',
+			'uninstall',
+			'cannot_install',
+			'cannot_upgrade',
+			'cannot_uninstall',
+			'cannot_uninstall_2',
+			'avatar',
+			'language',
+			'unknown'
+		);
+
+		loadLanguage('PackageSort');
+
+		foreach (array(
+			'install',
+			'upgrade',
+			'uninstall',
+			'cannot_install',
+			'cannot_upgrade',
+			'cannot_uninstall',
+			'cannot_uninstall_2',
+		) as $state_txt)
+		{
+			$txt[$state_txt . '_package'] = sprintf(
+				'%s &mdash; %s',
+				$txt['modification_package'],
+				$txt['pkgstate_' . $state_txt]
+			);
+			$context['available_' . $state_txt] = array();
+		}
+		require_once(__DIR__ . '/Subs-List.php');
+
+$txt['package_id'] = 'ID';
+$txt['mod_installed_time'] = 'Installed';
+		foreach ($context['modification_types'] as $type)
+		{
+			// Use the standard templates for showing this.
+			$listOptions = array(
+				'id' => 'packages_list_' . $type,
+				'title' => $txt[$type . '_package'],
+				'get_items' => array(
+					'function' => function ($start, $length, $sort) use ($packages, $type)
+					{
+						if (!isset($packages[$type]))
+							return array();
+
+						list ($sort, $desc) = explode(' ', $sort);
+						array_multisort(
+							array_column($packages[$type], $sort),
+							stripos($desc, 'desc') !== false ? SORT_DESC : SORT_ASC,
+							$packages[$type]
+						);
+
+						return $packages[$type];
+					},
+				),
+				'base_href' => $scripturl . '?action=admin;area=packages;sa=browse;type=' . $type,
+				'default_sort_col' => 'id' . $type,
+				'columns' => array(
+					'id' . $type => array(
+						'header' => array(
+							'value' => $txt['package_id'],
+							'style' => 'width: 40px;',
+						),
+						'data' => array(
+							'db' => 'sort_id',
+						),
+						'sort' => array(
+							'default' => 'sort_id asc',
+							'reverse' => 'sort_id desc',
+						),
+					),
+					'mod_name' . $type => array(
+						'header' => array(
+							'value' => $txt['mod_name'],
+							'style' => 'width: 25%;',
+						),
+						'data' => array(
+							'db' => 'name',
+						),
+						'sort' => array(
+							'default' => 'name asc',
+							'reverse' => 'name desc',
+						),
+					),
+					'version' . $type => array(
+						'header' => array(
+							'value' => $txt['mod_version'],
+							'style' => 'width: 10%;',
+						),
+						'data' => array(
+							'function' => function ($package)
+							{
+								global $settings;
+
+								return $package['is_installed'] && !$package['is_newer']
+									? sprintf(
+										'%s<img src="%s/icons/package_%s.gif" alt="" align="middle" style="margin-left: 2ex;" />',
+										$package['version'],
+										$settings['images_url'],
+										$package['is_current'] ? 'installed' : 'old'
+									)
+									: $package['version'];
+							},
+						),
+						'sort' => array(
+							'default' => 'version asc',
+							'reverse' => 'version desc',
+						),
+					),
+					'time_installed' . $type => array(
+						'header' => array(
+							'value' => $txt['mod_installed_time'],
+							'style' => 'width: 25%;',
+						),
+						'data' => array(
+							'function' => function ($package) use ($txt)
+							{
+								return !empty($package['time_installed'])
+									? timeformat($package['time_installed'])
+									: $txt['not_applicable'];
+							},
+						),
+						'sort' => array(
+							'default' => 'time_installed asc',
+							'reverse' => 'time_installed desc',
+						),
+					),
+					'operations' . $type => array(
+						'data' => array(
+							'function' => function ($package) use ($context, $scripturl, $txt)
+							{
+								$params = array(
+									$scripturl,
+									$package['filename'],
+									$package['installed_id'],
+									$txt['uninstall'],
+									$package['can_upgrade'] ? $txt['package_upgrade'] : $txt['install_mod'],
+									$txt['list_files'],
+									$context['session_var'],
+									$context['session_id'],
+									$package['is_installed'] && $package['is_current']
+										? ' onclick="return confirm(\'' . $txt['package_delete_bad'] . '\')"'
+										: '',
+									$txt['package_delete']
+								);
+
+								$return = vsprintf('
+						<a href="%s?action=admin;area=packages;sa=list;package=%s">[ %6$s ]</a>
+						<a href="%1$s?action=admin;area=packages;sa=remove;package=%2$s;%7$s=%8$s"%9$s>[ %10$s ]</a>',
+									$params
+								);
+								if ($package['can_uninstall'])
+									$return = vsprintf('
+						<a href="%s?action=admin;area=packages;sa=uninstall;package=%s;pid=%s">[ %s ]</a>',
+										$params
+									) . $return;
+								elseif ($package['can_upgrade'] || $package['can_install'])
+									$return = vsprintf('
+						<a href="%s?action=admin;area=packages;sa=uninstall;package=%s">[ %5$s ]</a>',
+										$params
+									) . $return;
+
+								return $return;
+							},
+							'class' => 'righttext',
+						),
+					),
+				),
+			);
+
+			if (isset($txt['pkgstatehelp_' . $type]))
+				$listOptions['additional_rows'] = array(
+					array(
+						'class' => 'information smalltext',
+						'position' => 'top_of_list',
+						'style' => 'padding: 0.5em 1em;',
+						'value' => $txt['pkgstatehelp_' . $type],
+					),
+				);
+
+			createList($listOptions);
+		}]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Packages.template.php">
+		<operation>
+			<search position="before"><![CDATA[	echo '
+		<br />
+		<div class="cat_bar">
+			<h3 class="catbg">', $txt['browse_packages'], '</h3>
+		</div>';]]></search>
+			<add><![CDATA[
+
+	foreach ($context['modification_types'] as $type)
+		if (!empty($context['packages_list_' . $type]['rows']))
+		{
+			echo '
+		<br />';
+			template_show_list('packages_list_' . $type);
+		}]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[	if (empty($context['available_mods']) && empty($context['available_avatars']) && empty($context['available_languages']) && empty($context['available_other']))]]></search>
+			<add><![CDATA[	if (empty($context['has_packages']))]]></add>
+		</operation>
+	</file>
+
+</modification>
