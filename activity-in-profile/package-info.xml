@@ -1,54 +1,34 @@
 <?xml version="1.0"?>
 <!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
-<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	This is a simplified package manifest for SMF packages.
-
-	ATTENTION: If you are trying to install this manually, you should try
-	the package manager.  If it will not work for you, please take a look
-	at the following for information on this format:
-		http://mods.simplemachines.org/docs/manual-install.php
-
-================================================================================
-
-	This script can be used to make your package do many different things.
-	The following documentation should be available on the format of this
-	file and the things you can do with it:
-		http://mods.simplemachines.org/docs/package-info.php
-
-	Please see the other included file, package-info_advanced.xml, for
-	a more detailed description of what you can do with this file.
-
- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
-	<!-- For the id, always use something unique - put your name, a colon, and then the package name. -->
 	<id>Project_Evolution:ActivityinProfile</id>
-	<!-- Below should be the name of this package. -->
 	<name>Activity in Profile</name>
-	<!-- The version of this modification.  Keep it numeric so PHP can tell that old < new. -->
-	<version>1.1</version>
-
-	<!-- Type, one of: modification, avatar, language. -->
 	<type>modification</type>
+	<version>2.0.0</version>
 
-	<!-- Installation, the key part of this file. -->
-	
-	<install for="1.1 - 1.99.99">
-		<readme parsebbc="true">readme.txt</readme>
-		<modification>modification_1_1_x.xml</modification>
+	<install for="2.1 - 2.1.99">
+		<code type="inline"><![CDATA[<?php
+define('REQUIRED_PHP_VERSION', '7.1');
+if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
+	fatal_error(
+		sprintf(
+			'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
+			REQUIRED_PHP_VERSION,
+			PHP_VERSION
+		),
+		false
+	);
+?>]]></code>
+		<require-file name="Subs-ActivityInProfile.php" destination="$sourcedir" />
+		<require-file name="ActivityInProfile.english.php" destination="$languagedir" />
+		<hook hook="integrate_profile_areas" function="ActivityInProfile::profile_areas" file="$sourcedir/Subs-ActivityInProfile.php" />
 	</install>
 
-	<!-- Don't forget something to make it uninstallable! -->
-	<uninstall for="1.1 - 1.99.99">
-		<modification reverse="true">modification_1_1_x.xml</modification>
+	<uninstall for="2.1 - 2.1.99">
+		<remove-file name="$sourcedir/Subs-ActivityInProfile.php" />
+		<remove-file name="$languagedir/ActivityInProfile.english.php" />
+		<hook hook="integrate_profile_areas" function="ActivityInProfile::profile_areas" file="$sourcedir/Subs-ActivityInProfile.php" reverse="true" />
 	</uninstall>
 
-	<install for="2.0 - 2.99.99">
-		<readme parsebbc="true">readme.txt</readme>
-		<modification>modification_2.xml</modification>
-	</install>
-
-	<uninstall for="2.0 - 2.99.99">
-		<modification reverse="true">modification_2.xml</modification>
-	</uninstall>
 </package-info>
