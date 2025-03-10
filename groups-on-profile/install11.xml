@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>daniel15:GroupsOnProfile</id>
+	<version>1.1.2</version>
+
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="before"><![CDATA[
+			$row['options'] = array();
+			$user_profile[$row['ID_MEMBER']] = $row;
+]]></search>
+			<add><![CDATA[
+			// Begin modification - Additional membergroups on profile
+			// Let's start with an empty array
+			$user_profile[$row['ID_MEMBER']]['additionalGroups2'] = array();
+
+			// Any additional membergroups for this user?
+			if (isset($row['additionalGroups']) && $row['additionalGroups'] != '')
+			{
+				// There is? Great! Get the names of the groups
+				$result_groups = db_query("
+					SELECT groupName
+					FROM {$db_prefix}membergroups
+					WHERE ID_GROUP IN (" . $row['additionalGroups'] . ')
+					ORDER BY groupName ASC', __FILE__, __LINE__);
+
+				// Loop through all the groups...
+				while ($row_groups = mysql_fetch_assoc($result_groups))
+					// ... and add them to the user's list
+					$user_profile[$row['ID_MEMBER']]['additionalGroups2'][] = $row_groups['groupName'];
+
+				mysql_free_result($result_groups);
+			}
+			// End modification
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+		'local_time' => timeformat(time() + ($profile['timeOffset'] - $user_info['time_offset']) * 3600, false),
+]]></search>
+			<add><![CDATA[
+		// Begin modification - Additional membergroups on profile
+		'additionalGroups2' => $profile['additionalGroups2'],
+		// End modification
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="before"><![CDATA[
+					<td><b>', $txt[87], ': </b></td>
+					<td>', (!empty($context['member']['group']) ? $context['member']['group'] : $context['member']['post_group']), '</td>
+				</tr>';
+]]></search>
+			<add><![CDATA[
+	// Begin modification - Additional membergroups on profile
+	$x = 1;
+	// Loop through each additional group
+	foreach ($context['member']['additionalGroups2'] as $additionalGroup)
+	{
+		// Add one to our counter
+		$x++;
+		// Output this membergroup
+		echo '
+				<tr>
+					<td><b>', $txt[87], ' ', $x, ': </b></td>
+					<td>', $additionalGroup, '</td>
+				</tr>';
+	}
+	// End modification
+]]></add>
+		</operation>
+	</file>
+</modification>
