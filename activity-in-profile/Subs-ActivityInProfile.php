@@ -16,10 +16,12 @@ class ActivityinProfile
 			loadLanguage('ActivityInProfile');
 			$context['sub_template'] = 'summary';
 
-			$context['print_custom_fields']['standard'][] = [
-				'name' => $txt['current_activity'],
-				'output_html' => $context['member']['action'],
-			];
-		};
+			if (isset($context['member']['action'])) {
+				$context['print_custom_fields']['standard'][] = [
+					'name' => $txt['current_activity'],
+					'output_html' => $context['member']['action'],
+				];
+			};
+		}
 	}
 }

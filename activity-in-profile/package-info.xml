@@ -5,11 +5,11 @@
 	<id>Project_Evolution:ActivityinProfile</id>
 	<name>Activity in Profile</name>
 	<type>modification</type>
-	<version>2.0.0</version>
+	<version>2.0.1</version>
 
-	<install for="2.1 - 2.1.99">
+	<install for="2.*">
 		<code type="inline"><![CDATA[<?php
-define('REQUIRED_PHP_VERSION', '7.1');
+define('REQUIRED_PHP_VERSION', '7.3');
 if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
 	fatal_error(
 		sprintf(
@@ -25,7 +25,7 @@ if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
 		<hook hook="integrate_profile_areas" function="ActivityInProfile::profile_areas" file="$sourcedir/Subs-ActivityInProfile.php" />
 	</install>
 
-	<uninstall for="2.1 - 2.1.99">
+	<uninstall for="2.*">
 		<remove-file name="$sourcedir/Subs-ActivityInProfile.php" />
 		<remove-file name="$languagedir/ActivityInProfile.english.php" />
 		<hook hook="integrate_profile_areas" function="ActivityInProfile::profile_areas" file="$sourcedir/Subs-ActivityInProfile.php" reverse="true" />
