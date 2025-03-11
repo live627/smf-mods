@@ -5,16 +5,24 @@
 	<name>Countdown BBC</name>
 	<version>1.0.0</version>
 	<type>modification</type>
-	<install for="2.1 RC3, 2.1 RC4, 2.1 RC5, 2.1 - 2.1.99">
+	<install for="2.1.*">
 		<require-file name="CountdownBBC.english.php" destination="$themedir/languages" />
 		<require-file name="Subs-CountdownBBC.php" destination="$sourcedir" />
 		<require-file name="countdown.png" destination="$themedir/images/bbc" />
-		<code>hooks.php</code>
+		<require-file name="sceditor.plugins.countdown.js" destination="$themedir/scripts" />
+		<require-file name="countdown.css" destination="$themedir/css" />
+		<hook hook="integrate_bbc_codes" function="CountdownBBC::bbc_codes" file="$sourcedir/Subs-CountdownBBC.php" />
+		<hook hook="integrate_sceditor_options" function="CountdownBBC::sce_options" file="$sourcedir/Subs-CountdownBBC.php" />
+		<hook hook="integrate_bbc_buttons" function="CountdownBBC::bbc_buttons" file="$sourcedir/Subs-CountdownBBC.php" />
 	</install>
-	<uninstall for="2.1 RC3, 2.1 RC4, 2.1 RC5, 2.1 - 2.1.99">
+	<uninstall for="2.1,*">
 		<remove-file name="$languagedir/CountdownBBC.english.php" />
 		<remove-file name="$sourcedir/Subs-CountdownBBC.php" />
 		<remove-file name="$themedir/images/bbc/countdown.png" />
-		<code>hooks.php</code>
+		<remove-file name="$themedir/scripts/sceditor.plugins.countdown.js"/>
+		<remove-file name="$themedir/css/countdown.css"/>
+		<hook hook="integrate_bbc_codes" function="CountdownBBC::bbc_codes" file="$sourcedir/Subs-CountdownBBC.php" reverse="true" />
+		<hook hook="integrate_sceditor_options" function="CountdownBBC::sce_options" file="$sourcedir/Subs-CountdownBBC.php" reverse="true" />
+		<hook hook="integrate_bbc_buttons" function="CountdownBBC::bbc_buttons" file="$sourcedir/Subs-CountdownBBC.php" reverse="true" />
 	</uninstall>
 </package-info>

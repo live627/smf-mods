@@ -2,86 +2,80 @@
 
 class CountdownBBC
 {
-	public static function bbc_codes(&$codes)
+	public static function bbc_codes(array &$codes): void
 	{
-		global $txt;
-
 		loadLanguage('CountdownBBC');
-		$codes[] = 
-			array(
-				'tag' => 'countdown',
-				'type' => 'unparsed_commas_content',
-				'content' => '$1',
-				'validate' => function(&$tag, &$data, $disabled) use ($txt)
-				{
-				$endTime = mktime ( empty($data[4]) ? 0 : intval($data[4]), empty($data[5]) ? 0 : intval($data[5]), 0, empty($data[1]) ? 0 : intval($data[1]), empty($data[2]) ? 0 : intval($data[2]), empty($data[3]) ? 0 : intval($data[3]) );
-				$remainTime = $endTime - time();
-				$message = "";
-				if ( $remainTime > 0 )
-	  			{
-					if ( $remainTime >= 31556926 ){
-						$year = intval ( $remainTime / 31556926 );
-	  				$remainTime = $remainTime - ( $year * 31556926 );
-	  				if ($year > 1)
-	  					$message = $year . $txt['cd_years'];
-	  				else
-	  					$message = $year . $txt['cd_year'];
+
+		$codes[] = [
+			'tag' => 'countdown',
+			'type' => 'unparsed_commas_content',
+			'content' => '$1',
+			'validate' => function(&$tag, &$data, $disabled): void
+			{
+				$end_time = mktime(
+					empty($data[4]) ? 0 : intval($data[4]), // Hour
+					empty($data[5]) ? 0 : intval($data[5]), // Minute
+					0, // Second (always 0)
+					empty($data[1]) ? 0 : intval($data[1]), // Month
+					empty($data[2]) ? 0 : intval($data[2]), // Day
+					empty($data[3]) ? 0 : intval($data[3]), // Year
+				);
+
+				$remain_time = $end_time - time();
+				$parts = [];
+
+				if ($remain_time > 0) {
+					// Time units with their corresponding translation keys
+					$time_units = [
+						31556926 => 'cd_year',   // 1 year in seconds
+						2629743.83 => 'cd_month', // 1 month in seconds
+						86400 => 'cd_day',   // 1 day in seconds
+						3600 => 'cd_hour',   // 1 hour in seconds
+						60 => 'cd_minute',   // 1 minute in seconds
+					];
+
+					foreach ($time_units as $unit_seconds => $key) {
+						if ($remain_time >= $unit_seconds) {
+							$value = intval($remain_time / $unit_seconds);
+							$remain_time -= $value * $unit_seconds;
+							$parts[] = self::format_time_unit($value, $key);
+						}
 					}
-					if ($remainTime >= 2629743.83){
-						$month = intval ( $remainTime / 2629743.83 );
-						$remainTime = $remainTime - ( $month * 2629743.83 );
-	  				if (!$message == "")
-	  					$message = $message . " ";
-	  				if ($month > 1)
-	  					$message .= $month . $txt['cd_months'];
-	  				else
-	  					$message .= $month . $txt['cd_month'];
-					}
-					if ($remainTime >= 86400){
-						$day = intval ( $remainTime / 86400 );
-						$remainTime = $remainTime - ( $day * 86400 );
-						if (!$message == "")
-	  					$message = $message . " ";
-	  				if ($day > 1)
-	  					$message .= $day . $txt['cd_days'];
-	  				else
-	  					$message .= $day . $txt['cd_day'];
-					}
-					if ($remainTime >= 3600){
-						$hour = intval ( $remainTime / 3600 );
-						$remainTime = $remainTime - ( $hour * 3600 );
-						if (!$message == "")
-	  					$message = $message . " ";
-	  				if ($hour > 1)
-	  					$message .= $hour . $txt['cd_hours'];
-	  				else
-	  					$message .= $hour . $txt['cd_hour'];
-					}
-	 				if ($remainTime >= 60){
-						$minute = intval ( $remainTime / 60 );
-						$remainTime = $remainTime - ( $minute * 60 );
-						if (!$message == "")
-	  					$message = $message . " ";
-	  				if ($minute > 1)
-	  					$message .= $minute . $txt['cd_minutes'];
-	  				else
-	  					$message .= $minute . $txt['cd_minute'];
-	  				}
-	  				$message .= $txt['cd_remaning'];
-	  			}else
-	  				$message = $data[0];
-	  			
-	  			$data[0] = $message;
-			}
-			);
+
+					$parts[] = $txt['cd_remaining'];
+					$data[0] = implode(' ', $parts);
+				}
+			},
+		];
 	}
 
-	public static function bbc_buttons(&$buttons)
+	public static function format_time_unit(int $count, string $key): string
 	{
 		global $txt;
+
+		$patterns = explode('|', $txt[$key]);
+
+		// Select the appropriate singular/plural form
+		$pattern = $count == 1 ? $patterns[0] : $patterns[1];
+
+		return str_replace('#', $count, $pattern);
+	}
+
+	public static function sce_options(array &$sce_options): void
+	{
+		$sce_options['plugins'] = ($sce_options['plugins'] != '' ? $sce_options['plugins'] . ',' : '') . 'countdown';
+	}
+
+	public static function bbc_buttons(array &$buttons): void
+	{
+		global $txt;
+
+		loadCSSFile('countdown.css');
+		loadJavaScriptFile('sceditor.plugins.countdown.js', array('minimize' => true));
 
 		loadLanguage('CountdownBBC');
 		$temp = array();
+
 		foreach ($buttons[0] as $tag)
 		{
 			$temp[] = $tag;
@@ -95,8 +89,6 @@ class CountdownBBC
 						array(
 							'image' => 'countdown',
 							'code' => 'countdown',
-							'before' => '[countdown]',
-							'after' => '[/countdown]',
 							'description' => $txt['countdown'],
 						),
 					)

@@ -1,0 +1,20 @@
+.sceditor-insertcountdown {
+	display: grid;
+	gap: 1em;
+}
+.sceditor-insertcountdown div {
+	display: grid;
+	grid: auto auto / auto auto auto;
+	grid-auto-flow: column;
+	gap: 0 1em;
+	justify-items: center;
+}
+.sceditor-insertcountdown :nth-child(2) {
+	grid-template-columns: auto auto;
+}
+.sceditor-insertcountdown input:invalid {
+	border: red solid 3px;
+}
+.sceditor-insertcountdown .button {
+	justify-self: end;
+}
