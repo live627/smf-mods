@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:banned-member-avatar</id>
+	<name>Banned Member Avatar</name>
+	<type>modification</type>
+	<version>1.0.0</version>
+
+	<install for="2.1.*">
+		<code type="inline"><![CDATA[<?php
+define('REQUIRED_PHP_VERSION', '7.4');
+if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
+	fatal_error(
+		sprintf(
+			'This mod requires a minimum of PHP %s in order to function. (You are currently running PHP %s)',
+			REQUIRED_PHP_VERSION,
+			PHP_VERSION
+		),
+		false
+	);
+?>]]></code>
+		<require-file name="Subs-BannedMemberAvatar.php" destination="$sourcedir" />
+		<require-file name="banned.png" destination="$themedir/images" />
+		<hook hook="integrate_member_context" function="BannedMemberAvatar::member_context" file="$sourcedir/Subs-BannedMemberAvatar.php" />nProfile.php" />
+		<hook hook="integrate_set_avatar_data" function="BannedMemberAvatar::set_avatar_data" file="$sourcedir/Subs-BannedMemberAvatar.php" />nProfile.php" />
+	</install>
+
+	<uninstall for="2.1.*">
+		<remove-file name="$sourcedir/Subs-BannedMemberAvatar.php" />
+		<remove-file name="banned.png" destination="$themedir/images" />
+		<hook hook="integrate_member_context" function="BannedMemberAvatar::member_context" file="$sourcedir/Subs-BannedMemberAvatar.php" reverse="true" />
+		<hook hook="integrate_set_avatar_data" function="BannedMemberAvatar::set_avatar_data" file="$sourcedir/Subs-BannedMemberAvatar.php" reverse="true" />
+	</uninstall>
+
+</package-info>
