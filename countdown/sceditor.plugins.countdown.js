@@ -50,7 +50,7 @@
 					}
 
 					if (params.length && this.checkValidity()) {
-						editor.insertText('countdown=' + params.join(',') + ']', '[/countdown]');
+						editor.insertText('[countdown=' + params.join(',') + ']', '[/countdown]');
 					}
 
 					editor.closeDropDown(true);
@@ -60,6 +60,7 @@
 			};
 
 			this.commands.countdown.exec = commandHandler;
+			this.commands.countdown.txtExec = commandHandler;
 		};
 	};
 })(sceditor);
