@@ -12,6 +12,8 @@ class CountdownBBC
 			'content' => '$1',
 			'validate' => function(&$tag, &$data, $disabled): void
 			{
+				global $txt;
+
 				$end_time = mktime(
 					empty($data[4]) ? 0 : intval($data[4]), // Hour
 					empty($data[5]) ? 0 : intval($data[5]), // Minute
@@ -27,11 +29,11 @@ class CountdownBBC
 				if ($remain_time > 0) {
 					// Time units with their corresponding translation keys
 					$time_units = [
-						31556926 => 'cd_year',   // 1 year in seconds
-						2629743.83 => 'cd_month', // 1 month in seconds
-						86400 => 'cd_day',   // 1 day in seconds
-						3600 => 'cd_hour',   // 1 hour in seconds
-						60 => 'cd_minute',   // 1 minute in seconds
+						31556926 => 'cd_year', // 1 year in seconds
+						2628288 => 'cd_month', // 1 month in seconds
+						86400 => 'cd_day',     // 1 day in seconds
+						3600 => 'cd_hour',     // 1 hour in seconds
+						60 => 'cd_minute',     // 1 minute in seconds
 					];
 
 					foreach ($time_units as $unit_seconds => $key) {
@@ -42,8 +44,7 @@ class CountdownBBC
 						}
 					}
 
-					$parts[] = $txt['cd_remaining'];
-					$data[0] = implode(' ', $parts);
+					$data = [strtr($txt['cd_remaining'], ['{0}' => sentence_list($parts)])];
 				}
 			},
 		];
