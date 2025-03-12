@@ -6,6 +6,7 @@
 	<version>1.0.0</version>
 	<type>modification</type>
 	<install for="2.1.*">
+		<readme parsebbc="true">readme.txt</readme>
 		<require-file name="CountdownBBC.english.php" destination="$themedir/languages" />
 		<require-file name="Subs-CountdownBBC.php" destination="$sourcedir" />
 		<require-file name="countdown.png" destination="$themedir/images/bbc" />
