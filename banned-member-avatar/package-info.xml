@@ -8,6 +8,7 @@
 	<version>1.0.0</version>
 
 	<install for="2.1.*">
+		<readme parsebbc="true">readme.txt</readme>
 		<code type="inline"><![CDATA[<?php
 define('REQUIRED_PHP_VERSION', '7.4');
 if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
@@ -22,14 +23,12 @@ if (version_compare(PHP_VERSION, REQUIRED_PHP_VERSION, '<'))
 ?>]]></code>
 		<require-file name="Subs-BannedMemberAvatar.php" destination="$sourcedir" />
 		<require-file name="banned.png" destination="$themedir/images" />
-		<hook hook="integrate_member_context" function="BannedMemberAvatar::member_context" file="$sourcedir/Subs-BannedMemberAvatar.php" />nProfile.php" />
 		<hook hook="integrate_set_avatar_data" function="BannedMemberAvatar::set_avatar_data" file="$sourcedir/Subs-BannedMemberAvatar.php" />nProfile.php" />
 	</install>
 
 	<uninstall for="2.1.*">
 		<remove-file name="$sourcedir/Subs-BannedMemberAvatar.php" />
 		<remove-file name="banned.png" destination="$themedir/images" />
-		<hook hook="integrate_member_context" function="BannedMemberAvatar::member_context" file="$sourcedir/Subs-BannedMemberAvatar.php" reverse="true" />
 		<hook hook="integrate_set_avatar_data" function="BannedMemberAvatar::set_avatar_data" file="$sourcedir/Subs-BannedMemberAvatar.php" reverse="true" />
 	</uninstall>
 
