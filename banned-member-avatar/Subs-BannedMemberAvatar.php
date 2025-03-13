@@ -13,9 +13,11 @@ class BannedMemberAvatar
 		global $settings, $user_profile;
 
 		if (!isset(self::$banned_member_map[$data['email']])) {
-			foreach ($user_profile as $profile) {
-				if (isset($profile['is_activated'])) {
-					self::$banned_member_map[$profile['email_address']] = $profile['is_activated'] >= 10;
+			if (isset($user_profile)) {
+				foreach ($user_profile as $profile) {
+					if (isset($profile['is_activated'])) {
+						self::$banned_member_map[$profile['email_address']] = $profile['is_activated'] >= 10;
+					}
 				}
 			}
 		}
