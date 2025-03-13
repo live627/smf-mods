@@ -1,6 +1,6 @@
 [size=x-large][b]Countdown BBC[/b][/size]
 
-A modification for SMF 2.1 that adds a [tt][nobbc][countdown][/nnobbc][/tt] bbc tag.
+A modification for SMF 2.1 that adds a [tt][nobbc][countdown][/nobbc][/tt] bbc tag.
 
 [list]
 [li]Shows the number of days, hours, and minutes until the specified date[/li]
