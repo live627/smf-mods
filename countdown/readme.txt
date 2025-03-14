@@ -1,6 +1,6 @@
 [size=x-large][b]Countdown BBC[/b][/size]
 
-A modification for SMF 2.1 that adds a [tt][nobbc][countdown][/nobbc][/tt] bbc tag.
+A modification for SMF 2.1 that adds a [tt][nobbc][countdown][/nnobbc][/tt] bbc tag.
 
 [list]
 [li]Shows the number of days, hours, and minutes until the specified date[/li]
@@ -16,6 +16,11 @@ A modification for SMF 2.1 that adds a [tt][nobbc][countdown][/nobbc][/tt] bbc t
 [size=large][b]Settings[/b][/size]
 
 There are no settings. Install to enable, uninstall to disable.
+
+
+[size=large][b]Limitations[/b][/size]
+
+This modification does not include any restrictions; it just adds the BBCode with the associated editor toolbar button. However, it works nicely with [url=https://custom.simplemachines.org/index.php?mod=4299]BBCode Permissions[/url].
 
 
 [size=large][b]License[/b][/size]
