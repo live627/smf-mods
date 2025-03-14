@@ -1,4 +1,4 @@
-.sceditor-insertcountdown {
+.sceditor-insertcountdown form {
 	display: grid;
 	gap: 1em;
 }
@@ -11,6 +11,9 @@
 }
 .sceditor-insertcountdown :nth-child(2) {
 	grid-template-columns: auto auto;
+}
+.sceditor-insertcountdown :nth-child(3) {
+	grid-template-columns: auto;
 }
 .sceditor-insertcountdown input:invalid {
 	border: red solid 3px;
