@@ -17,3 +17,6 @@ $txt['cd_hour']   = '# hour|# hours';      // For "1 hour" or "2 hours"
 $txt['cd_minute'] = '# minute|# minutes';  // For "1 minute" or "2 minutes"
 
 $txt['cd_remaining'] = '{0} remaining.';
+
+// Just editor things
+$txt['cd_description'] = 'Description';
