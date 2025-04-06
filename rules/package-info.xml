@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Rules</name>
+	<id>live627:Rules</id>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install>
+		<database>install.php</database>
+		<require-file name="Rules.php" destination="$sourcedir" />
+		<require-file name="Subs-Rules.php" destination="$sourcedir" />
+		<require-file name="Rules.template.php" destination="$themedir" />
+		<require-file name="Rules.english.php" destination="$languagedir" />
+	</install>
+
+	<uninstall>
+		<code>uninstall-required.php</code>
+		<remove-file name="$sourcedir/Rules.php" />
+		<remove-file name="$sourcedir/Subs-Rules.php" />
+		<remove-file name="$themedir/Rules.template.php" />
+		<remove-file name="$languagedir/Rules.english.php" />
+	</uninstall>
+
+</package-info>
