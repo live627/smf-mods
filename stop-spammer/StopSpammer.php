@@ -3,7 +3,7 @@
 ##########################################
 ##		<id>M-DVD:StopSpammer</id>		##
 ##		<name>Stop Spammer</name>		##
-##		<version>2.3.9</version>		##
+##		<version>2.4.0</version>		##
 ##		<type>modification</type>		##
 ##########################################
 
@@ -163,27 +163,17 @@ function stopspammer_test_mod_ok()
 {
 	global $txt, $modSettings, $sourcedir;
 	
+	require_once($sourcedir . '/Subs-Package.php');
+	
+	// Check connection
+	$lookup = checkDBSpammer('127.0.0.1', 'Test_Conection_DB', 'xxx@xxx.com', true);
+	
+	$txt['stopspammer_faildb_sub'] = $lookup ? '<span style="color: #008000">' . $txt['stopspammer_faildb1_sub'] . '</span>' : '<span class="error">' . $txt['stopspammer_faildb2_sub'] . $txt['stopspammer_not_translate'] . '</span>';
+	
 	// Check first if it's enabled
 	if ($modSettings['stopspammer_enable'] == 1)
 	{
-		require_once($sourcedir . '/Subs-Package.php');
-		
-		// Check connection
-		$lookup = checkDBSpammer('127.0.0.1', 'Test_Conection_DB', 'xxx@xxx.com', true);
-		
-		$txt['stopspammer_faildb_sub'] = $lookup ? '<span style="color: #008000">' . $txt['stopspammer_faildb1_sub'] . '</span>' : '<span class="error">'.$txt['stopspammer_faildb2_sub'].$txt['stopspammer_not_translate'].'</span>';
-		
-		// Check version
-		$internal_version = '2.3.9';
-		$remote = 'http://www.snoopyvirtualstudio.com/update_stopspammer.php';
-		$updated_version = fetch_web_data($remote);
-		
-		if ($updated_version && version_compare($internal_version, $updated_version, '<'))
-		{
-			// There is a new version
-			$string = '<div style="background-color:red; font-weight: bold; color:#fff;">'. $txt['stopspammer_new_version_1']. '</div>'. $txt['stopspammer_new_version_2']. '<strong>'. $internal_version. '</strong><br />'. $txt['stopspammer_new_version_3']. '<strong>'. $updated_version. '</strong>';
-		}
-		else if (!$lookup)
+		if (!$lookup)
 		{
 			// Something wrong with the connection
 			$string = '<div style="background-color:yellow; font-weight: bold; color:#000;">'. $txt['stopspammer_no_connect_1']. '</div>'. $txt['stopspammer_no_connect_2'];

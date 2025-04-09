@@ -1,0 +1,7 @@
+- Fixed error message "Undefined index: stopspammer_faildb_sub"
+- Changes to make the installation work for version 2.0.17
+- Changes to make the mod work with php 7.3
+- Fixed: The "Check this member" link was visible to everyone in their own profile. Now it is only visible for moderators
+- Added css class to the buttons
+- Changed text string "Check these members" to "Check Selected Members"
+- Changed text string "Report these members" to "Report Selected Members"

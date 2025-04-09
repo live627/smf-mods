@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>M-DVD:StopSpammer</id>
 	<name>Stop Spammer</name>
-	<version>2.3.9</version>
+	<version>2.4.0</version>
 	<type>modification</type>
 
 	<install for="1.1.1 - 1.99.99">
@@ -29,7 +29,7 @@
 		<remove-file name="$imagesdir/icons/moreinfo.gif" />
 	</uninstall>
 
-	<install for="2.0 - 2.99.99">
+	<install for="2.0.15, 2.0.16, 2.0.17, 2.0.18">
 		<readme type="file" parsebbc="true">readme.txt</readme>
 		<modification format="xml" type="file">install_2.xml</modification>
 		<modification format="xml" type="file">languages.xml</modification>
@@ -42,7 +42,7 @@
 		<redirect url="$boardurl/index.php?action=admin;area=regcenter;sa=settings" type="inline">Please stand by while you are being redirected to this modification's configuration settings.</redirect>
 	</install>
 
-	<uninstall for="2.0 - 2.99.99">
+	<uninstall for="2.0.15, 2.0.16, 2.0.17, 2.0.18">
 		<modification format="xml" type="file" reverse="true">install_2.xml</modification>
 		<modification format="xml" type="file" reverse="true">languages.xml</modification>
 		<modification format="xml" type="file" reverse="true">languages_utf8.xml</modification>
