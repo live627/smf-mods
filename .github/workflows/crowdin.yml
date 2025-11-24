@@ -9,7 +9,7 @@ jobs:
             pull-requests: write
         steps:
           - name: Checkout
-            uses: actions/checkout@v5
+            uses: actions/checkout@v6
 
           - name: Synchronize with Crowdin
             uses: crowdin/github-action@v2
