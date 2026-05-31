@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<name>Topic View Log</name>
+	<id>live627:topicviewlog</id>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+		<modification>install2.xml</modification>
+		<require-file name="TopicViewLog.php" destination="$sourcedir" />
+		<require-file name="TopicViewLog.english.php" destination="$languagedir" />
+		<database>install2.php</database>
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+		<modification reverse="true">install2.xml</modification>
+		<remove-file name="$sourcedir/TopicViewLog.php" />
+		<remove-file name="$languagedir/TopicViewLog.english.php" />
+	</uninstall>
+
+</package-info>

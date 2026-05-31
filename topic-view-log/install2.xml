@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>live627:topicviewlog</id>
+	<version>1.0</version>
+
+	<file name="$themedir/Display.template.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'print' => array('text' => 'print', 'image' => 'print.gif', 'lang' => true, 'custom' => 'rel="new_win nofollow"', 'url' => $scripturl . '?action=printpage;topic=' . $context['current_topic'] . '.0'),]]></search>
+			<add><![CDATA[
+		'tvl_title' => array('test' => 'can_view_topic_log', 'text' => 'tvl_title', 'image' => 'topiclog.gif', 'lang' => true, 'url' => $scripturl . '?action=topicviewlog;topic=' . $context['current_topic'] . '.0'),]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/MessageIndex.template.php">
+		<operation>
+			<search position="replace"><![CDATA[', $topic['views'], ']]></search>
+			<add><![CDATA[', $topic['views_link'], ']]></add>
+		</operation>
+	</file>
+
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'trackip' => array('Profile-View.php', 'trackIP'),]]></search>
+			<add><![CDATA[
+		'topicviewlog' => array('TopicViewLog.php', 'TopicViewLog'),]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Display.php">
+		<operation>
+			<search position="after"><![CDATA[
+	// Add 1 to the number of views of this topic.]]></search>
+			<add><![CDATA[
+	// Include a fancy file for some logging.
+	require_once($sourcedir . '/TopicViewLog.php');
+	loadLanguage('TopicViewLog');
+
+	// Who viewed this?!
+	tvl_log();
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+	$context['can_remove_post'] = allowedTo('delete_any') || (allowedTo('delete_replies') && $context['user']['started']);
+]]></search>
+			<add><![CDATA[
+	// Are we going to show the topic view log this guy?
+	$context['can_view_topic_log'] = allowedTo('tvl_view_any') || (allowedTo('tvl_view_own') && $context['user']['started']);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/MessageIndex.php">
+		<operation>
+			<search position="before"><![CDATA[
+				'views' => comma_format($row['num_views']),]]></search>
+			<add><![CDATA[
+				'views_link' => allowedTo('tvl_view_any') || (allowedTo('tvl_view_own') && $row['first_id_member'] == $user_info['id']) ? '<a href="' . $scripturl . '?action=topicviewlog;topic=' . $row['id_topic'] . '">' . comma_format($row['num_views']) . '</a>' : comma_format($row['num_views']),]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManagePermissions.php">
+		<operation>
+			<search position="before"><![CDATA[
+			'announce_topic' => array(false, 'topic', 'moderate'),]]></search>
+			<add><![CDATA[
+			'tvl_view' => array(true, 'topic', 'moderate'),]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Who.php">
+		<operation>
+			<search position="before"><![CDATA[
+	$board_ids = array();]]></search>
+			<add><![CDATA[
+	$log_ids = array();]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+			// Unlisted or unknown action.]]></search>
+			<add><![CDATA[
+			// He must be viewing a topic log.
+			elseif (isset($actions['action']) && $actions['action'] == 'topicviewlog' && allowedTo('tvl_view_any'))
+			{
+				loadLanguage('TopicViewLog');
+				$data[$k] = $txt['who_hidden'];
+				$log_ids[(int) $actions['topic']][$k] = $txt['who_topiclog'];
+			}]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+	// Load member names for the profile.]]></search>
+			<add><![CDATA[
+	// Load log names.
+	if (!empty($log_ids))
+	{
+		$result = $smcFunc['db_query']('', '
+			SELECT t.id_topic, m.subject
+			FROM ({db_prefix}boards AS b, {db_prefix}topics AS t, {db_prefix}messages AS m)
+			WHERE {query_see_board}
+				AND t.id_topic IN ({array_int:log_list})
+				AND t.id_board = b.id_board
+				AND m.id_msg = t.id_first_msg
+			LIMIT ' . count($log_ids),
+			array(
+				'log_list' => array_keys($log_ids),
+			)
+		);
+		while ($row = $smcFunc['db_fetch_assoc']($result))
+		{
+			// Show the log topic's subject for each of the actions.
+			foreach ($log_ids[$row['id_topic']] as $k => $session_text)
+				$data[$k] = sprintf($session_text, $row['id_topic'], censorText($row['subject']));
+		}
+		$smcFunc['db_free_result']($result);
+	}
+]]></add>
+		</operation>
+	</file>
+
+</modification>
